@@ -1526,7 +1526,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={16} title="Verified" />
+                      <CheckCircle className="text-green-500" size={16}  />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1544,7 +1544,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={16} title="Verified" />
+                      <CheckCircle className="text-green-500" size={16}  />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1562,7 +1562,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={16} title="Verified" />
+                      <CheckCircle className="text-green-500" size={16}  />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1590,7 +1590,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={16} title="Verified" />
+                      <CheckCircle className="text-green-500" size={16}  />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1608,7 +1608,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={16} title="Verified" />
+                      <CheckCircle className="text-green-500" size={16}  />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1626,7 +1626,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={16} title="Verified" />
+                      <CheckCircle className="text-green-500" size={16}  />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1654,7 +1654,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={16} title="Verified" />
+                      <CheckCircle className="text-green-500" size={16}  />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1672,7 +1672,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <AlertCircle className="text-yellow-500" size={16} title="Pending review" />
+                      <AlertCircle className="text-yellow-500" size={16} />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1700,7 +1700,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <AlertTriangle className="text-red-500" size={16} title="Important" />
+                      <AlertTriangle className="text-red-500" size={16} />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>
@@ -1718,7 +1718,7 @@ export default function ClaimDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle className="text-green-500" size={16} title="Sent" />
+                      <CheckCircle className="text-green-500" size={16} />
                       <button className="p-1.5 hover:bg-gray-200 rounded" title="View">
                         <Eye size={16} />
                       </button>

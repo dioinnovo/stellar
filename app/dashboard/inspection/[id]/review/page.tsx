@@ -866,7 +866,7 @@ export default function InspectionReviewPage() {
                     key={idx}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    delay={idx * 0.1}
+                    transition={{ delay: idx * 0.1 }}
                     className={`p-6 rounded-xl ${
                       rec.type === 'critical' ? 'bg-red-50 border border-red-200' :
                       rec.type === 'opportunity' ? 'bg-green-50 border border-green-200' :
