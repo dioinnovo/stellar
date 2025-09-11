@@ -1,0 +1,393 @@
+{
+  "company": {
+    "name": "Innovoco AI & Automation",
+    "tagline": "Your Enterprise Data Warehouse. Now AI-Powered",
+    "founded": "2014",
+    "employees": "150+",
+    "headquarters": "New York, NY",
+    "certifications": [
+      "Microsoft Gold Partner",
+      "Google Cloud Premier Partner",
+      "Snowflake Partner",
+      "Databricks Partner"
+    ],
+    "stats": {
+      "yearsExperience": 10,
+      "clientsServed": 300,
+      "projectsDelivered": 500,
+      "dataProcessed": "500+ PB",
+      "averageROI": "340%",
+      "pocDeliveryDays": 30
+    }
+  },
+  "services": {
+    "dataWarehouse": {
+      "name": "Data Warehouse & Architecture",
+      "description": "Enterprise-grade foundation for your data intelligence",
+      "icon": "database",
+      "color": "blue",
+      "capabilities": [
+        {
+          "name": "Comprehensive Infrastructure Design",
+          "details": "Expert architecture for cloud, on-premises, and hybrid data warehouses",
+          "technologies": ["Snowflake", "Databricks", "BigQuery", "Redshift", "Synapse"],
+          "deliverables": [
+            "Data architecture blueprint",
+            "Technology stack recommendation",
+            "Migration roadmap",
+            "Performance optimization plan"
+          ]
+        },
+        {
+          "name": "Security & Governance Excellence",
+          "details": "Industry-leading practices embedding protection at every layer",
+          "features": [
+            "Row-level security implementation",
+            "Data masking and encryption",
+            "Access control frameworks",
+            "Audit logging and compliance tracking"
+          ],
+          "compliance": ["SOC2", "GDPR", "HIPAA", "CCPA"]
+        },
+        {
+          "name": "Modernization & Migration Expertise",
+          "details": "Tool-assisted methodologies refined through 500+ implementations",
+          "approach": [
+            "Assessment of current state",
+            "Risk mitigation planning",
+            "Phased migration execution",
+            "Zero-downtime cutover"
+          ],
+          "timeframe": "3-6 months typical"
+        }
+      ],
+      "benefits": [
+        "95% faster query performance",
+        "60% reduction in infrastructure costs",
+        "100% data lineage visibility",
+        "Real-time data availability"
+      ],
+      "industries": ["Financial Services", "Healthcare", "Retail", "Manufacturing"],
+      "caseStudies": [
+        {
+          "client": "Fortune 500 Financial Institution",
+          "challenge": "Legacy on-premise warehouse couldn't scale",
+          "solution": "Migrated to Snowflake with real-time pipelines",
+          "results": "80% cost reduction, 10x query performance"
+        }
+      ]
+    },
+    "analyticsBI": {
+      "name": "Advanced Analytics & BI",
+      "description": "Transform data into strategic intelligence",
+      "icon": "chart",
+      "color": "purple",
+      "capabilities": [
+        {
+          "name": "Analytics Implementation Excellence",
+          "details": "End-to-end BI solutions optimized for your unique requirements",
+          "tools": ["PowerBI", "Tableau", "Qlik", "Looker", "Custom Dashboards"],
+          "features": [
+            "Self-service analytics",
+            "Embedded analytics",
+            "Mobile dashboards",
+            "Real-time reporting"
+          ]
+        },
+        {
+          "name": "Executive Dashboard Development",
+          "details": "Custom KPI tracking and strategic visualization solutions",
+          "deliverables": [
+            "C-suite dashboards",
+            "Department scorecards",
+            "Predictive analytics",
+            "What-if scenario modeling"
+          ]
+        },
+        {
+          "name": "Managed Analytics Services",
+          "details": "Continuous optimization with enterprise-grade reliability",
+          "services": [
+            "24/7 monitoring",
+            "Performance tuning",
+            "User training",
+            "Report automation"
+          ]
+        }
+      ],
+      "benefits": [
+        "300% increase in data adoption",
+        "75% reduction in report generation time",
+        "Real-time business insights",
+        "Predictive decision support"
+      ],
+      "metrics": {
+        "averageImplementation": "8-12 weeks",
+        "userAdoption": "85% within 30 days",
+        "reportAccuracy": "99.9%"
+      }
+    },
+    "aiTransformation": {
+      "name": "AI-Powered Transformation",
+      "description": "Intelligent solutions layered on your data foundation",
+      "icon": "brain",
+      "color": "orange",
+      "capabilities": [
+        {
+          "name": "AI Process Automation",
+          "details": "Intelligent workflows designed to optimize your operations",
+          "useCases": [
+            "Document processing & extraction",
+            "Customer service automation",
+            "Predictive maintenance",
+            "Fraud detection"
+          ],
+          "technologies": ["GPT-4", "Claude", "LangChain", "Custom ML Models"]
+        },
+        {
+          "name": "Conversational Analytics Platform",
+          "details": "Natural language interfaces making data accessible to all users",
+          "features": [
+            "Ask questions in plain English",
+            "Voice-enabled queries",
+            "Automated insights generation",
+            "Contextual recommendations"
+          ],
+          "example": "Show me sales trends for Q3 and predict next quarter"
+        },
+        {
+          "name": "Intelligent Pipeline Management",
+          "details": "Self-monitoring systems with predictive maintenance capabilities",
+          "capabilities": [
+            "Anomaly detection",
+            "Auto-healing pipelines",
+            "Performance optimization",
+            "Cost optimization"
+          ]
+        }
+      ],
+      "benefits": [
+        "70% reduction in manual processes",
+        "90% accuracy in predictions",
+        "24/7 autonomous operations",
+        "10x faster insight generation"
+      ],
+      "pocOfferings": [
+        {
+          "name": "Conversational Data Assistant",
+          "duration": "30 days",
+          "deliverable": "Working prototype integrated with your data"
+        },
+        {
+          "name": "Intelligent Document Processing",
+          "duration": "30 days",
+          "deliverable": "Automated extraction from your documents"
+        }
+      ]
+    },
+    "cloudOptimization": {
+      "name": "Cloud Optimization & Compliance",
+      "description": "Excellence in cloud economics and security",
+      "icon": "cloud",
+      "color": "teal",
+      "capabilities": [
+        {
+          "name": "Cloud FinOps Practice",
+          "details": "Continuous monitoring and optimization of cloud resources",
+          "services": [
+            "Cost allocation and chargeback",
+            "Reserved instance planning",
+            "Spot instance optimization",
+            "Resource rightsizing"
+          ],
+          "savings": "Average 40% cost reduction"
+        },
+        {
+          "name": "Compliance Automation Framework",
+          "details": "Automated governance aligned with industry standards",
+          "compliance": [
+            "SOC2 automation",
+            "GDPR compliance tracking",
+            "HIPAA safeguards",
+            "PCI DSS implementation"
+          ],
+          "features": [
+            "Continuous compliance monitoring",
+            "Automated evidence collection",
+            "Audit report generation",
+            "Remediation workflows"
+          ]
+        },
+        {
+          "name": "Security Architecture Services",
+          "details": "Comprehensive protection strategies with continuous threat assessment",
+          "components": [
+            "Zero-trust architecture",
+            "Identity and access management",
+            "Data loss prevention",
+            "Threat detection and response"
+          ]
+        }
+      ],
+      "benefits": [
+        "40-60% cloud cost reduction",
+        "100% compliance coverage",
+        "< 5 minute threat detection",
+        "Zero security breaches"
+      ],
+      "cloudProviders": ["AWS", "Azure", "GCP", "Multi-cloud"]
+    }
+  },
+  "industries": {
+    "financial": {
+      "name": "Financial Services",
+      "challenges": [
+        "Regulatory compliance (SOX, Basel III)",
+        "Real-time fraud detection",
+        "Customer 360 view",
+        "Risk modeling and assessment"
+      ],
+      "solutions": [
+        "Compliant data warehouse with audit trails",
+        "ML-powered fraud detection",
+        "Real-time transaction monitoring",
+        "Regulatory reporting automation"
+      ],
+      "clients": ["Major Banks", "Insurance Companies", "FinTech Startups"]
+    },
+    "healthcare": {
+      "name": "Healthcare & Life Sciences",
+      "challenges": [
+        "HIPAA compliance",
+        "Patient data integration",
+        "Clinical analytics",
+        "Operational efficiency"
+      ],
+      "solutions": [
+        "HIPAA-compliant data platform",
+        "Patient journey analytics",
+        "Predictive health outcomes",
+        "Revenue cycle optimization"
+      ],
+      "clients": ["Hospital Systems", "Pharma Companies", "Medical Device Manufacturers"]
+    },
+    "retail": {
+      "name": "Retail & E-commerce",
+      "challenges": [
+        "Omnichannel customer experience",
+        "Inventory optimization",
+        "Demand forecasting",
+        "Personalization at scale"
+      ],
+      "solutions": [
+        "Unified customer data platform",
+        "AI-powered demand forecasting",
+        "Real-time inventory tracking",
+        "Personalized recommendation engine"
+      ],
+      "clients": ["National Retailers", "E-commerce Platforms", "Consumer Brands"]
+    },
+    "manufacturing": {
+      "name": "Manufacturing & Supply Chain",
+      "challenges": [
+        "Supply chain visibility",
+        "Predictive maintenance",
+        "Quality control",
+        "Production optimization"
+      ],
+      "solutions": [
+        "End-to-end supply chain analytics",
+        "IoT-powered predictive maintenance",
+        "Computer vision quality inspection",
+        "Production line optimization"
+      ],
+      "clients": ["Automotive", "Electronics", "Consumer Goods"]
+    }
+  },
+  "differentiators": [
+    {
+      "title": "30-Day POC Guarantee",
+      "description": "We deliver a working proof of concept within 30 days or it's free",
+      "icon": "clock"
+    },
+    {
+      "title": "Enterprise-Grade Security",
+      "description": "Bank-level security with SOC2, HIPAA, and GDPR compliance",
+      "icon": "shield"
+    },
+    {
+      "title": "Proven ROI",
+      "description": "Average 340% ROI within the first year of implementation",
+      "icon": "trending-up"
+    },
+    {
+      "title": "10+ Years Experience",
+      "description": "Battle-tested expertise from 500+ enterprise implementations",
+      "icon": "award"
+    }
+  ],
+  "process": {
+    "discovery": {
+      "duration": "1-2 days",
+      "activities": [
+        "Current state assessment",
+        "Pain point identification",
+        "Opportunity mapping",
+        "Technical requirements gathering"
+      ]
+    },
+    "design": {
+      "duration": "1 week",
+      "activities": [
+        "Solution architecture",
+        "Technology selection",
+        "Implementation roadmap",
+        "ROI projection"
+      ]
+    },
+    "poc": {
+      "duration": "30 days",
+      "activities": [
+        "Environment setup",
+        "Data integration",
+        "Use case implementation",
+        "User training"
+      ]
+    },
+    "scale": {
+      "duration": "2-6 months",
+      "activities": [
+        "Production deployment",
+        "Additional use cases",
+        "Performance optimization",
+        "Ongoing support"
+      ]
+    }
+  },
+  "faq": [
+    {
+      "question": "How quickly can we see results?",
+      "answer": "Most clients see initial results within 30 days through our POC program. Full implementation typically delivers ROI within 3-6 months."
+    },
+    {
+      "question": "Do you work with our existing technology stack?",
+      "answer": "Yes, we're platform-agnostic and integrate with all major cloud providers and data platforms including AWS, Azure, GCP, Snowflake, Databricks, and more."
+    },
+    {
+      "question": "What size companies do you work with?",
+      "answer": "We primarily work with mid-market and enterprise companies (100+ employees) but have solutions scalable for growing businesses."
+    },
+    {
+      "question": "How do you ensure data security?",
+      "answer": "We implement bank-level security with encryption at rest and in transit, role-based access control, audit logging, and compliance with SOC2, HIPAA, and GDPR standards."
+    },
+    {
+      "question": "What if we don't have a data team?",
+      "answer": "No problem! We offer managed services where our team handles everything from implementation to ongoing maintenance and optimization."
+    },
+    {
+      "question": "How is pricing structured?",
+      "answer": "We offer flexible pricing models including project-based, subscription, and managed services. Typical engagements range from $50K-500K depending on scope and complexity."
+    }
+  ]
+}

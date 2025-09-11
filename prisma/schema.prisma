@@ -1,0 +1,239 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Claims table - Core claims data
+model Claim {
+  id                String              @id @default(cuid())
+  claimNumber       String              @unique
+  type              String              // commercial or residential
+  status            ClaimStatus         @default(SUBMITTED)
+  priority          Priority            @default(MEDIUM)
+  submittedAt       DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  
+  // Property Information
+  propertyAddress   String
+  propertyType      String
+  policyNumber      String?
+  
+  // Damage Information
+  damageType        String              // Hurricane, Wind, Water, etc.
+  damageDescription String?
+  severity          String?             // Minor, Moderate, Major, Total Loss
+  
+  // Financial Information
+  estimatedAmount   Float?
+  approvedAmount    Float?
+  deductible        Float?
+  
+  // Contact Information
+  insuredName       String
+  insuredEmail      String
+  insuredPhone      String
+  
+  // AI Analysis Results
+  aiConfidence      Float?
+  fraudScore        Float?
+  settlementScore   Float?
+  
+  // Relationships
+  documents         Document[]
+  workflows         Workflow[]
+  notifications     Notification[]
+  enrichments       Enrichment[]
+  activities        Activity[]
+  lead              Lead?
+  
+  @@index([status])
+  @@index([priority])
+  @@index([submittedAt])
+}
+
+// Documents table - File uploads and attachments
+model Document {
+  id              String          @id @default(cuid())
+  filename        String
+  originalName    String
+  mimeType        String
+  size            Int
+  url             String
+  uploadedAt      DateTime        @default(now())
+  
+  // Document Processing
+  ocrText         String?
+  metadata        String?         // JSON string
+  processedAt     DateTime?
+  
+  // Relationships
+  claimId         String
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+}
+
+// Workflows table - Workflow automation states
+model Workflow {
+  id              String          @id @default(cuid())
+  name            String
+  status          WorkflowStatus  @default(PENDING)
+  triggeredAt     DateTime        @default(now())
+  completedAt     DateTime?
+  
+  // Workflow Data
+  currentStep     String?
+  totalSteps      Int?
+  data            String?         // JSON string for workflow-specific data
+  
+  // Relationships
+  claimId         String
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([status])
+}
+
+// CRM Leads table
+model Lead {
+  id              String          @id @default(cuid())
+  leadNumber      String          @unique
+  source          String          @default("Web Form")
+  status          LeadStatus      @default(NEW)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  // Lead Information
+  companyName     String?
+  contactName     String
+  email           String
+  phone           String
+  
+  // Lead Scoring
+  score           Int             @default(0)
+  qualification   String?         // Hot, Warm, Cold
+  
+  // Relationships
+  claimId         String?         @unique
+  claim           Claim?          @relation(fields: [claimId], references: [id])
+  
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Notifications table - Email queue and history
+model Notification {
+  id              String              @id @default(cuid())
+  type            NotificationType
+  status          NotificationStatus  @default(PENDING)
+  recipient       String
+  subject         String
+  content         String              // HTML content
+  sentAt          DateTime?
+  failedAt        DateTime?
+  retryCount      Int                 @default(0)
+  createdAt       DateTime            @default(now())
+  
+  // Relationships
+  claimId         String?
+  claim           Claim?              @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([status])
+  @@index([claimId])
+}
+
+// Enrichments table - GraphRAG context storage
+model Enrichment {
+  id              String          @id @default(cuid())
+  type            String          // document, similar_claim, policy, risk
+  source          String          // GraphRAG, Manual, External API
+  content         String          // JSON string with enrichment data
+  confidence      Float?
+  createdAt       DateTime        @default(now())
+  
+  // Vector Embedding
+  embedding       String?         // JSON array of floats
+  
+  // Relationships
+  claimId         String
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([type])
+}
+
+// Activity table - Audit trail
+model Activity {
+  id              String          @id @default(cuid())
+  action          String
+  description     String
+  userId          String?
+  metadata        String?         // JSON string
+  createdAt       DateTime        @default(now())
+  
+  // Relationships
+  claimId         String
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([createdAt])
+}
+
+// Enums
+enum ClaimStatus {
+  SUBMITTED
+  TRIAGING
+  UNDER_REVIEW
+  PENDING_DOCUMENTS
+  ESTIMATING
+  APPROVED
+  DENIED
+  SETTLED
+  CLOSED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum WorkflowStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  LOST
+}
+
+enum NotificationType {
+  CLAIM_SUBMITTED
+  CLAIM_APPROVED
+  CLAIM_DENIED
+  DOCUMENT_REQUESTED
+  ESTIMATE_READY
+  SETTLEMENT_OFFERED
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  BOUNCED
+}

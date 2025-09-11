@@ -1,0 +1,654 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Enhanced Claims table - Comprehensive claims data tracking
+model Claim {
+  id                String              @id @default(cuid())
+  claimNumber       String              @unique
+  type              String              // commercial or residential
+  status            ClaimStatus         @default(SUBMITTED)
+  priority          Priority            @default(MEDIUM)
+  submittedAt       DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  
+  // Property Information
+  propertyAddress   String
+  propertyType      String
+  policyNumber      String?
+  previousClaims    Json?               // Historical claims at this property
+  
+  // Insurance Information
+  insuranceCompany  String
+  insuranceAdjuster String?
+  internalAdjuster  String?
+  catastropheCode   String?             // CAT code for major events
+  eventId           String?             // Specific event identifier
+  
+  // Critical Dates
+  lossDate          DateTime
+  reportedDate      DateTime            @default(now())
+  filingDeadline    DateTime?
+  statuteExpiry     DateTime?
+  
+  // Damage Information
+  damageType        String              // Hurricane, Wind, Water, etc.
+  damageDescription String?
+  severity          String?             // Minor, Moderate, Major, Total Loss
+  damageCategories  Json?               // Detailed damage breakdown
+  
+  // Financial Information - Enhanced
+  estimatedAmount   Float?
+  initialReserve    Float?
+  approvedAmount    Float?
+  deductible        Float?
+  policyLimits      Json?               // {dwelling: 500000, contents: 250000, ale: 50000}
+  coverageTypes     Json?               // ["dwelling", "contents", "ALE", "codeUpgrade"]
+  supplementalClaims Json?              // [{date, amount, status, reason}]
+  recoverableDepreciation Float?
+  codeUpgradeAmount Float?
+  aleAmount         Float?              // Additional Living Expenses
+  publicAdjusterFee Float?              // Percentage or fixed amount
+  netRecovery       Float?              // Net amount to client
+  contractorEstimates Json?             // Multiple contractor estimates
+  
+  // Contact Information
+  insuredName       String
+  insuredEmail      String
+  insuredPhone      String
+  insuredSecondaryPhone String?
+  preferredContact  String?             // email, phone, text
+  
+  // Inspection & Verification
+  inspectionScheduled DateTime?
+  inspectionCompleted DateTime?
+  inspectorName     String?
+  inspectorCompany  String?
+  damagesVerified   Json?               // {roof: true, interior: false, foundation: pending}
+  photoCount        Int?                @default(0)
+  photoCategories   Json?               // {exterior: 10, interior: 15, roof: 8}
+  moistureReadings  Json?               // Moisture level data
+  structuralReport  String?             // URL or summary
+  
+  // AI Analysis Results - Enhanced
+  aiConfidence      Float?
+  fraudScore        Float?
+  settlementScore   Float?
+  predictedSettlement Float?            // AI predicted settlement amount
+  riskFactors       Json?               // Identified risk factors
+  opportunities     Json?               // Identified opportunities for higher settlement
+  
+  // Analytics & Metadata
+  weatherData       Json?               // Weather conditions at time of loss
+  marketCosts       Json?               // Current market reconstruction costs
+  comparableClaims  Json?               // Similar claims data
+  recoveryRate      Float?              // Percentage of claim recovered
+  processingDays    Int?                // Days from submission to settlement
+  vendorScores      Json?               // Performance scores of vendors used
+  
+  // Performance Metrics
+  timeToFirstContact Int?               // Hours
+  timeToEstimate    Int?                // Hours
+  timeToApproval    Int?                // Days
+  timeToSettlement  Int?                // Days
+  clientSatisfaction Float?             // 1-5 rating
+  
+  // Relationships
+  documents         Document[]
+  workflows         Workflow[]
+  notifications     Notification[]
+  enrichments       Enrichment[]
+  activities        Activity[]
+  settlements       Settlement[]
+  communications    Communication[]
+  inspections       Inspection[]
+  lead              Lead?
+  
+  @@index([status])
+  @@index([priority])
+  @@index([submittedAt])
+  @@index([insuranceCompany])
+  @@index([lossDate])
+}
+
+// Settlement Tracking
+model Settlement {
+  id              String          @id @default(cuid())
+  claimId         String
+  
+  // Offer Details
+  offerNumber     Int             // Sequential offer number
+  offerDate       DateTime
+  offerAmount     Float
+  offerType       SettlementType  // initial, supplemental, final
+  offerFrom       String          // Insurance company or specific adjuster
+  
+  // Response
+  status          SettlementStatus // pending, accepted, rejected, countered
+  responseDate    DateTime?
+  counterAmount   Float?
+  counterReason   String?
+  
+  // Payment Details
+  acceptedDate    DateTime?
+  paymentDate     DateTime?
+  paymentAmount   Float?
+  paymentMethod   String?         // check, wire, ACH
+  checkNumber     String?
+  wireDetails     Json?
+  
+  // Breakdown
+  coverageBreakdown Json?          // {dwelling: 200000, contents: 50000, ale: 25000}
+  deductibleApplied Float?
+  depreciationHeld Float?
+  
+  // Notes
+  notes           String?
+  internalNotes   String?
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([status])
+  @@index([offerDate])
+}
+
+// Communication Tracking
+model Communication {
+  id              String          @id @default(cuid())
+  claimId         String
+  
+  // Communication Details
+  type            CommunicationType // email, phone, meeting, letter, text
+  direction       CommunicationDirection // inbound, outbound
+  channel         String?         // specific email, phone number used
+  
+  // Content
+  subject         String?
+  content         String          // Full content or summary
+  summary         String?         // AI-generated summary
+  sentiment       String?         // positive, neutral, negative
+  
+  // Participants
+  from            String
+  to              String[]
+  cc              String[]        @default([])
+  participants    String[]        // For meetings
+  
+  // Metadata
+  duration        Int?            // Duration in minutes for calls/meetings
+  recordingUrl    String?         // Call recording URL
+  attachments     Json?           // [{filename, url, size}]
+  
+  // Tracking
+  status          String?         // sent, delivered, read, responded
+  responseRequired Boolean        @default(false)
+  responseDeadline DateTime?
+  followUpDate    DateTime?
+  
+  // Categorization
+  category        String?         // negotiation, documentation, inquiry, update
+  tags            String[]        @default([])
+  importance      String?         // high, medium, low
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([type])
+  @@index([createdAt])
+  @@index([direction])
+}
+
+// Inspection Management
+model Inspection {
+  id              String          @id @default(cuid())
+  claimId         String
+  
+  // Scheduling
+  scheduledDate   DateTime
+  scheduledTime   String?         // Specific time slot
+  duration        Int?            // Expected duration in minutes
+  
+  // Completion
+  completedDate   DateTime?
+  actualDuration  Int?            // Actual duration in minutes
+  status          InspectionStatus @default(SCHEDULED)
+  
+  // Inspector Details
+  inspectorName   String
+  inspectorCompany String?
+  inspectorPhone  String?
+  inspectorEmail  String?
+  inspectorLicense String?
+  
+  // Inspection Details
+  inspectionType  String          // initial, reinspection, supplemental, final
+  areasInspected  Json            // ["roof", "interior", "exterior", "foundation"]
+  accessIssues    String?         // Any access problems noted
+  
+  // Findings
+  findings        Json            // Detailed findings by area
+  damageConfirmed Json            // {roof: true, siding: false, interior: true}
+  measurements    Json?           // Detailed measurements
+  
+  // Documentation
+  reportUrl       String?         // Inspection report URL
+  reportSummary   String?         // Key findings summary
+  photos          Json?           // {exterior: [urls], interior: [urls], roof: [urls]}
+  photoCount      Int             @default(0)
+  videos          Json?           // Video documentation URLs
+  
+  // Technical Readings
+  moistureReadings Json?          // {location: reading} pairs
+  thermalImages   Json?           // Thermal imaging results
+  structuralNotes String?         // Structural integrity notes
+  
+  // Code Compliance
+  codeViolations  Json?           // Identified code violations
+  requiredUpgrades Json?          // Required code upgrades
+  
+  // Recommendations
+  recommendations Json?           // Inspector recommendations
+  urgentItems     Json?           // Items requiring immediate attention
+  safetyHazards   Json?           // Identified safety hazards
+  
+  // Follow-up
+  followUpRequired Boolean        @default(false)
+  followUpNotes   String?
+  nextInspectionDate DateTime?
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([scheduledDate])
+  @@index([status])
+}
+
+// Documents table - Enhanced file management
+model Document {
+  id              String          @id @default(cuid())
+  filename        String
+  originalName    String
+  mimeType        String
+  size            Int
+  url             String
+  uploadedAt      DateTime        @default(now())
+  
+  // Document Categorization
+  category        DocumentCategory
+  subcategory     String?         // More specific categorization
+  documentType    String?         // estimate, report, photo, correspondence
+  
+  // Document Processing
+  ocrText         String?
+  ocrCompleted    Boolean         @default(false)
+  metadata        String?         // JSON string
+  extractedData   Json?           // Structured data extracted from document
+  processedAt     DateTime?
+  
+  // Review Status
+  reviewStatus    DocumentStatus  @default(PENDING_REVIEW)
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  reviewNotes     String?
+  
+  // Relationships
+  claimId         String
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([category])
+  @@index([reviewStatus])
+}
+
+// Workflows table - Enhanced workflow automation
+model Workflow {
+  id              String          @id @default(cuid())
+  name            String
+  type            String          // submission, triage, estimation, settlement
+  status          WorkflowStatus  @default(PENDING)
+  triggeredAt     DateTime        @default(now())
+  triggeredBy     String?         // User or system
+  completedAt     DateTime?
+  
+  // Workflow Data
+  currentStep     String?
+  totalSteps      Int?
+  completedSteps  Int             @default(0)
+  data            String?         // JSON string for workflow-specific data
+  
+  // Execution Details
+  executionTime   Int?            // Total execution time in seconds
+  errorMessage    String?
+  retryCount      Int             @default(0)
+  maxRetries      Int             @default(3)
+  
+  // Relationships
+  claimId         String
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([status])
+  @@index([type])
+}
+
+// CRM Leads table - Enhanced lead management
+model Lead {
+  id              String          @id @default(cuid())
+  leadNumber      String          @unique
+  source          String          @default("Web Form")
+  campaign        String?         // Marketing campaign source
+  status          LeadStatus      @default(NEW)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  // Lead Information
+  companyName     String?
+  contactName     String
+  email           String
+  phone           String
+  secondaryPhone  String?
+  preferredContact String?
+  
+  // Lead Scoring & Qualification
+  score           Int             @default(0)
+  qualification   LeadQualification @default(UNQUALIFIED)
+  qualificationNotes String?
+  estimatedValue  Float?          // Estimated claim value
+  
+  // Tracking
+  firstContactDate DateTime?
+  lastContactDate DateTime?
+  nextFollowUp    DateTime?
+  conversionDate  DateTime?
+  lostReason      String?
+  
+  // Relationships
+  claimId         String?         @unique
+  claim           Claim?          @relation(fields: [claimId], references: [id])
+  
+  @@index([status])
+  @@index([createdAt])
+  @@index([qualification])
+}
+
+// Notifications table - Enhanced notification management
+model Notification {
+  id              String              @id @default(cuid())
+  type            NotificationType
+  status          NotificationStatus  @default(PENDING)
+  priority        String              @default("normal") // high, normal, low
+  
+  // Recipients
+  recipient       String              // Primary recipient
+  ccRecipients    String[]            @default([])
+  bccRecipients   String[]            @default([])
+  
+  // Content
+  subject         String
+  content         String              // HTML content
+  plainText       String?             // Plain text version
+  template        String?             // Template used
+  variables       Json?               // Template variables
+  
+  // Delivery
+  scheduledFor    DateTime?           // Scheduled send time
+  sentAt          DateTime?
+  deliveredAt     DateTime?
+  openedAt        DateTime?
+  clickedAt       DateTime?
+  
+  // Error Handling
+  failedAt        DateTime?
+  errorMessage    String?
+  retryCount      Int                 @default(0)
+  maxRetries      Int                 @default(3)
+  
+  // Tracking
+  messageId       String?             // Email service message ID
+  trackingEnabled Boolean             @default(true)
+  
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  
+  // Relationships
+  claimId         String?
+  claim           Claim?              @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([status])
+  @@index([claimId])
+  @@index([scheduledFor])
+}
+
+// Enrichments table - Enhanced GraphRAG context storage
+model Enrichment {
+  id              String          @id @default(cuid())
+  type            String          // document, similar_claim, policy, risk, opportunity
+  source          String          // GraphRAG, Manual, External API, AI
+  content         String          // JSON string with enrichment data
+  
+  // Confidence & Relevance
+  confidence      Float?          // 0-1 confidence score
+  relevance       Float?          // 0-1 relevance score
+  accuracy        Float?          // Accuracy score for predictions
+  
+  // Vector Embedding
+  embedding       String?         // JSON array of floats
+  embeddingModel  String?         // Model used for embedding
+  
+  // Metadata
+  category        String?         // Categorization of enrichment
+  tags            String[]        @default([])
+  expiresAt       DateTime?       // When this enrichment becomes stale
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  // Relationships
+  claimId         String
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([type])
+  @@index([source])
+}
+
+// Activity table - Enhanced audit trail
+model Activity {
+  id              String          @id @default(cuid())
+  action          String          // create, update, delete, view, export, etc.
+  actionType      String          // user, system, automation, ai
+  description     String
+  
+  // Actor Information
+  userId          String?
+  userName        String?
+  userRole        String?
+  ipAddress       String?
+  userAgent       String?
+  
+  // Change Tracking
+  entityType      String?         // Claim, Document, Settlement, etc.
+  entityId        String?
+  previousValue   Json?           // Previous state
+  newValue        Json?           // New state
+  changedFields   String[]        @default([])
+  
+  // Metadata
+  metadata        String?         // JSON string with additional data
+  importance      String          @default("normal") // high, normal, low
+  category        String?         // categorization of activity
+  
+  // Timing
+  duration        Int?            // Duration in milliseconds for operations
+  createdAt       DateTime        @default(now())
+  
+  // Relationships
+  claimId         String
+  claim           Claim           @relation(fields: [claimId], references: [id], onDelete: Cascade)
+  
+  @@index([claimId])
+  @@index([createdAt])
+  @@index([action])
+  @@index([userId])
+}
+
+// Enums
+enum ClaimStatus {
+  SUBMITTED
+  TRIAGING
+  ASSIGNED
+  INSPECTING
+  UNDER_REVIEW
+  PENDING_DOCUMENTS
+  ESTIMATING
+  NEGOTIATING
+  APPROVED
+  DENIED
+  SETTLED
+  CLOSED
+  REOPENED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+  CRITICAL
+}
+
+enum WorkflowStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+  CANCELLED
+  PAUSED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  NURTURING
+  CONVERTED
+  LOST
+  RECYCLED
+}
+
+enum LeadQualification {
+  UNQUALIFIED
+  COLD
+  WARM
+  HOT
+  READY
+}
+
+enum NotificationType {
+  CLAIM_SUBMITTED
+  CLAIM_ASSIGNED
+  CLAIM_APPROVED
+  CLAIM_DENIED
+  DOCUMENT_REQUESTED
+  DOCUMENT_RECEIVED
+  ESTIMATE_READY
+  SETTLEMENT_OFFERED
+  SETTLEMENT_ACCEPTED
+  PAYMENT_SENT
+  INSPECTION_SCHEDULED
+  INSPECTION_COMPLETED
+  ACTION_REQUIRED
+  STATUS_UPDATE
+}
+
+enum NotificationStatus {
+  PENDING
+  SCHEDULED
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  FAILED
+  BOUNCED
+  CANCELLED
+}
+
+enum SettlementType {
+  INITIAL
+  SUPPLEMENTAL
+  INTERIM
+  FINAL
+  ADVANCE
+}
+
+enum SettlementStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COUNTERED
+  EXPIRED
+  WITHDRAWN
+}
+
+enum CommunicationType {
+  EMAIL
+  PHONE
+  MEETING
+  LETTER
+  TEXT
+  FAX
+  PORTAL_MESSAGE
+}
+
+enum CommunicationDirection {
+  INBOUND
+  OUTBOUND
+  INTERNAL
+}
+
+enum InspectionStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  RESCHEDULED
+  NO_SHOW
+}
+
+enum DocumentCategory {
+  POLICY
+  PHOTOS
+  ESTIMATES
+  REPORTS
+  CORRESPONDENCE
+  INVOICES
+  LEGAL
+  OTHER
+}
+
+enum DocumentStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  REQUIRES_REVISION
+  ARCHIVED
+}
