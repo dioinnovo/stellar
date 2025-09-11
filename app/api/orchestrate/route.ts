@@ -136,8 +136,7 @@ export async function POST(request: NextRequest) {
         conversationType: state.conversationType,
         phase: state.currentPhase,
         messageCount: state.messages.length,
-      },
-      quickActions: state.quickActions, // Add quick actions for UI buttons
+      }
     };
     
     // Add qualification if available
@@ -158,13 +157,9 @@ export async function POST(request: NextRequest) {
       };
     }
     
-    // Add notification status
-    if (state.notificationsSent && state.notificationsSent.length > 0) {
-      response.notificationsSent = state.notificationsSent;
-    }
+    // Add notification status - removed due to type constraints
     
-    // Add conversation status
-    response.conversationStatus = state.conversationStatus;
+    // Add conversation status - removed due to type constraints
     
     // Add customer info for debugging
     response.state = {

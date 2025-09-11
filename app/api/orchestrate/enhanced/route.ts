@@ -93,6 +93,9 @@ export async function POST(request: NextRequest) {
           startTime: new Date(),
           lastUpdateTime: new Date(),
         },
+        next: [],
+        config: {},
+        tasks: []
       };
     }
     

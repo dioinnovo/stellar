@@ -6,7 +6,7 @@
  */
 
 import { NextRequest } from 'next/server';
-import { StreamingTextResponse } from 'ai';
+import { streamText } from 'ai';
 import { ChatOpenAI } from '@langchain/openai';
 import { HumanMessage, AIMessage, BaseMessage } from '@langchain/core/messages';
 import { masterOrchestrator } from '@/lib/orchestrator/master';
@@ -67,8 +67,9 @@ export async function POST(request: NextRequest) {
       }
     });
     
-    return new StreamingTextResponse(readableStream, {
+    return new Response(readableStream, {
       headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
         'X-Session-Id': sessionId,
         'X-Voice-Profile': voiceProfile || 'default',
         'Cache-Control': 'no-cache',

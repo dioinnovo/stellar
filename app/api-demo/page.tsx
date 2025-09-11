@@ -335,7 +335,7 @@ claim = client.claims.submit(
     metadata={"policy": "HO-2024-78432"}
 )
 
-print(f"Estimate: ${claim.estimate}")`}</pre>
+print(f"Estimate: ${'${claim.estimate}'}")`}</pre>
                 </div>
               </div>
 

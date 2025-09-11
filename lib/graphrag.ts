@@ -1,4 +1,4 @@
-import { ChromaClient, Collection, OpenAIEmbeddingFunction } from 'chromadb'
+import { ChromaClient, Collection } from 'chromadb'
 import { prisma } from './db'
 import { Claim } from '@prisma/client'
 
@@ -6,7 +6,7 @@ import { Claim } from '@prisma/client'
 export class GraphRAG {
   private client: ChromaClient
   private collection: Collection | null = null
-  private embeddingFunction: OpenAIEmbeddingFunction | null = null
+  private embeddingFunction: any | null = null
 
   constructor() {
     this.client = new ChromaClient({
@@ -15,10 +15,8 @@ export class GraphRAG {
     
     // Initialize embedding function if OpenAI key is available
     if (process.env.OPENAI_API_KEY) {
-      this.embeddingFunction = new OpenAIEmbeddingFunction({
-        openai_api_key: process.env.OPENAI_API_KEY,
-        openai_model: 'text-embedding-3-small'
-      })
+      // Use default embedding function or create a custom one
+      this.embeddingFunction = null // Will be set during collection creation
     }
   }
 

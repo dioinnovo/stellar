@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
 
     if (!validationResult.success) {
       return errorResponse(
-        `Invalid request: ${validationResult.error.errors[0].message}`,
+        `Invalid request: ${validationResult.error.issues[0].message}`,
         400
       )
     }

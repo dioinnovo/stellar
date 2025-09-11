@@ -53,7 +53,9 @@ export async function POST(request: NextRequest) {
     // Process quick actions if specified
     let enhancedUserMessage = userMessage
     if (quickAction) {
-      enhancedUserMessage = getQuickActionPrompt(quickAction, extractClaimId(userMessage))
+      const claimId = extractClaimId(userMessage)
+      const context = claimId ? { claimId } : undefined
+      enhancedUserMessage = getQuickActionPrompt(quickAction, context)
     }
 
     // Prepare messages for Azure OpenAI

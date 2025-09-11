@@ -3,11 +3,12 @@ import { prisma } from '@/lib/db'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params
     const claim = await prisma.claim.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         documents: true,
         workflows: {
@@ -46,20 +47,21 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params
     const body = await request.json()
     
     const claim = await prisma.claim.update({
-      where: { id: params.id },
+      where: { id },
       data: body
     })
 
     // Log activity
     await prisma.activity.create({
       data: {
-        claimId: params.id,
+        claimId: id,
         action: 'CLAIM_UPDATED',
         description: `Claim updated: ${Object.keys(body).join(', ')}`,
         metadata: JSON.stringify(body)
