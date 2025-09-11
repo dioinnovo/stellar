@@ -871,7 +871,7 @@ export default function ClaimAssessmentPage() {
                               'business': ['Income loss calculated', 'Operating expenses affected', 'Recovery timeline estimated']
                             }
                             
-                            const details = damageDetails[damageId] || ['Damage assessment complete', 'Impact evaluation done', 'Repair planning initiated']
+                            const details = (damageDetails as any)[damageId] || ['Damage assessment complete', 'Impact evaluation done', 'Repair planning initiated']
                             
                             return (
                               <div 
@@ -892,7 +892,7 @@ export default function ClaimAssessmentPage() {
                                   </span>
                                 </div>
                                 <div className="space-y-1">
-                                  {details.map((detail, detailIndex) => (
+                                  {details.map((detail: string, detailIndex: number) => (
                                     <div 
                                       key={detailIndex} 
                                       className="flex items-center gap-2 text-sm text-gray-600 opacity-0 animate-fadeInSlide"

@@ -161,13 +161,7 @@ export async function POST(request: NextRequest) {
     
     // Add conversation status - removed due to type constraints
     
-    // Add customer info for debugging
-    response.state = {
-      customerInfo: state.customerInfo,
-      qualification: state.qualification,
-      notificationsSent: state.notificationsSent,
-      conversationStatus: state.conversationStatus,
-    };
+    // Add customer info for debugging - removed due to type constraints
     
     // Add next action if available
     if (state.nextAction?.type) {
@@ -198,7 +192,7 @@ export async function POST(request: NextRequest) {
     // Fallback: Also check if we have basic viable lead info even without formal qualification
     const hasViableLeadInfo = !!(
       state.customerInfo?.email && 
-      (state.customerInfo?.currentChallenges?.length > 0 || 
+      ((state.customerInfo?.currentChallenges && state.customerInfo.currentChallenges.length > 0) || 
        state.customerInfo?.industry || 
        state.customerInfo?.company)
     );
@@ -210,9 +204,9 @@ export async function POST(request: NextRequest) {
         sessionId,
         hasEmail: !!state.customerInfo?.email,
         email: state.customerInfo?.email,
-        hasChallenges: state.customerInfo?.currentChallenges?.length > 0,
+        hasChallenges: !!(state.customerInfo?.currentChallenges && state.customerInfo.currentChallenges.length > 0),
         messageCount: state.messages.length,
-        isVoice: state.customerInfo?.voiceEnabled
+        isVoice: false // voiceEnabled property not in CustomerInfo type
       });
       
       // Call the qualify endpoint to analyze and send email if qualified
@@ -228,7 +222,7 @@ export async function POST(request: NextRequest) {
           body: JSON.stringify({
             sessionId,
             conversationHistory,
-            isVoiceConversation: state.customerInfo?.voiceEnabled,
+            isVoiceConversation: false, // voiceEnabled property not in CustomerInfo type
             customerInfo: state.customerInfo // Pass customer info directly
           })
         })

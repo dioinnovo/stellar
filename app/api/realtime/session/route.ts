@@ -6,7 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+// Using environment variables for OpenAI configuration instead of direct import
 import { selectVoiceModel, getVoiceModel, getBestAvailableProvider, checkProviderHealth } from '@/lib/voice/voice-config';
 
 /**

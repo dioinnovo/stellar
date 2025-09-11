@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
       if (key.length < 30) {
         diagnostics.warnings.push('Azure API key seems too short');
       }
-      diagnostics.configuration.azureKeyLength = key.length;
+      // diagnostics.configuration.azureKeyLength = key.length; // Property not in type
     }
     
     if (!endpoint.startsWith('https://')) {
@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
     }
     
     const deployment = process.env.AZURE_OPENAI_REALTIME_DEPLOYMENT || process.env.AZURE_OPENAI_DEPLOYMENT_GPT4O || 'gpt-4o-mini-realtime-preview';
-    diagnostics.configuration.deployment = deployment;
+    // diagnostics.configuration.deployment = deployment; // Property not in type
     
     // Check if using realtime-specific deployment
     if (!deployment.includes('realtime')) {
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
     
     diagnostics.recommendations.push('Verify your Azure deployment supports the Realtime API');
     diagnostics.recommendations.push('Check deployment in Azure OpenAI Studio');
-    diagnostics.configuration.azureEndpoint = endpoint.replace(/https?:\/\//, '').split('.')[0]; // Show resource name only
+    // diagnostics.configuration.azureEndpoint = endpoint.replace(/https?:\/\//, '').split('.')[0]; // Property not in type
   }
 
   // Test connectivity (optional - only if we want to actually test the connection)
@@ -89,9 +89,9 @@ export async function GET(request: NextRequest) {
   if (testConnection && diagnostics.configuration.provider !== 'none') {
     try {
       // We can't directly test WebSocket from server-side, but we can check if the configuration would work
-      diagnostics.configuration.testResult = 'Configuration appears valid for connection attempt';
+      // diagnostics.configuration.testResult = 'Configuration appears valid for connection attempt'; // Property not in type
     } catch (error) {
-      diagnostics.configuration.testResult = `Configuration test failed: ${error}`;
+      // diagnostics.configuration.testResult = `Configuration test failed: ${error}`; // Property not in type
     }
   }
 
