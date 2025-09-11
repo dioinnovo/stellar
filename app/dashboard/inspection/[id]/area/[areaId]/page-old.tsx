@@ -109,7 +109,7 @@ export default function AreaInspectionPage() {
   const audioChunksRef = useRef<Blob[]>([])
 
   // State
-  const [propertyType] = useState<'residential' | 'commercial'>('residential')
+  const [propertyType] = useState<'residential' | 'commercial'>('residential') // Would be loaded from inspection data
   const [currentArea, setCurrentArea] = useState(() => {
     const areas = INSPECTION_AREAS[propertyType]
     return areas.find(area => area.id === areaId) || areas[0]
@@ -124,10 +124,6 @@ export default function AreaInspectionPage() {
     completionStatus: 'not_started'
   })
   
-  // Navigation states
-  const [navigationMode, setNavigationMode] = useState<'cards' | 'form'>('form')
-  const [expandedAreaId, setExpandedAreaId] = useState<string | null>(areaId)
-  
   // Track completion status for all areas
   const [areasStatus, setAreasStatus] = useState<Record<string, any>>({})
   
@@ -138,11 +134,23 @@ export default function AreaInspectionPage() {
       setAreasStatus(JSON.parse(savedStatus))
     }
   }, [inspectionId])
+  
+  // Enhance areas with their status
+  const enhancedAreas = React.useMemo(() => {
+    return allAreas.map(area => ({
+      ...area,
+      ...(areasStatus[area.id] || {}),
+      status: areasStatus[area.id]?.status || 'not_started'
+    }))
+  }, [allAreas, areasStatus])
 
   const [isRecording, setIsRecording] = useState(false)
   const [recordingDuration, setRecordingDuration] = useState(0)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [selectedPhotoCategory, setSelectedPhotoCategory] = useState('Overview')
+  const [showSwipeFullscreen, setShowSwipeFullscreen] = useState(false)
+  const [navigationMode, setNavigationMode] = useState<'cards' | 'form'>('form')
+  const [expandedAreaId, setExpandedAreaId] = useState<string | null>(areaId)
 
   // Get current area position and navigation
   const allAreas = INSPECTION_AREAS[propertyType]
@@ -151,19 +159,6 @@ export default function AreaInspectionPage() {
   const isLastArea = currentIndex === allAreas.length - 1
   const nextArea = !isLastArea ? allAreas[currentIndex + 1] : null
   const prevArea = !isFirstArea ? allAreas[currentIndex - 1] : null
-
-  // Enhance areas with their status
-  const enhancedAreas = React.useMemo(() => {
-    return allAreas.map(area => ({
-      ...area,
-      ...(areasStatus[area.id] || {}),
-      status: areasStatus[area.id]?.status || 'not_started',
-      photoCount: area.id === areaId ? areaData.mediaFiles.filter(f => f.type === 'photo').length : (areasStatus[area.id]?.photoCount || 0),
-      notesCount: area.id === areaId ? (areaData.findings ? 1 : 0) : (areasStatus[area.id]?.notesCount || 0),
-      findings: area.id === areaId ? areaData.findings : (areasStatus[area.id]?.findings || ''),
-      previewImage: area.id === areaId ? areaData.mediaFiles.find(f => f.type === 'photo')?.url : areasStatus[area.id]?.previewImage
-    }))
-  }, [allAreas, areasStatus, areaId, areaData])
 
   // File upload handler
   const handleFileUpload = useCallback((files: FileList) => {
@@ -264,7 +259,7 @@ export default function AreaInspectionPage() {
   const analyzeMedia = async (mediaFile: MediaFile) => {
     setIsAnalyzing(true)
     
-    // Mock AI analysis
+    // Mock AI analysis - in production, this would call Claude Vision API
     setTimeout(() => {
       const mockInsights: AIInsight[] = [
         {
@@ -272,27 +267,46 @@ export default function AreaInspectionPage() {
           title: 'Document Water Staining',
           description: 'Visible water stains detected. Capture close-up photos of stain patterns for moisture mapping.',
           confidence: 92
+        },
+        {
+          type: 'warning', 
+          title: 'Potential Mold Risk',
+          description: 'Moisture conditions suggest possible mold growth. Check adjacent areas and document ventilation.',
+          confidence: 78
+        },
+        {
+          type: 'opportunity',
+          title: 'Historical Pattern Match',
+          description: 'Similar damage in 2021 was undercompensated by $8,500. Consider supplemental claim.',
+          confidence: 85
         }
       ]
-      
+
       setAreaData(prev => ({
         ...prev,
         aiInsights: [...prev.aiInsights, ...mockInsights]
       }))
-      
       setIsAnalyzing(false)
     }, 2000)
   }
 
   const processAudioRecording = async (mediaFile: MediaFile) => {
-    // Mock transcription
+    // Mock transcription and processing
     setTimeout(() => {
-      const transcription = "Inspector notes: Significant water damage observed on the ceiling..."
       setAreaData(prev => ({
         ...prev,
-        findings: prev.findings + '\n\n' + transcription
+        findings: prev.findings + ' [Audio transcription: Noted water damage in northeast corner with visible staining and soft flooring.]'
       }))
     }, 1500)
+  }
+
+  // Form handlers
+  const updateField = (field: keyof AreaData, value: string) => {
+    setAreaData(prev => ({
+      ...prev,
+      [field]: value,
+      completionStatus: 'in_progress'
+    }))
   }
 
   const removeMediaFile = (fileId: string) => {
@@ -302,27 +316,37 @@ export default function AreaInspectionPage() {
     }))
   }
 
+  const handleSave = async () => {
+    // Save current area data
+    console.log('Saving area data:', { areaId, areaData })
+  }
+
   const handleComplete = () => {
     // Update current area status
     setAreaData(prev => ({ ...prev, completionStatus: 'completed' }))
-    const updatedStatus = {
-      status: 'completed',
-      photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
-      notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
-      findings: areaData.findings,
-      completionPercentage: 100,
-      previewImage: areaData.mediaFiles.find(f => f.type === 'photo')?.url
-    }
-    
     setAreasStatus(prev => ({
       ...prev,
-      [areaId]: updatedStatus
+      [areaId]: {
+        status: 'completed',
+        photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
+        notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
+        findings: areaData.findings,
+        completionPercentage: 100,
+        previewImage: areaData.mediaFiles.find(f => f.type === 'photo')?.url
+      }
     }))
     
     // Save to localStorage
     localStorage.setItem(`inspection-${inspectionId}-areas`, JSON.stringify({
       ...areasStatus,
-      [areaId]: updatedStatus
+      [areaId]: {
+        status: 'completed',
+        photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
+        notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
+        findings: areaData.findings,
+        completionPercentage: 100,
+        previewImage: areaData.mediaFiles.find(f => f.type === 'photo')?.url
+      }
     }))
     
     if (nextArea) {
@@ -334,23 +358,15 @@ export default function AreaInspectionPage() {
 
   const handleSkip = () => {
     // Update current area status as skipped
-    const updatedStatus = {
-      status: 'skipped',
-      photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
-      notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
-      findings: areaData.findings,
-      completionPercentage: 0
-    }
-    
     setAreasStatus(prev => ({
       ...prev,
-      [areaId]: updatedStatus
-    }))
-    
-    // Save to localStorage
-    localStorage.setItem(`inspection-${inspectionId}-areas`, JSON.stringify({
-      ...areasStatus,
-      [areaId]: updatedStatus
+      [areaId]: {
+        status: 'skipped',
+        photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
+        notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
+        findings: areaData.findings,
+        completionPercentage: 0
+      }
     }))
     
     if (nextArea) {
@@ -383,19 +399,76 @@ export default function AreaInspectionPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Main Navigation Container */}
       <PropertyAreaSwipeEnhanced
-        areas={enhancedAreas}
-        currentAreaIndex={currentIndex}
-        onSwipeRight={handleComplete}
-        onSwipeLeft={handleSkip}
-        onAreaSelect={handleAreaSelect}
-        onNavigateBack={handleNavigateBack}
-        expandedAreaId={navigationMode === 'form' ? expandedAreaId : null}
-        className=""
-      >
-        {/* Form Content - This is rendered inside the enhanced component when expanded */}
-        <div className="px-4 py-4 pb-24">
-          <div className="space-y-4">
+                areas={allAreas.map((area, idx) => ({
+                  ...area,
+                  status: areasStatus[area.id]?.status || 
+                    (idx < currentIndex ? 'completed' : 
+                     idx === currentIndex ? 'in_progress' : 
+                     'not_started'),
+                  photoCount: areasStatus[area.id]?.photoCount || 
+                    (area.id === areaId ? areaData.mediaFiles.filter(f => f.type === 'photo').length : 0),
+                  notesCount: areasStatus[area.id]?.notesCount || 
+                    (area.id === areaId ? (areaData.findings ? 1 : 0) : 0),
+                  completionPercentage: areasStatus[area.id]?.completionPercentage || 
+                    (idx < currentIndex ? 100 : idx === currentIndex ? 50 : 0)
+                }))}
+                currentAreaIndex={currentIndex}
+                onSwipeRight={(area) => {
+                  handleComplete()
+                  setShowSwipeFullscreen(false)
+                }}
+                onSwipeLeft={(area) => {
+                  handleSkip()
+                  setShowSwipeFullscreen(false)
+                }}
+                onCardTap={(area) => {
+                  if (area.id !== areaId) {
+                    router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)
+                    setShowSwipeFullscreen(false)
+                  }
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    
+      <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between mb-2">
+            <Link 
+              href={`/dashboard/inspection/${inspectionId}/start`}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 text-sm"
+            >
+              <ArrowLeft size={18} />
+              <span className="hidden sm:inline">Back to Setup</span>
+              <span className="sm:hidden">Back</span>
+            </Link>
+            <button
+              onClick={() => setShowSwipeFullscreen(true)}
+              className="bg-[#E74C3C] text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-[#D73929] transition-colors text-sm"
+            >
+              <ArrowRight size={16} />
+              Navigate
+            </button>
+          </div>
+          <div>
+            <h1 className="text-lg sm:text-xl font-semibold text-gray-900">
+              {currentArea.name}
+            </h1>
+            <p className="text-xs sm:text-sm text-gray-600">
+              Area {currentIndex + 1} of {allAreas.length} • {currentArea.category}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="px-4 py-4 pb-24">
+        <div className="space-y-4">
             {/* Photo Upload Section */}
             <div className="bg-white rounded-xl border border-gray-200 p-4">
               <div className="flex items-center justify-between mb-3">
@@ -542,10 +615,10 @@ export default function AreaInspectionPage() {
                   </label>
                   <textarea
                     value={areaData.findings}
-                    onChange={(e) => setAreaData(prev => ({ ...prev, findings: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
+                    onChange={(e) => updateField('findings', e.target.value)}
                     rows={3}
-                    placeholder="Document visible damage, conditions, and observations..."
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm"
+                    placeholder="Document key observations..."
                   />
                 </div>
 
@@ -555,10 +628,10 @@ export default function AreaInspectionPage() {
                   </label>
                   <textarea
                     value={areaData.damageDescription}
-                    onChange={(e) => setAreaData(prev => ({ ...prev, damageDescription: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
+                    onChange={(e) => updateField('damageDescription', e.target.value)}
                     rows={3}
-                    placeholder="Describe the extent and nature of damage..."
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm"
+                    placeholder="Describe damage..."
                   />
                 </div>
 
@@ -568,62 +641,152 @@ export default function AreaInspectionPage() {
                   </label>
                   <textarea
                     value={areaData.recommendedActions}
-                    onChange={(e) => setAreaData(prev => ({ ...prev, recommendedActions: e.target.value }))}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
-                    rows={2}
-                    placeholder="Immediate repairs needed, safety concerns..."
+                    onChange={(e) => updateField('recommendedActions', e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 text-sm"
+                    placeholder="Recommended repairs..."
                   />
                 </div>
               </div>
             </div>
 
-            {/* AI Insights */}
-            {areaData.aiInsights.length > 0 && (
-              <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
-                <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                  <Brain size={18} className="text-blue-600" />
-                  AI Insights
-                </h2>
-                <div className="space-y-2">
-                  {areaData.aiInsights.map((insight, idx) => (
-                    <div key={idx} className="bg-white rounded-lg p-3">
-                      <div className="flex items-start gap-2">
-                        {insight.type === 'suggestion' && <Lightbulb size={16} className="text-yellow-500 mt-0.5" />}
-                        {insight.type === 'warning' && <AlertTriangle size={16} className="text-red-500 mt-0.5" />}
-                        <div className="flex-1">
-                          <h4 className="text-sm font-medium text-gray-900">{insight.title}</h4>
-                          <p className="text-xs text-gray-600 mt-1">{insight.description}</p>
-                          <div className="text-xs text-gray-500 mt-2">
-                            Confidence: {insight.confidence}%
+            {/* AI Analysis & Suggestions */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Brain className={`text-[#E74C3C] ${isAnalyzing ? 'animate-pulse' : ''}`} size={20} />
+                <h2 className="text-base font-semibold text-gray-900">AI Analysis</h2>
+              </div>
+
+              {isAnalyzing && (
+                <div className="animate-pulse space-y-2 mb-4">
+                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+                </div>
+              )}
+
+              <AnimatePresence>
+                {areaData.aiInsights.length > 0 && (
+                  <div className="space-y-3">
+                    {areaData.aiInsights.map((insight, idx) => (
+                      <motion.div
+                        key={idx}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`p-3 rounded-lg ${
+                          insight.type === 'suggestion' ? 'bg-blue-50 border border-blue-200' :
+                          insight.type === 'warning' ? 'bg-amber-50 border border-amber-200' :
+                          'bg-green-50 border border-green-200'
+                        }`}
+                      >
+                        <div className="flex items-start gap-2">
+                          {insight.type === 'suggestion' ? (
+                            <Lightbulb className="text-blue-600 mt-0.5 flex-shrink-0" size={16} />
+                          ) : insight.type === 'warning' ? (
+                            <AlertTriangle className="text-amber-600 mt-0.5 flex-shrink-0" size={16} />
+                          ) : (
+                            <CheckCircle className="text-green-600 mt-0.5 flex-shrink-0" size={16} />
+                          )}
+                          <div className="flex-1">
+                            <h4 className="font-medium text-xs mb-1">{insight.title}</h4>
+                            <p className="text-xs text-gray-600 mb-2">{insight.description}</p>
+                            <div className="text-xs text-gray-500">
+                              Confidence: {insight.confidence}%
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </AnimatePresence>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={handleSkip}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
-              >
-                <SkipForward size={16} />
-                <span>Skip Area</span>
-              </button>
-              <button
-                onClick={handleComplete}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#E74C3C] text-white rounded-lg text-sm font-medium hover:bg-[#D73929] transition-colors"
-              >
-                <CheckCircle size={16} />
-                <span>{isLastArea ? 'Complete' : 'Next Area'}</span>
-              </button>
+              {areaData.aiInsights.length === 0 && !isAnalyzing && (
+                <div className="text-center py-6">
+                  <Brain className="mx-auto mb-2 text-gray-300" size={36} />
+                  <p className="text-sm text-gray-500 mb-1">AI Analysis Ready</p>
+                  <p className="text-xs text-gray-400">
+                    Upload photos or add descriptions to get insights
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Mobile Action Buttons */}
+            <div className="lg:hidden bg-white rounded-xl border border-gray-200 p-4">
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={handleSkip}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                >
+                  <SkipForward size={16} />
+                  <span>Skip Area</span>
+                </button>
+                <button
+                  onClick={handleComplete}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#E74C3C] text-white rounded-lg text-sm font-medium hover:bg-[#D73929] transition-colors"
+                >
+                  <CheckCircle size={16} />
+                  <span>{isLastArea ? 'Complete' : 'Next Area'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Sidebar - Hidden on Mobile */}
+          <div className="hidden lg:block space-y-6">
+
+            {/* Swipe Navigation for Areas */}
+            <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <h3 className="font-semibold mb-4">Swipe to Navigate Areas</h3>
+              
+              <PropertyAreaSwipe
+                areas={allAreas.map((area, idx) => ({
+                  ...area,
+                  status: areasStatus[area.id]?.status || 
+                    (idx < currentIndex ? 'completed' : 
+                     idx === currentIndex ? 'in_progress' : 
+                     'not_started'),
+                  photoCount: areasStatus[area.id]?.photoCount || 
+                    (area.id === areaId ? areaData.mediaFiles.filter(f => f.type === 'photo').length : 0),
+                  notesCount: areasStatus[area.id]?.notesCount || 
+                    (area.id === areaId ? (areaData.findings ? 1 : 0) : 0),
+                  completionPercentage: areasStatus[area.id]?.completionPercentage || 
+                    (idx < currentIndex ? 100 : idx === currentIndex ? 50 : 0)
+                }))}
+                currentAreaIndex={currentIndex}
+                onSwipeRight={handleComplete}
+                onSwipeLeft={handleSkip}
+                onCardTap={(area) => {
+                  // Optional: Navigate directly to tapped area
+                  if (area.id !== areaId) {
+                    router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)
+                  }
+                }}
+                className="mb-6"
+              />
+              
+              {/* Alternative Button Controls (for accessibility) */}
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={handleSkip}
+                  className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                >
+                  <SkipForward size={16} />
+                  Skip
+                </button>
+                <button
+                  onClick={handleComplete}
+                  className="flex-1 bg-stellar-orange text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-600 transition-colors flex items-center justify-center gap-2"
+                >
+                  <CheckCircle size={16} />
+                  {isLastArea ? 'Complete' : 'Continue'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </PropertyAreaSwipeEnhanced>
-    </div>
+      </div>
+    </>
   )
 }

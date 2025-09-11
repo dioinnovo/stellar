@@ -11,7 +11,7 @@ export default function Home() {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <main className="min-h-screen bg-gradient-to-b from-white to-gray-50 overflow-x-hidden">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-200">
         <div className="container mx-auto px-6 py-4">
@@ -202,8 +202,8 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
             >
@@ -249,11 +249,11 @@ export default function Home() {
             </motion.div>
             
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               viewport={{ once: true }}
-              className="bg-gradient-to-br from-stellar-orange/10 to-stellar-orange/5 rounded-2xl p-8"
+              className="bg-gradient-to-br from-stellar-orange/10 to-stellar-orange/5 rounded-xl p-4 sm:p-6 lg:p-8"
             >
               <div className="bg-white rounded-lg p-6 shadow-lg">
                 <h3 className="text-2xl font-bold text-stellar-dark mb-4">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
 import { 
@@ -38,7 +38,11 @@ interface InspectionSummary {
     skippedAreas: number
     criticalIssues: number
     opportunities: number
-    estimatedValue: number
+    estimatedRepairCost: number
+    repairEstimate: number
+    similarReportsAverage: number
+    similarReportsRange: { min: number, max: number }
+    similarReportsCount: number
   }
   aiRecommendations: Array<{
     type: 'critical' | 'opportunity' | 'enhancement'
@@ -65,9 +69,39 @@ export default function InspectionReviewPage() {
   const [enrichmentComplete, setEnrichmentComplete] = useState(false)
   const [enrichmentProgress, setEnrichmentProgress] = useState(0)
   const [selectedTab, setSelectedTab] = useState('overview')
+  const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
+  const [inspectionData, setInspectionData] = useState<InspectionSummary | null>(null)
 
-  // Mock data - in production, this would be loaded from the inspection session
-  const inspectionSummary: InspectionSummary = {
+  // Load inspection data from localStorage and set up auto-save
+  useEffect(() => {
+    // Load saved data from localStorage
+    const savedData = localStorage.getItem(`inspection-${inspectionId}-review`)
+    if (savedData) {
+      setInspectionData(JSON.parse(savedData))
+    } else {
+      // Use default data if no saved data exists
+      setInspectionData(defaultInspectionSummary)
+    }
+  }, [inspectionId])
+
+  // Auto-save functionality
+  useEffect(() => {
+    if (inspectionData) {
+      const saveTimer = setTimeout(() => {
+        setAutoSaveStatus('saving')
+        localStorage.setItem(`inspection-${inspectionId}-review`, JSON.stringify(inspectionData))
+        setTimeout(() => {
+          setAutoSaveStatus('saved')
+          setTimeout(() => setAutoSaveStatus('idle'), 2000)
+        }, 500)
+      }, 1000) // Save after 1 second of no changes
+
+      return () => clearTimeout(saveTimer)
+    }
+  }, [inspectionData, inspectionId])
+
+  // Default data - in production, this would be loaded from the inspection session
+  const defaultInspectionSummary: InspectionSummary = {
     propertyDetails: {
       address: '1234 Ocean Drive, Miami Beach, FL 33101',
       type: 'residential',
@@ -140,7 +174,11 @@ export default function InspectionReviewPage() {
       skippedAreas: 0,
       criticalIssues: 3,
       opportunities: 2,
-      estimatedValue: 285000
+      estimatedRepairCost: 285000,
+      repairEstimate: 15170,
+      similarReportsAverage: 278500,
+      similarReportsRange: { min: 245000, max: 315000 },
+      similarReportsCount: 27
     },
     aiRecommendations: [
       {
@@ -182,10 +220,69 @@ export default function InspectionReviewPage() {
 
   const handleGenerateReport = async () => {
     setIsGeneratingReport(true)
-    // Mock report generation
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    
+    // Generate structured report data
+    const reportData = {
+      reportId: `RPT-${inspectionId}`,
+      generatedDate: new Date().toISOString(),
+      property: inspectionSummary.propertyDetails,
+      inspection: {
+        id: inspectionId,
+        completedAreas: inspectionSummary.overallInsights.completedAreas,
+        totalPhotos: inspectionSummary.overallInsights.totalPhotos,
+        totalAudioNotes: inspectionSummary.overallInsights.totalAudioNotes,
+        criticalIssues: inspectionSummary.overallInsights.criticalIssues
+      },
+      areas: inspectionSummary.areas.map(area => ({
+        ...area,
+        enrichedFindings: enrichmentComplete ? `Enhanced: ${area.findings} Additional AI analysis reveals potential hidden damage and code compliance issues.` : area.findings
+      })),
+      financialSummary: {
+        estimatedValue: inspectionSummary.overallInsights.estimatedRepairCost,
+        repairEstimate: inspectionSummary.overallInsights.repairEstimate,
+        potentialSupplemental: 52000,
+        totalRecoveryOpportunity: inspectionSummary.overallInsights.estimatedRepairCost + 52000
+      },
+      aiRecommendations: inspectionSummary.aiRecommendations,
+      historicalFindings: inspectionSummary.historicalFindings,
+      enrichmentStatus: enrichmentComplete
+    }
+    
+    // Save report data to localStorage (in production, this would be saved to database)
+    localStorage.setItem(`inspection-report-${inspectionId}`, JSON.stringify(reportData))
+    
+    // Mock processing delay
+    await new Promise(resolve => setTimeout(resolve, 2000))
     setIsGeneratingReport(false)
+    
+    // Navigate to report page
     router.push(`/dashboard/inspection/${inspectionId}/report`)
+  }
+
+  const handleDownloadReport = async () => {
+    // Generate PDF or structured JSON report
+    const reportData = {
+      reportId: `RPT-${inspectionId}`,
+      generatedDate: new Date().toISOString(),
+      property: inspectionSummary.propertyDetails,
+      areas: inspectionSummary.areas,
+      financials: {
+        estimatedValue: inspectionSummary.overallInsights.estimatedRepairCost,
+        repairEstimate: inspectionSummary.overallInsights.repairEstimate
+      },
+      enriched: enrichmentComplete
+    }
+    
+    // Create and download JSON file
+    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `inspection-report-${inspectionId}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 
   const handleEnrichInspection = async () => {
@@ -194,17 +291,28 @@ export default function InspectionReviewPage() {
     
     // Simulate AI enrichment process with multiple steps
     const enrichmentSteps = [
-      { label: 'Analyzing historical claims data', duration: 2000 },
-      { label: 'Cross-referencing building codes', duration: 1500 },
-      { label: 'Checking insurance policy updates', duration: 1800 },
-      { label: 'Reviewing government regulations', duration: 1200 },
-      { label: 'Identifying missing damages', duration: 2200 },
-      { label: 'Enhancing documentation', duration: 1300 }
+      { label: 'Analyzing historical claims data', duration: 1500 },
+      { label: 'Cross-referencing building codes', duration: 1200 },
+      { label: 'Checking insurance policy updates', duration: 1000 },
+      { label: 'Reviewing government regulations', duration: 800 },
+      { label: 'Identifying missing damages', duration: 1500 },
+      { label: 'Enhancing area descriptions', duration: 1000 },
+      { label: 'Calculating supplemental opportunities', duration: 1000 },
+      { label: 'Finalizing AI recommendations', duration: 1000 }
     ]
     
     for (let i = 0; i < enrichmentSteps.length; i++) {
       await new Promise(resolve => setTimeout(resolve, enrichmentSteps[i].duration))
       setEnrichmentProgress(((i + 1) / enrichmentSteps.length) * 100)
+    }
+    
+    // Enhance the area findings with AI
+    if (inspectionData) {
+      const enhancedData = { ...inspectionData }
+      enhancedData.areas.forEach(area => {
+        area.findings = `${area.findings} [AI Enhanced: Additional structural concerns identified. Potential code violations detected. Historical claim patterns suggest higher recovery potential.]`
+      })
+      setInspectionData(enhancedData)
     }
     
     setIsEnriching(false)
@@ -229,84 +337,116 @@ export default function InspectionReviewPage() {
     { id: 'opportunities', label: 'Opportunities', icon: TrendingUp }
   ]
 
+  // Use inspectionData if available, otherwise use default
+  const inspectionSummary = inspectionData || defaultInspectionSummary
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link 
-                href={`/dashboard/inspection`}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 cursor-pointer"
-              >
-                <ArrowLeft size={20} />
-                Back to Inspections
-              </Link>
-              <div className="w-px h-6 bg-gray-300" />
-              <div>
-                <h1 className="text-3xl font-semibold text-gray-900">
-                  Inspection Review
-                </h1>
-                <p className="text-sm text-gray-600">
-                  {inspectionSummary.propertyDetails.address}
-                </p>
+          <div className="flex flex-col gap-2">
+            {/* Back Navigation */}
+            <Link 
+              href={`/dashboard/inspection`}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 cursor-pointer w-fit"
+            >
+              <ArrowLeft size={20} />
+              Back to Inspections
+            </Link>
+            
+            {/* Title and Actions Row */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div>
+                  <h1 className="text-3xl font-semibold text-gray-900">
+                    Inspection Review
+                  </h1>
+                  <p className="text-sm text-gray-600">
+                    {inspectionSummary.propertyDetails.address}
+                  </p>
+                </div>
+                {autoSaveStatus !== 'idle' && (
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    {autoSaveStatus === 'saving' ? (
+                      <>
+                        <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle size={12} className="text-green-500" />
+                        Saved
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
-            </div>
-            <div className="hidden md:flex items-center gap-3">
-              <Link
-                href={`/dashboard/inspection/${inspectionId}/area/exterior-roof`}
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 cursor-pointer"
-              >
-                <Edit3 size={18} />
-                Edit Areas
-              </Link>
-              
-              {/* AI Enrichment Button */}
-              <button
-                onClick={handleEnrichInspection}
-                disabled={isEnriching || enrichmentComplete}
-                className={`px-6 py-2 rounded-xl font-medium transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 ${
-                  enrichmentComplete 
-                    ? 'bg-green-600 text-white' 
-                    : 'bg-stellar-orange text-white hover:bg-orange-600'
-                }`}
-              >
-                {isEnriching ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                    Enriching...
-                  </>
-                ) : enrichmentComplete ? (
-                  <>
-                    <CheckCircle size={18} />
-                    Enriched
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={18} />
-                    Enrich with AI
-                  </>
-                )}
-              </button>
+              <div className="hidden md:flex items-center gap-3">
+                <Link
+                  href={`/dashboard/inspection/${inspectionId}/area/exterior-roof`}
+                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                >
+                  <Edit3 size={18} />
+                  Edit Areas
+                </Link>
+                
+                {/* AI Enrichment Button */}
+                <button
+                  onClick={handleEnrichInspection}
+                  disabled={isEnriching || enrichmentComplete}
+                  className={`px-6 py-2 rounded-xl font-medium transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 ${
+                    enrichmentComplete 
+                      ? 'bg-green-600 text-white' 
+                      : 'bg-stellar-orange text-white hover:bg-orange-600'
+                  }`}
+                >
+                  {isEnriching ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                      Enriching...
+                    </>
+                  ) : enrichmentComplete ? (
+                    <>
+                      <CheckCircle size={18} />
+                      AI Enhanced
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles size={18} />
+                      Enrich with AI
+                    </>
+                  )}
+                </button>
 
-              <button
-                onClick={handleGenerateReport}
-                disabled={isGeneratingReport}
-                className="bg-gray-900 text-white px-6 py-2 rounded-xl hover:bg-gray-800 hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
-              >
-                {isGeneratingReport ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                    Generating...
-                  </>
-                ) : (
-                  <>
-                    <FileText size={18} />
-                    Generate Report
-                  </>
-                )}
-              </button>
+                {/* Download Report Button */}
+                <button
+                  onClick={handleDownloadReport}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 cursor-pointer"
+                >
+                  <Download size={18} />
+                  Download Report
+                </button>
+
+                {/* Send Report Button */}
+                <button
+                  onClick={handleGenerateReport}
+                  disabled={isGeneratingReport || !enrichmentComplete}
+                  className="bg-gray-900 text-white px-6 py-2 rounded-xl hover:bg-gray-800 hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+                >
+                  {isGeneratingReport ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      Send Report
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -347,12 +487,26 @@ export default function InspectionReviewPage() {
 
           <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600">Est. Value</span>
+              <div className="flex-1">
+                <span className="text-sm text-gray-600">Est. Repair Cost</span>
+                <div className="text-xs text-gray-500 mt-0.5">
+                  Based on {inspectionData?.overallInsights.similarReportsCount || 27} similar reports
+                </div>
+              </div>
               <DollarSign className="text-gray-400" size={20} />
             </div>
-            <p className="text-3xl font-bold text-green-600">
-              ${inspectionSummary.overallInsights.estimatedValue.toLocaleString()}
+            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-green-600">
+              ${(inspectionData?.overallInsights.estimatedRepairCost || 0).toLocaleString()}
             </p>
+            <div className="mt-2 text-xs text-gray-500">
+              Range: ${(inspectionData?.overallInsights.similarReportsRange?.min || 0).toLocaleString()} - ${(inspectionData?.overallInsights.similarReportsRange?.max || 0).toLocaleString()}
+            </div>
+            {autoSaveStatus === 'saved' && (
+              <div className="mt-2 text-xs text-green-600 flex items-center gap-1">
+                <CheckCircle size={12} />
+                Auto-saved
+              </div>
+            )}
           </div>
         </div>
 
@@ -378,15 +532,75 @@ export default function InspectionReviewPage() {
             </nav>
           </div>
 
-          {/* Edit Button - Mobile Only */}
-          <div className="block md:hidden border-b border-gray-200 px-3 py-3">
-            <Link
-              href={`/dashboard/inspection/${inspectionId}/area/exterior-roof`}
-              className="flex items-center justify-center gap-2 w-full py-2 px-4 bg-gray-100 text-gray-700 hover:text-gray-900 rounded-lg cursor-pointer"
-            >
-              <Edit3 size={16} />
-              Edit Areas
-            </Link>
+          {/* Action Buttons - Mobile Only */}
+          <div className="block md:hidden border-b border-gray-200 px-3 py-3 space-y-2">
+            <div className="grid grid-cols-2 gap-2">
+              <Link
+                href={`/dashboard/inspection/${inspectionId}/area/exterior-roof`}
+                className="flex items-center justify-center gap-2 py-2 px-4 bg-gray-100 text-gray-700 hover:text-gray-900 rounded-lg cursor-pointer text-sm"
+              >
+                <Edit3 size={16} />
+                Edit Areas
+              </Link>
+              
+              {/* AI Enrichment Button - Mobile */}
+              <button
+                onClick={handleEnrichInspection}
+                disabled={isEnriching || enrichmentComplete}
+                className={`py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm ${
+                  enrichmentComplete 
+                    ? 'bg-green-600 text-white' 
+                    : 'bg-stellar-orange text-white hover:bg-orange-600'
+                }`}
+              >
+                {isEnriching ? (
+                  <>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white" />
+                    <span className="hidden">Enriching</span>
+                  </>
+                ) : enrichmentComplete ? (
+                  <>
+                    <CheckCircle size={16} />
+                    <span>Enhanced</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={16} />
+                    <span>Enrich AI</span>
+                  </>
+                )}
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2">
+              {/* Download Report Button - Mobile */}
+              <button
+                onClick={handleDownloadReport}
+                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 cursor-pointer text-sm"
+              >
+                <Download size={16} />
+                Download
+              </button>
+
+              {/* Send Report Button - Mobile */}
+              <button
+                onClick={handleGenerateReport}
+                disabled={isGeneratingReport || !enrichmentComplete}
+                className="bg-gray-900 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm"
+              >
+                {isGeneratingReport ? (
+                  <>
+                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white" />
+                    <span>Sending</span>
+                  </>
+                ) : (
+                  <>
+                    <Send size={16} />
+                    <span>Send Report</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Tab Content */}
@@ -430,6 +644,94 @@ export default function InspectionReviewPage() {
                           {type}
                         </span>
                       ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Repair Estimate Breakdown - Added as requested */}
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900">Intelligent Cost Estimation</h3>
+                    <span className="px-3 py-1 bg-stellar-orange text-white text-xs rounded-full font-medium">
+                      AI Generated
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Generate accurate repair estimates with industry-standard pricing and local market data.
+                  </p>
+                  
+                  <div className="bg-white rounded-lg p-4 mb-4">
+                    <h4 className="font-semibold text-gray-900 mb-3">Repair Estimate Breakdown</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <div>
+                          <div className="font-medium text-gray-900">Roof Repair</div>
+                          <div className="text-xs text-gray-500">RFG 240 • 25 SQ</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-600">$285/SQ</div>
+                          <div className="font-semibold text-gray-900">$7,125</div>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <div>
+                          <div className="font-medium text-gray-900">Gutter Replacement</div>
+                          <div className="text-xs text-gray-500">GTR 110 • 120 LF</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-600">$12/LF</div>
+                          <div className="font-semibold text-gray-900">$1,440</div>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <div>
+                          <div className="font-medium text-gray-900">Interior Water Damage</div>
+                          <div className="text-xs text-gray-500">WTR 320 • 200 SF</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-600">$8/SF</div>
+                          <div className="font-semibold text-gray-900">$1,600</div>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <div>
+                          <div className="font-medium text-gray-900">Painting & Finishing</div>
+                          <div className="text-xs text-gray-500">PNT 450 • 300 SF</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-600">$4/SF</div>
+                          <div className="font-semibold text-gray-900">$1,200</div>
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                        <div>
+                          <div className="font-medium text-gray-900">Debris Removal</div>
+                          <div className="text-xs text-gray-500">DBR 100 • 1 Load</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-600">$450</div>
+                          <div className="font-semibold text-gray-900">$450</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Subtotal</span>
+                        <span className="font-medium text-gray-900">$11,815</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Overhead & Profit (20%)</span>
+                        <span className="font-medium text-gray-900">$2,363</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Tax (7%)</span>
+                        <span className="font-medium text-gray-900">$992</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-2 border-t border-gray-200">
+                        <span className="text-lg font-semibold text-gray-900">Total Estimate</span>
+                        <span className="text-2xl font-bold text-stellar-orange">${inspectionSummary.overallInsights.repairEstimate.toLocaleString()}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -644,7 +946,7 @@ export default function InspectionReviewPage() {
                       Combined current claim and historical recovery potential
                     </p>
                     <span className="text-green-600 font-bold text-2xl">
-                      ${(inspectionSummary.overallInsights.estimatedValue + 
+                      ${(inspectionSummary.overallInsights.estimatedRepairCost + 
                         inspectionSummary.historicalFindings.reduce((sum, f) => sum + f.potentialRecovery, 0)
                       ).toLocaleString()}
                     </span>

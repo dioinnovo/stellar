@@ -171,3 +171,82 @@
     inherits: false;
   }
 }
+
+/* Print-specific styles for formal PDF generation */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.75in;
+  }
+  
+  @page :first {
+    margin-top: 0.5in;
+  }
+  
+  /* Force page breaks */
+  .print\:page-break-before {
+    page-break-before: always;
+  }
+  
+  .print\:page-break-after {
+    page-break-after: always;
+  }
+  
+  /* Prevent breaks inside elements */
+  .print\:break-inside-avoid,
+  .print\:page-break-inside-avoid {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Remove colored backgrounds for formal look */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Formal typography */
+  body {
+    font-size: 11pt;
+    line-height: 1.5;
+    color: black !important;
+  }
+  
+  h1 {
+    font-size: 18pt;
+    margin-bottom: 12pt;
+  }
+  
+  h2 {
+    font-size: 14pt;
+    margin-bottom: 10pt;
+  }
+  
+  h3 {
+    font-size: 12pt;
+    margin-bottom: 8pt;
+  }
+  
+  /* Remove shadows and effects for clean print */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+  }
+  
+  /* Ensure links are black */
+  a {
+    color: black !important;
+    text-decoration: none !important;
+  }
+  
+  /* Table borders for print */
+  table {
+    border-collapse: collapse !important;
+  }
+  
+  th, td {
+    border: 1px solid #666 !important;
+    padding: 4pt !important;
+  }
+}

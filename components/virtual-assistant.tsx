@@ -529,7 +529,7 @@ const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "fixed bottom-6 right-6 z-50",
+          "fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50",
           "transition-all duration-300 hover:scale-110",
           "drop-shadow-2xl",
           "rounded-full bg-white dark:bg-[#2C3E50]",
@@ -549,11 +549,11 @@ const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
       {/* Chat Interface */}
       <div
         className={cn(
-          "fixed bottom-6 right-6 z-50",
+          "fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50",
           "w-96 h-[600px] max-h-[80vh]",
           // Mobile responsive styles
           "sm:w-96 sm:h-[600px] sm:right-6 sm:bottom-6 sm:rounded-[22px]",
-          "max-sm:w-[calc(100vw-24px)] max-sm:h-[500px] max-sm:right-3 max-sm:bottom-3",
+          "max-sm:w-[calc(100vw-32px)] max-sm:h-[500px] max-sm:right-4 max-sm:bottom-4",
           // Fullscreen on mobile when voice is active
           (isVoiceConnecting || isCallActive) && "max-sm:w-screen max-sm:h-screen max-sm:right-0 max-sm:bottom-0 max-sm:rounded-none",
           "bg-white dark:bg-[#2C3E50]",

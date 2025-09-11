@@ -164,6 +164,10 @@ export default function InspectionListPage() {
     return dateA.getTime() - dateB.getTime()
   })
 
+  // Get inspections that need action
+  const scheduledInspections = inspections.filter(i => i.status === 'scheduled')
+  const inProgressInspections = inspections.filter(i => i.status === 'in_progress')
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -181,6 +185,87 @@ export default function InspectionListPage() {
             <span>New Inspection</span>
           </Link>
         </div>
+
+        {/* Action Cards - Continue Inspection (Green) at top, Start Inspection (Orange) below */}
+        {(inProgressInspections.length > 0 || scheduledInspections.length > 0) && (
+          <div className="mb-6">
+            {/* Continue Inspection - Green (TOP) */}
+            {inProgressInspections.length > 0 && (
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-emerald-600 mb-3">Continue Inspection</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {inProgressInspections.slice(0, 3).map((inspection) => (
+                    <div key={inspection.id} className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 border border-emerald-200 rounded-xl p-4 hover:shadow-md transition-all">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 text-sm mb-1">{inspection.propertyAddress}</h3>
+                          <p className="text-xs text-gray-600">{inspection.clientName}</p>
+                        </div>
+                        <span className="px-2 py-1 bg-emerald-600 text-white text-xs rounded-full font-medium">
+                          {inspection.completionRate}% Complete
+                        </span>
+                      </div>
+                      <div className="mb-3">
+                        <div className="w-full bg-emerald-200 rounded-full h-2">
+                          <div 
+                            className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${inspection.completionRate}%` }}
+                          />
+                        </div>
+                      </div>
+                      <Link
+                        href={`/dashboard/inspection/${inspection.id}/continue`}
+                        className="w-full px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-semibold shadow-sm"
+                      >
+                        <ChevronRight size={16} />
+                        <span>Continue Inspection</span>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Start Inspection - Orange (BELOW) */}
+            {scheduledInspections.length > 0 && (
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900 mb-3">Start Inspection</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {scheduledInspections.slice(0, 3).map((inspection) => (
+                    <div key={inspection.id} className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200 rounded-xl p-4 hover:shadow-md transition-all">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 text-sm mb-1">{inspection.propertyAddress}</h3>
+                          <p className="text-xs text-gray-600">{inspection.clientName}</p>
+                        </div>
+                        <span className="px-2 py-1 bg-[#E74C3C] text-white text-xs rounded-full font-medium">
+                          Scheduled
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-gray-600 mb-3">
+                        <div className="flex items-center gap-1">
+                          <Calendar size={12} />
+                          <span>{inspection.scheduledDate}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock size={12} />
+                          <span>{inspection.scheduledTime}</span>
+                        </div>
+                      </div>
+                      <Link
+                        href={`/dashboard/inspection/${inspection.id}/start`}
+                        className="w-full px-4 py-2.5 bg-[#E74C3C] text-white rounded-lg hover:bg-[#D73929] transition-all duration-200 flex items-center justify-center gap-2 text-sm font-semibold shadow-sm"
+                      >
+                        <Camera size={16} />
+                        <span>Start Inspection</span>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
@@ -375,7 +460,7 @@ export default function InspectionListPage() {
                 {inspection.status === 'scheduled' && (
                   <Link
                     href={`/dashboard/inspection/${inspection.id}/start`}
-                    className="w-full px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium shadow-sm"
+                    className="w-full px-4 py-2.5 bg-[#E74C3C] text-white rounded-xl hover:bg-[#D73929] transition-all duration-200 flex items-center justify-center gap-2 text-sm font-medium shadow-sm"
                   >
                     <Camera size={16} />
                     <span>Start Inspection</span>

@@ -11,6 +11,7 @@ import {
   Globe, Shield
 } from 'lucide-react'
 import Link from 'next/link'
+import { generateInspectionPDF, downloadHTMLReport, InspectionReportData } from '@/lib/pdf/simple-report-generator'
 
 interface ReportData {
   metadata: {
@@ -481,10 +482,66 @@ export default function InspectionReportPage() {
 
   const handleDownloadPDF = async () => {
     setIsDownloading(true)
-    // Mock PDF generation with delay
-    console.log('Generating PDF report...')
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    setIsDownloading(false)
+    
+    try {
+      // Prepare data for PDF generation
+      const pdfData: InspectionReportData = {
+        metadata: {
+          reportId: reportData.metadata.reportId,
+          claimNumber: `CLM-${inspectionId}`,
+          generatedDate: reportData.metadata.generatedDate,
+          inspector: reportData.metadata.inspector,
+          property: {
+            address: reportData.metadata.property.address,
+            city: 'Miami',
+            state: 'FL',
+            zipCode: '33101',
+            type: reportData.metadata.property.type,
+            yearBuilt: reportData.metadata.property.yearBuilt,
+            owner: reportData.metadata.property.owner,
+            policyNumber: reportData.metadata.property.policyNumber
+          },
+          claimInfo: reportData.metadata.claimInfo
+        },
+        executiveSummary: reportData.executiveSummary,
+        areaFindings: reportData.areaFindings.map(area => ({
+          ...area,
+          findings: area.description,
+          damageDescription: area.description,
+          photos: [] // Would include base64 photos in production
+        })),
+        aiInsights: {
+          hiddenDamageEstimate: reportData.aiInsights.hiddenDamageEstimate,
+          codeUpgradeOpportunities: reportData.aiInsights.codeUpgradeOpportunities,
+          historicalRecovery: reportData.aiInsights.historicalRecovery,
+          marketComparison: reportData.aiInsights.marketComparison,
+          riskAssessment: reportData.aiInsights.riskAssessment
+        },
+        financialSummary: {
+          subtotal: reportData.financialSummary.currentClaimValue,
+          hiddenDamage: reportData.aiInsights.hiddenDamageEstimate,
+          codeUpgrades: reportData.aiInsights.codeUpgradeOpportunities,
+          contingency: Math.round(reportData.financialSummary.currentClaimValue * 0.1),
+          total: reportData.financialSummary.totalRecoveryOpportunity,
+          insuranceEstimate: reportData.metadata.claimInfo.initialEstimate,
+          gap: reportData.financialSummary.totalRecoveryOpportunity - reportData.metadata.claimInfo.initialEstimate
+        }
+      }
+      
+      // Generate and download report
+      // This will open a print dialog for PDF generation
+      await generateInspectionPDF(pdfData)
+      
+      // Also download as HTML for backup
+      downloadHTMLReport(pdfData)
+      
+      console.log('PDF report generated successfully')
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+      alert('Error generating PDF. Please try again.')
+    } finally {
+      setIsDownloading(false)
+    }
   }
 
 
@@ -503,7 +560,7 @@ export default function InspectionReportPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header - Non-printable */}
       <div className="bg-white border-b border-gray-200 print:hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-2 sm:gap-4">
               <Link 
@@ -572,40 +629,170 @@ export default function InspectionReportPage() {
       </div>
 
       {/* Report Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 print:px-0 print:py-0">
-        <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 print:border-0 print:rounded-none print:shadow-none">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-8 print:px-0 print:py-0">
+        {/* Professional Cover Page - Print Only */}
+        <div className="hidden print:block print:page-break-after">
+          <div className="relative h-[400px] mb-8">
+            {/* Property Image with Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-transparent">
+              <img 
+                src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1200" 
+                alt="Property" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            {/* Property Address Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+              <h1 className="text-4xl font-bold mb-2">{reportData.metadata.property.address}</h1>
+              <p className="text-xl opacity-90">Miami, FL 33101</p>
+            </div>
+          </div>
+          
+          {/* Report Title and Details */}
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">COMPREHENSIVE HOME INSPECTION REPORT</h2>
+            <div className="w-24 h-1 bg-stellar-orange mx-auto mb-8"></div>
+            
+            {/* Report Metadata Grid */}
+            <div className="grid grid-cols-2 gap-8 max-w-3xl mx-auto mb-12">
+              <div className="text-left">
+                <h3 className="font-bold text-gray-900 mb-4 text-lg">PROPERTY DETAILS</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Report Number:</span>
+                    <span className="font-medium">{reportData.metadata.reportId}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Inspection Date:</span>
+                    <span className="font-medium">{reportData.metadata.generatedDate}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Property Type:</span>
+                    <span className="font-medium capitalize">{reportData.metadata.property.type}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Year Built:</span>
+                    <span className="font-medium">{reportData.metadata.property.yearBuilt}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Square Footage:</span>
+                    <span className="font-medium">3,200 sq ft</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-left">
+                <h3 className="font-bold text-gray-900 mb-4 text-lg">INSPECTION INFORMATION</h3>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Inspector:</span>
+                    <span className="font-medium">{reportData.metadata.inspector}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">License #:</span>
+                    <span className="font-medium">FL-HI-2024-0847</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Company:</span>
+                    <span className="font-medium">Stellar Intelligence</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Phone:</span>
+                    <span className="font-medium">(305) 555-0100</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Email:</span>
+                    <span className="font-medium">inspect@stellarintel.com</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Client Information */}
+            <div className="border-t border-gray-300 pt-8 mb-12">
+              <h3 className="font-bold text-gray-900 mb-4 text-lg">CLIENT INFORMATION</h3>
+              <div className="max-w-2xl mx-auto">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Property Owner:</span>
+                    <span className="font-medium">{reportData.metadata.property.owner}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Policy Number:</span>
+                    <span className="font-medium">{reportData.metadata.property.policyNumber}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Date of Loss:</span>
+                    <span className="font-medium">{reportData.metadata.claimInfo.dateOfLoss}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Claim Type:</span>
+                    <span className="font-medium">{reportData.metadata.claimInfo.damageTypes.join(', ')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Systems Inspected */}
+            <div className="border-t border-gray-300 pt-8">
+              <h3 className="font-bold text-gray-900 mb-4 text-lg">SYSTEMS INSPECTED</h3>
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div className="text-center">
+                  <div className="font-medium text-gray-900 mb-1">Structural Systems</div>
+                  <div className="text-gray-600">Foundation, Roof, Walls</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-medium text-gray-900 mb-1">Interior Systems</div>
+                  <div className="text-gray-600">Floors, Ceilings, Kitchen</div>
+                </div>
+                <div className="text-center">
+                  <div className="font-medium text-gray-900 mb-1">Mechanical Systems</div>
+                  <div className="text-gray-600">HVAC, Electrical, Plumbing</div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Footer */}
+            <div className="absolute bottom-8 left-0 right-0 text-center text-xs text-gray-500">
+              <p>This report is prepared for the exclusive use of {reportData.metadata.property.owner}</p>
+              <p className="mt-1">© 2024 Stellar Intelligence - AI-Enhanced Property Inspection Services</p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 print:border-0 print:rounded-none print:shadow-none print:page-break-before">
           {/* Report Header */}
-          <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6">
+          <div className="p-3 sm:p-6 lg:p-8 print:p-4 border-b border-gray-200 print:border-gray-400 print:break-inside-avoid">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-6 print:mb-3">
               <div className="flex-1">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                  AI-Enhanced Property Inspection Report
+                <h1 className="text-lg sm:text-2xl lg:text-3xl print:text-2xl font-bold text-gray-900 mb-1 sm:mb-2 print:mb-1 print:text-center print:uppercase">
+                  Property Inspection Report
                 </h1>
-                <p className="text-sm sm:text-base text-gray-600">
-                  Comprehensive damage assessment with historical analysis
+                <p className="text-sm sm:text-base print:hidden text-gray-600">
+                  Comprehensive damage assessment with AI-enhanced analysis
                 </p>
               </div>
-              <div className="text-left sm:text-right flex-shrink-0">
-                <div className="flex items-center gap-2 justify-start sm:justify-end mb-2">
+              <div className="text-left sm:text-right flex-shrink-0 print:text-center">
+                <div className="flex items-center gap-2 justify-start sm:justify-end mb-2 print:hidden">
                   <span className="px-3 py-1 bg-stellar-orange/10 text-stellar-orange text-xs rounded-full flex items-center gap-1">
                     <Brain size={12} />
                     AI Enhanced
                   </span>
                 </div>
-                <div className="text-xl sm:text-2xl font-bold text-gray-900">
-                  {reportData.metadata.reportId}
+                <div className="text-xl sm:text-2xl print:text-lg font-bold text-gray-900 print:mb-1">
+                  Report #{reportData.metadata.reportId}
                 </div>
-                <div className="text-sm text-gray-600">
-                  {reportData.metadata.generatedDate}
+                <div className="text-sm print:text-xs text-gray-600">
+                  Date: {reportData.metadata.generatedDate}
                 </div>
               </div>
             </div>
 
             {/* Property Information */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Property Information</h3>
-                <div className="space-y-2 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-4 sm:gap-6 print:gap-3 print:break-inside-avoid">
+              <div className="print:border print:border-gray-300 print:p-2 print:rounded">
+                <h3 className="font-semibold text-gray-900 mb-3 print:mb-2 print:text-xs print:uppercase">Property Information</h3>
+                <div className="space-y-2 print:space-y-1 text-sm print:text-[11px]">
                   <div className="flex items-start gap-2">
                     <MapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
                     <span className="break-words">{reportData.metadata.property.address}</span>
@@ -623,9 +810,9 @@ export default function InspectionReportPage() {
                 </div>
               </div>
 
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Claim Information</h3>
-                <div className="space-y-2 text-sm">
+              <div className="print:border print:border-gray-300 print:p-2 print:rounded">
+                <h3 className="font-semibold text-gray-900 mb-3 print:mb-2 print:text-xs print:uppercase">Claim Information</h3>
+                <div className="space-y-2 print:space-y-1 text-sm print:text-[11px]">
                   <div>
                     <span className="text-gray-600">Policy:</span> {reportData.metadata.property.policyNumber}
                   </div>
@@ -643,44 +830,97 @@ export default function InspectionReportPage() {
             </div>
           </div>
 
-          {/* Executive Summary */}
-          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-6">Executive Summary</h2>
+          {/* Executive Summary - Optimized for Print */}
+          <div className="p-3 sm:p-6 lg:p-8 print:p-4 border-b border-gray-200 print:border-gray-400 print:break-inside-avoid print:page-break-inside-avoid">
+            <h2 className="text-lg sm:text-2xl print:text-xl font-bold text-gray-900 mb-3 sm:mb-6 print:mb-3 print:text-center">EXECUTIVE SUMMARY</h2>
             
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 mb-3 sm:mb-6">
-              <div className="bg-gray-50 rounded-lg sm:rounded-xl p-2 sm:p-4 print:bg-transparent print:border">
-                <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900">
+            <div className="grid grid-cols-2 lg:grid-cols-4 print:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 print:gap-2 mb-3 sm:mb-6 print:mb-3">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
+                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 print:text-center">
                   ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
                 </div>
-                <div className="text-[10px] sm:text-sm text-gray-600">Total Damage</div>
+                <div className="text-[10px] sm:text-sm print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium">Total Damage Value</div>
               </div>
-              <div className="bg-gray-50 rounded-lg sm:rounded-xl p-2 sm:p-4 print:bg-transparent print:border">
-                <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-red-600">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
+                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-red-600 print:text-gray-900 print:text-center">
                   {reportData.executiveSummary.criticalIssues}
                 </div>
-                <div className="text-[10px] sm:text-sm text-gray-600">Critical Issues</div>
+                <div className="text-[10px] sm:text-sm print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium">Critical Issues</div>
               </div>
-              <div className="bg-gray-50 rounded-lg sm:rounded-xl p-2 sm:p-4 print:bg-transparent print:border">
-                <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-green-600">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
+                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-green-600 print:text-gray-900 print:text-center">
                   {reportData.executiveSummary.confidenceScore}%
                 </div>
-                <div className="text-[10px] sm:text-sm text-gray-600">AI Confidence</div>
+                <div className="text-[10px] sm:text-sm print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium">Confidence Score</div>
               </div>
-              <div className="bg-gray-50 rounded-lg sm:rounded-xl p-2 sm:p-4 print:bg-transparent print:border">
-                <div className="text-sm sm:text-lg font-bold text-gray-900">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
+                <div className="text-sm sm:text-lg print:text-xs font-bold text-gray-900 print:text-center">
                   {reportData.executiveSummary.timelineEstimate}
                 </div>
-                <div className="text-[10px] sm:text-sm text-gray-600">Timeline</div>
+                <div className="text-[10px] sm:text-sm print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium">Repair Timeline</div>
               </div>
             </div>
 
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-3">Priority Recommendations</h3>
-              <ul className="space-y-2">
-                {reportData.executiveSummary.repairRecommendations.map((rec, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0" size={16} />
-                    <span className="text-gray-700">{rec}</span>
+            {/* Estimated Repair Costs Banner - Formal Style */}
+            <div className="bg-gray-50 border border-gray-300 rounded-xl p-4 sm:p-6 mb-6 print:mb-4 print:border-2 print:border-gray-400 print:bg-white">
+              <h3 className="font-semibold text-gray-900 mb-4 text-sm sm:text-base print:text-sm print:uppercase print:text-center">
+                ESTIMATED REPAIR COSTS
+              </h3>
+              <div className="grid grid-cols-3 gap-4 sm:gap-6">
+                <div className="text-center">
+                  <div className="text-xs sm:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                    IMMEDIATE
+                  </div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-red-600 print:text-gray-900 print:text-base">
+                    ${(reportData.executiveSummary.totalDamageValue * 0.25).toLocaleString()}
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-gray-500 mt-1 print:hidden">
+                    0-30 days
+                  </div>
+                </div>
+                <div className="text-center border-x border-gray-300 print:border-gray-400">
+                  <div className="text-xs sm:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                    SHORT-TERM
+                  </div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-orange-600 print:text-gray-900 print:text-base">
+                    ${(reportData.executiveSummary.totalDamageValue * 0.45).toLocaleString()}
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-gray-500 mt-1 print:hidden">
+                    1-3 months
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xs sm:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                    LONG-TERM
+                  </div>
+                  <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 print:text-base">
+                    ${(reportData.executiveSummary.totalDamageValue * 0.30).toLocaleString()}
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-gray-500 mt-1 print:hidden">
+                    3+ months
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 pt-3 border-t border-gray-300 print:border-gray-400">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs sm:text-sm text-gray-600 font-medium print:text-[10px] print:uppercase print:font-bold">
+                    TOTAL ESTIMATED COST
+                  </span>
+                  <span className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 print:text-base">
+                    ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="print:break-inside-avoid">
+              <h3 className="font-semibold text-gray-900 mb-3 print:mb-2 print:text-sm print:uppercase">Priority Recommendations</h3>
+              <ul className="space-y-2 print:space-y-1">
+                {reportData.executiveSummary.repairRecommendations.slice(0, 4).map((rec, idx) => (
+                  <li key={idx} className="flex items-start gap-2 print:text-xs">
+                    <span className="text-gray-700 mt-0.5 flex-shrink-0 print:font-medium">•</span>
+                    <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0 hidden print:hidden" size={16} />
+                    <span className="text-gray-700 print:text-xs print:leading-tight">{rec}</span>
                   </li>
                 ))}
               </ul>
@@ -688,32 +928,37 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Area Findings */}
-          <div className="p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Detailed Area Findings</h2>
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-6">Detailed Area Findings</h2>
             
-            <div className="space-y-6">
+            <div className="space-y-3 sm:space-y-6">
               {reportData.areaFindings.map((area, idx) => (
-                <div key={idx} className="bg-gray-50 rounded-xl p-6 print:bg-transparent print:border">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{area.area}</h3>
-                      <p className="text-sm text-gray-600">{area.category}</p>
+                <div key={idx} className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
+                  {/* Mobile-optimized header with prominent repair cost */}
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3 sm:mb-4">
+                    <div className="flex-1">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900">{area.area}</h3>
+                      <p className="text-xs sm:text-sm text-gray-600">{area.category}</p>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className={getStatusBadge(area.status, area.priority)}>
-                        {area.status} - {area.priority} priority
-                      </span>
-                      <span className="text-lg font-bold text-gray-900">
-                        ${area.estimatedCost.toLocaleString()}
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                      {/* Repair Estimate - Prominently displayed */}
+                      <div className="bg-stellar-orange text-white px-3 py-1.5 rounded-lg order-first sm:order-last">
+                        <span className="text-xs font-medium block sm:inline">Repair Estimate:</span>
+                        <span className="text-base sm:text-lg font-bold sm:ml-1">
+                          ${area.estimatedCost.toLocaleString()}
+                        </span>
+                      </div>
+                      <span className={`${getStatusBadge(area.status, area.priority)} text-xs sm:text-sm`}>
+                        {area.status} - {area.priority}
                       </span>
                     </div>
                   </div>
                   
-                  <p className="text-gray-700 mb-4">{area.description}</p>
+                  <p className="text-xs sm:text-base text-gray-700 mb-3 sm:mb-4">{area.description}</p>
                   
                   {/* Technical Findings */}
                   {area.technicalFindings && (
-                    <div className="bg-blue-50 rounded-lg p-4 mb-4">
+                    <div className="bg-blue-50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
                         <Brain size={16} className="text-blue-600" />
                         Technical Analysis
@@ -731,7 +976,7 @@ export default function InspectionReportPage() {
 
                   {/* Material Specifications */}
                   {area.materialSpecs && (
-                    <div className="bg-green-50 rounded-lg p-4 mb-4">
+                    <div className="bg-green-50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
                         <Building2 size={16} className="text-green-600" />
                         Material Specifications
@@ -749,7 +994,7 @@ export default function InspectionReportPage() {
 
                   {/* Environmental Concerns */}
                   {area.environmentalConcerns && (
-                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-amber-800 mb-3 flex items-center gap-2">
                         <AlertTriangle size={16} className="text-amber-600" />
                         Environmental Assessment
@@ -767,7 +1012,7 @@ export default function InspectionReportPage() {
 
                   {/* Safety Hazards */}
                   {area.safetyHazards && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-red-800 mb-3 flex items-center gap-2">
                         <AlertTriangle size={16} className="text-red-600" />
                         Critical Safety Hazards
@@ -785,7 +1030,7 @@ export default function InspectionReportPage() {
 
                   {/* Appliances Affected */}
                   {area.appliancesAffected && (
-                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                    <div className="bg-gray-50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
                       <h4 className="font-medium text-gray-900 mb-3">Affected Equipment & Appliances</h4>
                       <ul className="space-y-1 text-sm">
                         {area.appliancesAffected.map((appliance, idx) => (
@@ -821,11 +1066,11 @@ export default function InspectionReportPage() {
           </div>
 
           {/* AI Insights */}
-          <div className="p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">AI-Enhanced Analysis</h2>
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-6">AI-Enhanced Analysis</h2>
             
-            <div className="space-y-6">
-              <div className="bg-blue-50 rounded-xl p-6 print:bg-transparent print:border">
+            <div className="space-y-3 sm:space-y-6">
+              <div className="bg-blue-50 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
                 <div className="flex items-center gap-3 mb-4">
                   <Brain className="text-blue-600" size={24} />
                   <h3 className="text-lg font-semibold text-gray-900">Hidden Damage Assessment</h3>
@@ -848,7 +1093,7 @@ export default function InspectionReportPage() {
                 </div>
               </div>
 
-              <div className="bg-amber-50 rounded-xl p-6 print:bg-transparent print:border">
+              <div className="bg-amber-50 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
                 <div className="flex items-center gap-3 mb-4">
                   <AlertTriangle className="text-amber-600" size={24} />
                   <h3 className="text-lg font-semibold text-gray-900">Risk Assessment</h3>
@@ -866,7 +1111,7 @@ export default function InspectionReportPage() {
           </div>
 
           {/* AI Intelligence & Predictive Analytics */}
-          <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
               <Brain className="text-stellar-orange" size={28} />
               AI Intelligence & Predictive Analytics
@@ -957,7 +1202,7 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Environmental & Risk Assessment */}
-          <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
               <Globe size={28} className="text-green-600" />
               Environmental & Risk Assessment
@@ -1003,7 +1248,7 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Claims Intelligence & Strategy */}
-          <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
               <Target size={28} className="text-purple-600" />
               Claims Intelligence & Strategy
@@ -1057,7 +1302,7 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Quality Assurance Metrics */}
-          <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
               <Award size={28} className="text-green-600" />
               Quality Assurance & Compliance Metrics
@@ -1109,7 +1354,7 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Comprehensive Financial Analysis */}
-          <div className="p-4 sm:p-6 lg:p-8">
+          <div className="p-3 sm:p-6 lg:p-8">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
               <DollarSign className="text-green-600" size={28} />
               Comprehensive Financial Analysis
@@ -1339,7 +1584,7 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Hidden Damage Intelligence */}
-          <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Hidden Damage Analysis & Discovery</h2>
               
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
@@ -1422,7 +1667,7 @@ export default function InspectionReportPage() {
             </div>
 
             {/* Market Intelligence & Comparable Analysis */}
-            <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+            <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Market Intelligence & Settlement Analysis</h2>
               
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -1530,7 +1775,7 @@ export default function InspectionReportPage() {
             </div>
 
             {/* Historical Claims Recovery */}
-            <div className="p-4 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
+            <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Historical Claims Recovery Analysis</h2>
               
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
@@ -1546,51 +1791,130 @@ export default function InspectionReportPage() {
               <div className="space-y-6">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Previous Claims Analysis</h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full border border-gray-200 rounded-lg">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Date</th>
-                          <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Type</th>
-                          <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">Original Payout</th>
-                          <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">Current Value</th>
-                          <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">Underpayment</th>
-                          <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200">
-                        <tr>
-                          <td className="px-4 py-3 text-sm text-gray-900">2022-09-28</td>
-                          <td className="px-4 py-3 text-sm text-gray-600">Hurricane Ian</td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-900">$45,000</td>
-                          <td className="px-4 py-3 text-sm text-right font-medium text-blue-600">$68,000</td>
-                          <td className="px-4 py-3 text-sm text-right font-bold text-red-600">$23,000</td>
-                          <td className="px-4 py-3 text-center">
-                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="px-4 py-3 text-sm text-gray-900">2021-07-15</td>
-                          <td className="px-4 py-3 text-sm text-gray-600">Water Damage</td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-900">$8,500</td>
-                          <td className="px-4 py-3 text-sm text-right font-medium text-blue-600">$15,000</td>
-                          <td className="px-4 py-3 text-sm text-right font-bold text-red-600">$6,500</td>
-                          <td className="px-4 py-3 text-center">
-                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="px-4 py-3 text-sm text-gray-900">2020-03-10</td>
-                          <td className="px-4 py-3 text-sm text-gray-600">Wind Damage</td>
-                          <td className="px-4 py-3 text-sm text-right text-gray-900">$12,000</td>
-                          <td className="px-4 py-3 text-sm text-right font-medium text-blue-600">$22,000</td>
-                          <td className="px-4 py-3 text-sm text-right font-bold text-red-600">$10,000</td>
-                          <td className="px-4 py-3 text-center">
-                            <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Time Sensitive</span>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                  
+                  {/* Mobile-optimized card view for small screens */}
+                  <div className="block sm:hidden space-y-4">
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">2022-09-28</div>
+                          <div className="text-sm text-gray-600">Hurricane Ian</div>
+                        </div>
+                        <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
+                      </div>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Original:</span>
+                          <span className="font-medium">$45,000</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Current:</span>
+                          <span className="font-medium text-blue-600">$68,000</span>
+                        </div>
+                        <div className="flex justify-between pt-2 border-t border-gray-100">
+                          <span className="text-gray-600">Underpayment:</span>
+                          <span className="font-bold text-red-600">$23,000</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">2021-07-15</div>
+                          <div className="text-sm text-gray-600">Water Damage</div>
+                        </div>
+                        <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
+                      </div>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Original:</span>
+                          <span className="font-medium">$8,500</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Current:</span>
+                          <span className="font-medium text-blue-600">$15,000</span>
+                        </div>
+                        <div className="flex justify-between pt-2 border-t border-gray-100">
+                          <span className="text-gray-600">Underpayment:</span>
+                          <span className="font-bold text-red-600">$6,500</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">2020-03-10</div>
+                          <div className="text-sm text-gray-600">Wind Damage</div>
+                        </div>
+                        <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Time Sensitive</span>
+                      </div>
+                      <div className="space-y-1 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Original:</span>
+                          <span className="font-medium">$12,000</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Current:</span>
+                          <span className="font-medium text-blue-600">$22,000</span>
+                        </div>
+                        <div className="flex justify-between pt-2 border-t border-gray-100">
+                          <span className="text-gray-600">Underpayment:</span>
+                          <span className="font-bold text-red-600">$10,000</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Desktop table view - hidden on mobile */}
+                  <div className="hidden sm:block overflow-x-auto -mx-4 sm:mx-0">
+                    <div className="inline-block min-w-full align-middle">
+                      <table className="min-w-full border border-gray-200 rounded-lg">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 whitespace-nowrap">Date</th>
+                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 whitespace-nowrap">Type</th>
+                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 whitespace-nowrap">Original Payout</th>
+                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 whitespace-nowrap">Current Value</th>
+                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 whitespace-nowrap">Underpayment</th>
+                            <th className="px-4 py-3 text-center text-sm font-medium text-gray-700 whitespace-nowrap">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 bg-white">
+                          <tr>
+                            <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">2022-09-28</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">Hurricane Ian</td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-900 whitespace-nowrap">$45,000</td>
+                            <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$68,000</td>
+                            <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$23,000</td>
+                            <td className="px-4 py-3 text-center whitespace-nowrap">
+                              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">2021-07-15</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">Water Damage</td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-900 whitespace-nowrap">$8,500</td>
+                            <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$15,000</td>
+                            <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$6,500</td>
+                            <td className="px-4 py-3 text-center whitespace-nowrap">
+                              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">2020-03-10</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">Wind Damage</td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-900 whitespace-nowrap">$12,000</td>
+                            <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$22,000</td>
+                            <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$10,000</td>
+                            <td className="px-4 py-3 text-center whitespace-nowrap">
+                              <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Time Sensitive</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
 
