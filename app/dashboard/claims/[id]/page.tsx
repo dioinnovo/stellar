@@ -98,11 +98,11 @@ export default function ClaimDetailPage() {
   }
 
   const tabs = [
-    { id: 'overview', label: 'Overview', mobileLabel: 'Info', icon: FileText },
-    { id: 'assessment', label: 'AI Analysis', mobileLabel: 'AI', icon: Shield },
-    { id: 'inspection', label: 'Photos', mobileLabel: 'Photos', icon: Camera },
-    { id: 'documents', label: 'Documents', mobileLabel: 'Docs', icon: FileSearch },
-    { id: 'settlement', label: 'Settlement', mobileLabel: 'Pay', icon: DollarSign }
+    { id: 'overview', label: 'Overview', icon: FileText },
+    { id: 'assessment', label: 'AI Analysis', icon: Shield },
+    { id: 'inspection', label: 'Photos', icon: Camera },
+    { id: 'documents', label: 'Documents', icon: FileSearch },
+    { id: 'settlement', label: 'Settlement', icon: DollarSign }
   ]
 
   const getStatusColor = (status: string) => {
@@ -226,25 +226,48 @@ export default function ClaimDetailPage() {
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs - Mobile Optimized */}
       <div className="bg-white rounded-xl shadow-sm">
         <div className="border-b border-gray-200">
-          <div className="flex gap-0 overflow-x-auto px-0">
+          {/* Mobile/Tablet: Horizontal scrollable tabs */}
+          <div className="sm:hidden">
+            <div className="flex overflow-x-auto scrollbar-hide">
+              {tabs.map((tab) => {
+                const Icon = tab.icon
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex flex-col items-center gap-1 py-3 px-4 border-b-2 transition-all whitespace-nowrap min-w-[80px] ${
+                      activeTab === tab.id
+                        ? 'border-stellar-orange text-stellar-orange bg-orange-50'
+                        : 'border-transparent text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    <Icon size={20} />
+                    <span className="text-xs font-medium">{tab.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Desktop: Full width tabs */}
+          <div className="hidden sm:flex">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex flex-col sm:flex-row items-center gap-0.5 sm:gap-2 py-2 sm:py-3 px-3 sm:px-4 border-b-2 transition whitespace-nowrap cursor-pointer flex-1 sm:flex-initial min-w-0 ${
+                  className={`flex items-center gap-2 py-3 px-6 border-b-2 transition-all flex-1 justify-center ${
                     activeTab === tab.id
-                      ? 'border-stellar-orange text-stellar-orange bg-orange-50 sm:bg-transparent'
+                      ? 'border-stellar-orange text-stellar-orange'
                       : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >
-                  <Icon size={18} className="sm:w-[18px] sm:h-[18px]" />
-                  <span className="text-xs sm:text-base font-medium hidden sm:inline">{tab.label}</span>
-                  <span className="text-xs font-medium sm:hidden">{tab.mobileLabel}</span>
+                  <Icon size={18} />
+                  <span className="text-base font-medium">{tab.label}</span>
                 </button>
               )
             })}
@@ -330,7 +353,7 @@ export default function ClaimDetailPage() {
                   <Briefcase className="w-5 h-5" />
                   Insurance & Damage Details
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-sm text-gray-500">Carrier</p>
                     <p className="font-medium">{claim.insurance.carrier}</p>

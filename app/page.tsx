@@ -289,16 +289,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Claim Review & Fraud Detection Section */}
+      {/* Intelligent Claim Maximization Section */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center text-stellar-dark mb-4">
-            Intelligent Claim Review & Fraud Detection
+            Maximize Every Claim with AI Intelligence
           </h2>
           <p className="text-xl text-center text-gray-600 mb-12 max-w-3xl mx-auto">
-            Protect your bottom line while ensuring fair and consistent settlements for legitimate claims
+            Never leave money on the table. Our AI ensures every legitimate damage is documented and valued correctly
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -307,21 +307,21 @@ export default function Home() {
               viewport={{ once: true }}
               className="bg-white rounded-xl p-8 shadow-lg"
             >
-              <AlertTriangle className="text-red-500 mb-4" size={40} />
+              <TrendingUp className="text-green-500 mb-4" size={40} />
               <h3 className="text-2xl font-bold text-stellar-dark mb-4">
-                AI-Powered Fraud Detection
+                AI-Powered Claim Optimization
               </h3>
               <p className="text-gray-600 mb-6">
-                Detect potential errors or fraud with AI-driven claim review that analyzes patterns, 
-                inconsistencies, and anomalies across multiple data points.
+                Leverage pattern recognition and historical data to identify every covered damage
+                and ensure maximum legitimate settlement values.
               </p>
               <div className="space-y-3">
                 {[
-                  'Pattern recognition across historical claims',
-                  'Image authenticity verification',
-                  'Damage consistency analysis',
-                  'Network fraud detection',
-                  'Real-time risk scoring'
+                  'Pattern recognition finds overlooked damages',
+                  'Historical settlement comparisons',
+                  'Damage consistency verification',
+                  'Policy coverage optimization',
+                  'Standardized valuation guidelines'
                 ].map((feature, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <CheckCircle2 className="text-green-500" size={20} />

@@ -90,6 +90,16 @@
     color: rgb(231 76 60);
   }
   
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+
   /* Custom scrollbar styles for ChatGPT prompt */
   .custom-scrollbar {
     scrollbar-width: thin;
