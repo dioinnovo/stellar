@@ -98,12 +98,11 @@ export default function ClaimDetailPage() {
   }
 
   const tabs = [
-    { id: 'overview', label: 'Overview', icon: FileText },
-    { id: 'assessment', label: 'Assessment', icon: Shield },
-    { id: 'inspection', label: 'Inspection', icon: Camera },
-    { id: 'history', label: 'History', icon: History },
-    { id: 'documents', label: 'Documents', icon: FileSearch },
-    { id: 'settlement', label: 'Settlement', icon: DollarSign }
+    { id: 'overview', label: 'Overview', mobileLabel: 'Info', icon: FileText },
+    { id: 'assessment', label: 'AI Analysis', mobileLabel: 'AI', icon: Shield },
+    { id: 'inspection', label: 'Photos', mobileLabel: 'Photos', icon: Camera },
+    { id: 'documents', label: 'Documents', mobileLabel: 'Docs', icon: FileSearch },
+    { id: 'settlement', label: 'Settlement', mobileLabel: 'Pay', icon: DollarSign }
   ]
 
   const getStatusColor = (status: string) => {
@@ -230,22 +229,22 @@ export default function ClaimDetailPage() {
       {/* Tabs */}
       <div className="bg-white rounded-xl shadow-sm">
         <div className="border-b border-gray-200">
-          <div className="flex gap-1 overflow-x-auto px-2 sm:px-4">
+          <div className="flex gap-0 overflow-x-auto px-0">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 py-3 px-3 border-b-2 transition whitespace-nowrap cursor-pointer text-sm sm:text-base ${
+                  className={`flex flex-col sm:flex-row items-center gap-0.5 sm:gap-2 py-2 sm:py-3 px-3 sm:px-4 border-b-2 transition whitespace-nowrap cursor-pointer flex-1 sm:flex-initial min-w-0 ${
                     activeTab === tab.id
-                      ? 'border-stellar-orange text-stellar-orange'
-                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                      ? 'border-stellar-orange text-stellar-orange bg-orange-50 sm:bg-transparent'
+                      : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                   }`}
                 >
-                  <Icon size={16} className="sm:w-[18px] sm:h-[18px]" />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                  <span className="sm:hidden">{tab.label.substring(0, 3)}</span>
+                  <Icon size={18} className="sm:w-[18px] sm:h-[18px]" />
+                  <span className="text-xs sm:text-base font-medium hidden sm:inline">{tab.label}</span>
+                  <span className="text-xs font-medium sm:hidden">{tab.mobileLabel}</span>
                 </button>
               )
             })}
