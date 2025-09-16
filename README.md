@@ -1,457 +1,359 @@
-# Stellar Intelligence Platform
+# 🏠 Stellar Intelligence Platform - AI Home Inspection System
 
-## 🚀 Overview
+> **Quick Start**: Deploy and run the complete AI-powered home inspection platform in under 10 minutes
 
-Stellar Intelligence Platform is an AI-powered claims advocacy system that helps policyholders maximize their legitimate insurance claims. We analyze submitted claims to ensure fair settlements and protect policyholders from being undervalued by insurance companies. Our platform transforms the claims experience with instant assessment, optimal recovery strategies, and intelligent claim optimization.
+[![Next.js](https://img.shields.io/badge/Next.js-15.5.2-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-green?style=flat&logo=node.js)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 
-## 🎯 Purpose & Value Proposition
+## 🚀 Quick Deploy (Virtual Machine Ready)
 
-### For Policyholders
-- **Maximize Claim Value**: AI analysis ensures you receive fair compensation
-- **Expert Advocacy**: Professional claim assessment and documentation
-- **Faster Resolution**: From weeks to days with intelligent automation
-- **Transparent Process**: Understand your claim's true value and potential
-- **Protection from Underpayment**: Don't let insurers take advantage
+### Prerequisites for VM Deployment
+- **Linux VM** (Ubuntu 20.04+ recommended) with 4GB+ RAM
+- **SSH access** to your virtual machine
+- **Domain/IP** for external access (optional)
 
-### Key Differentiators
-- Empowering policyholders to maximize legitimate claims
-- Focus on property insurance only (commercial & residential)
-- End-to-end workflow automation from initial assessment to settlement
-- GraphRAG-powered context enrichment for optimal claim strategies
+### 1. VM Setup (Ubuntu/Debian)
 
-## 🛠 Tech Stack
+```bash
+# Update system packages
+sudo apt update && sudo apt upgrade -y
 
-### Frontend
-- **Next.js 15.5.2** - Latest App Router for full-stack capabilities
-- **React 19.1.1** - Latest React with improved performance
-- **Tailwind CSS 4.1.13** - New v4 syntax with enhanced features
-- **Framer Motion** - Smooth animations and transitions
-- **Recharts** - Data visualization for analytics
-- **Lucide Icons** - Modern icon library
+# Install Node.js 20 LTS
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
 
-### Backend
-- **Next.js API Routes** - Serverless API endpoints
-- **Prisma ORM** - Type-safe database access
-- **SQLite** - Development database (PostgreSQL for production)
-- **Zod** - Runtime type validation
+# Install Git
+sudo apt install git -y
 
-### AI & Processing
-- **LangChain** - AI orchestration and chains
-- **ChromaDB** - Vector database for similarity search
-- **OpenAI/Anthropic APIs** - LLM integration
-- **PDF.js** - Document processing
+# Verify installations
+node --version    # Should show v20.x.x
+npm --version     # Should show 10.x.x
+git --version     # Should show git version 2.x.x
+```
 
-### Infrastructure
-- **Resend** - Email notifications
-- **Socket.io** - Real-time updates (planned)
-- **Multer** - File upload handling
+### 2. Clone and Setup Application
+
+```bash
+# Clone from Azure DevOps repository
+git clone https://dev.azure.com/Innovoco/Innovoco%20-%20Infrastructure%20and%20Internal%20Development/_git/AI-Stellar-HomeInspection
+
+# Navigate to project
+cd AI-Stellar-HomeInspection
+
+# Install dependencies
+npm install
+
+# Setup database
+npx prisma generate
+npx prisma migrate dev --name init
+
+# Start the application
+npm run dev
+```
+
+### 3. Access the Application
+
+**Local Access:**
+- Open browser: `http://localhost:3002`
+- Application automatically loads the Schedule Dashboard
+
+**Remote Access (VM with public IP):**
+```bash
+# Allow port 3002 through firewall
+sudo ufw allow 3002
+
+# Start with host binding for external access
+npm run dev -- --hostname 0.0.0.0
+```
+- Access via: `http://YOUR_VM_IP:3002`
+
+## 🎯 What You Get Out of the Box
+
+### Core Features Available Immediately:
+- **📅 Schedule Dashboard** - Manage inspection appointments
+- **🏠 Property Inspection Workflow** - Complete inspection process
+- **📋 Claims Management** - Track and manage claims
+- **📊 Reports & Analytics** - Generate detailed reports
+- **🤖 AI Assistant** - Voice and text interaction
+- **📧 Email Notifications** - Automated communication
+
+### Pre-configured Integrations:
+- ✅ **Azure OpenAI** - GPT-4 powered analysis
+- ✅ **Voice Chat** - Real-time voice interaction
+- ✅ **Email Service** - Automated notifications via Resend
+- ✅ **Google Maps** - Address autocomplete and mapping
+- ✅ **PDF Generation** - Automated report creation
+- ✅ **Database** - SQLite with Prisma ORM
+
+## 🛠️ Production Deployment
+
+### Docker Deployment (Recommended for Production)
+
+```bash
+# Create Dockerfile (if not exists)
+cat > Dockerfile << 'EOF'
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+EXPOSE 3002
+CMD ["npm", "start"]
+EOF
+
+# Build and run with Docker
+docker build -t stellar-app .
+docker run -d -p 3002:3002 --name stellar-app stellar-app
+```
+
+### PM2 Process Manager (Alternative)
+
+```bash
+# Install PM2 globally
+npm install -g pm2
+
+# Build for production
+npm run build
+
+# Start with PM2
+pm2 start npm --name "stellar-app" -- start
+
+# Setup auto-restart on boot
+pm2 startup
+pm2 save
+```
+
+### Nginx Reverse Proxy (Optional)
+
+```bash
+# Install Nginx
+sudo apt install nginx -y
+
+# Create Nginx configuration
+sudo tee /etc/nginx/sites-available/stellar << 'EOF'
+server {
+    listen 80;
+    server_name your-domain.com;  # Replace with your domain
+
+    location / {
+        proxy_pass http://localhost:3002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+EOF
+
+# Enable the site
+sudo ln -s /etc/nginx/sites-available/stellar /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
 
 ## 📁 Project Structure
 
 ```
-stellar/
-├── app/                    # Next.js App Router
-│   ├── api/               # API endpoints
-│   │   ├── claims/        # Claims submission & management
-│   │   ├── admin/         # Admin dashboard endpoints
-│   │   └── workflows/     # Workflow automation
-│   ├── admin/             # Admin dashboard UI
-│   ├── demo/              # Interactive demo
-│   ├── claims/[id]/       # Individual claim details
-│   └── page.tsx           # Landing page
-├── lib/                   # Utility functions
-│   ├── db.ts             # Prisma client
-│   ├── email.ts          # Email service
-│   ├── workflow.ts       # Workflow engine
-│   └── graphrag.ts       # Knowledge graph (planned)
-├── prisma/               
-│   └── schema.prisma     # Database schema
-└── components/           # Reusable React components
+AI-Stellar-HomeInspection/
+├── app/                          # Next.js App Router
+│   ├── dashboard/                # Main application dashboards
+│   │   ├── inspection/           # Inspection management
+│   │   ├── claims/               # Claims processing
+│   │   └── reports/              # Analytics and reports
+│   ├── api/                      # API endpoints
+│   └── page.tsx                  # Auto-redirects to dashboard
+├── components/                   # Reusable UI components
+├── lib/                          # Utilities and integrations
+├── docs/                         # Documentation
+│   └── INSTALLATION.md           # Detailed setup guide
+├── prisma/                       # Database schema and migrations
+└── .env.local                    # Pre-configured environment
 ```
 
-## 🔄 Workflow Automation
+## 🔧 Configuration
 
-### Claim Submission Workflow
-1. **Form Submission** → Triggers automated workflow
-2. **Triage** → AI assigns priority based on severity
-3. **Classification** → AI analyzes damage type with confidence scores
-4. **Estimation** → Generates preliminary estimate
-5. **Notification** → Sends email with estimate to insured
-6. **CRM Integration** → Creates lead for follow-up
+### Environment Variables (Pre-configured)
 
-### Database Schema
-- **Claims** - Core claim data with AI scores
-- **Documents** - File uploads and attachments
-- **Workflows** - Automation state tracking
-- **Leads** - CRM integration
-- **Notifications** - Email queue and history
-- **Enrichments** - GraphRAG context (planned)
-- **Activities** - Complete audit trail
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Before installing the Stellar Intelligence Platform, ensure you have the following installed on your system:
-
-- **Node.js 20.x or higher** (LTS recommended)
-  - Download from [nodejs.org](https://nodejs.org/)
-  - Verify installation: `node --version` and `npm --version`
-- **Git** (for cloning the repository)
-  - Download from [git-scm.com](https://git-scm.com/)
-  - Verify installation: `git --version`
-- **Text Editor** (VS Code recommended)
-  - Download from [code.visualstudio.com](https://code.visualstudio.com/)
-
-### Step-by-Step Installation
-
-#### 1. Clone the Repository
-
-```bash
-# Clone the repository
-git clone https://dev.azure.com/Innovoco/Innovoco%20-%20Infrastructure%20and%20Internal%20Development/_git/AI-Stellar-HomeInspection
-
-# Navigate to the project directory
-cd AI-Stellar-HomeInspection
-```
-
-#### 2. Install Dependencies
-
-```bash
-# Install all project dependencies (this may take 2-3 minutes)
-npm install
-
-# If you encounter permission errors on macOS/Linux, try:
-sudo npm install
-
-# Alternative: Use yarn if you prefer
-# yarn install
-```
-
-#### 3. Set Up Environment Variables
-
-```bash
-# Create environment file from the existing template
-cp .env.local .env.local.backup
-```
-
-**Important**: The application comes with a pre-configured `.env.local` file that includes:
-- Azure OpenAI integration
-- Voice chat capabilities
-- Email services
-- Google Maps integration
-
-**For basic setup**, you can use the existing configuration as-is. The app will run in demo mode.
-
-**For production setup**, update these key variables in `.env.local`:
+The application comes with a ready-to-use `.env.local` file containing:
 
 ```env
-# Change to production URL when deploying
-NEXTAUTH_URL=http://localhost:3002
+# Azure OpenAI (Ready to use)
+AZURE_OPENAI_ENDPOINT=configured
+AZURE_OPENAI_KEY=configured
 
-# Update to false for production
-NEXT_PUBLIC_DEMO_MODE=false
+# Email Service (Ready to use)
+RESEND_API_KEY=configured
+RESEND_FROM_EMAIL=claims@stellaradjusting.com
 
-# Database (SQLite by default, PostgreSQL for production)
+# Database (SQLite - ready for development)
 DATABASE_URL="file:./dev.db"
 
-# Optional: Add your own API keys for enhanced features
-ANTHROPIC_API_KEY=your_anthropic_key_here
-OPENAI_API_KEY=your_openai_key_here
+# Application Settings
+NEXT_PUBLIC_DEMO_MODE=false
+NODE_ENV=development
 ```
 
-#### 4. Initialize the Database
+### For Production - Update These:
 
 ```bash
-# Generate Prisma client (required for database operations)
-npx prisma generate
+# Edit environment file
+nano .env.local
 
-# Create and migrate database schema
-npx prisma migrate dev --name init
-
-# Optional: Seed database with demo data
-npx prisma db seed
+# Update these values:
+NODE_ENV=production
+NEXTAUTH_URL=https://your-domain.com
+NEXT_PUBLIC_DEMO_MODE=false
 ```
 
-#### 5. Start the Development Server
+## 🧪 Testing the Deployment
 
+### 1. Application Health Check
 ```bash
-# Start the development server
-npm run dev
-
-# Alternative: Use turbo mode for faster development
-npm run dev:turbo
+# Test if application is running
+curl http://localhost:3002/api/health
+# Expected: {"status":"ok","timestamp":"..."}
 ```
 
-#### 6. Verify Installation
-
-1. **Open your browser** and navigate to: `http://localhost:3002`
-2. **You should see** the Stellar Intelligence dashboard automatically load
-3. **Test the application** by:
-   - Navigating through different sections (Schedule, Claims, Reports)
-   - Creating a new inspection
-   - Viewing existing claims
-
-### 🚀 Quick Start Commands
-
+### 2. Database Connection
 ```bash
-# Complete setup in one go
-git clone https://dev.azure.com/Innovoco/Innovoco%20-%20Infrastructure%20and%20Internal%20Development/_git/AI-Stellar-HomeInspection
-cd AI-Stellar-HomeInspection
-npm install
-npx prisma generate
-npx prisma migrate dev --name init
-npm run dev
+# Open Prisma Studio to view data
+npx prisma studio
+# Opens http://localhost:5555 with database interface
 ```
 
-### 🔧 Available Scripts
+### 3. Feature Testing
+- **Schedule Dashboard**: Create and manage inspections
+- **Claims Processing**: Submit and track claims
+- **AI Assistant**: Test voice and text interactions
+- **Report Generation**: Generate and download PDF reports
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server on port 3002 |
-| `npm run dev:turbo` | Start development server with Turbo mode |
-| `npm run build` | Build the application for production |
-| `npm start` | Start the production server |
-| `npm run lint` | Run ESLint to check code quality |
+## 🐛 Quick Troubleshooting
 
-### 🐛 Troubleshooting
-
-#### Common Issues and Solutions
-
-**1. Port Already in Use**
+### Application Won't Start
 ```bash
-# If port 3002 is busy, the app will automatically use 3001, 3003, etc.
-# Check the terminal output for the actual port being used
-```
+# Check Node.js version
+node --version  # Must be 20+
 
-**2. Node Version Compatibility**
-```bash
-# Check your Node.js version
-node --version
-
-# If you have an older version, update Node.js or use nvm:
-nvm install 20
-nvm use 20
-```
-
-**3. Database Connection Issues**
-```bash
-# Reset the database
-rm -f prisma/dev.db
-npx prisma migrate dev --name init
-```
-
-**4. Missing Dependencies**
-```bash
-# Clear npm cache and reinstall
-npm cache clean --force
+# Clear and reinstall dependencies
 rm -rf node_modules package-lock.json
 npm install
+
+# Reset database
+rm -f prisma/dev.db
+npx prisma migrate dev --name fresh_start
 ```
 
-**5. Permission Errors (macOS/Linux)**
+### Port Issues
+```bash
+# Find process using port 3002
+sudo lsof -ti:3002
+
+# Kill process
+sudo kill -9 $(sudo lsof -ti:3002)
+
+# Or use different port
+PORT=3003 npm run dev
+```
+
+### Permission Errors
 ```bash
 # Fix npm permissions
 sudo chown -R $(whoami) ~/.npm
 sudo chown -R $(whoami) /usr/local/lib/node_modules
 ```
 
-### 🌐 Accessing the Application
+## 📖 Documentation
 
-Once running, the application provides these main sections:
+- **[Complete Installation Guide](docs/INSTALLATION.md)** - Detailed setup instructions
+- **[API Documentation](docs/API.md)** - API endpoints and usage (coming soon)
+- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment options (coming soon)
 
-- **📅 Schedule Dashboard**: `http://localhost:3002/dashboard/inspection`
-- **📋 Claims Management**: `http://localhost:3002/dashboard/claims`
-- **📊 Reports**: `http://localhost:3002/dashboard/reports`
-- **🏠 Property Inspection**: Create new inspections and manage workflows
+## 🔐 Security Notes
 
-### 🔐 Environment Configuration Details
+### Default Security Settings:
+- ✅ Environment variables for sensitive data
+- ✅ Input validation with Zod schemas
+- ✅ SQL injection prevention via Prisma
+- ✅ XSS protection built into React/Next.js
 
-The application uses these key environment variables:
+### Production Security Checklist:
+- [ ] Change default API keys in `.env.local`
+- [ ] Enable HTTPS with SSL certificates
+- [ ] Configure firewall rules
+- [ ] Set up regular backups
+- [ ] Enable access logging
 
-| Variable | Purpose | Required |
-|----------|---------|----------|
-| `DATABASE_URL` | Database connection string | ✅ Yes |
-| `AZURE_OPENAI_KEY` | AI services integration | ✅ Yes |
-| `RESEND_API_KEY` | Email notifications | ⚠️ Optional |
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Address autocomplete | ⚠️ Optional |
-| `NEXT_PUBLIC_DEMO_MODE` | Demo vs production mode | ⚠️ Optional |
+## 🎯 Use Cases
 
-### 🚀 Production Deployment
+### Insurance Companies
+- Automate property inspections
+- Generate comprehensive reports
+- Streamline claims processing
+- Reduce manual documentation time
 
-For production deployment:
+### Property Managers
+- Schedule routine inspections
+- Track property conditions
+- Generate maintenance reports
+- Coordinate with contractors
 
-1. **Update environment variables**:
-   ```bash
-   NODE_ENV=production
-   NEXT_PUBLIC_DEMO_MODE=false
-   NEXTAUTH_URL=https://your-domain.com
-   ```
+### Home Inspectors
+- Digital inspection workflows
+- Voice-powered data collection
+- Automated report generation
+- Client communication tools
 
-2. **Build the application**:
-   ```bash
-   npm run build
-   npm start
-   ```
+## 📊 Performance
 
-3. **Use a process manager** (PM2 recommended):
-   ```bash
-   npm install -g pm2
-   pm2 start npm --name "stellar-app" -- start
-   ```
+**Expected Performance:**
+- **Startup Time**: < 10 seconds
+- **Report Generation**: < 30 seconds
+- **Database Queries**: < 100ms average
+- **Page Load Times**: < 2 seconds
 
-## 📍 Key Pages
+**Resource Requirements:**
+- **Development**: 2GB RAM, 1 CPU core
+- **Production**: 4GB RAM, 2 CPU cores
+- **Storage**: 5GB minimum (including logs and data)
 
-- **`/`** - Landing page with value proposition
-- **`/demo`** - Interactive claims processing demo
-- **`/admin`** - Admin dashboard for claims management
-- **`/api-demo`** - API documentation and examples
-- **`/claims/[id]`** - Individual claim details (in progress)
-- **`/inspection`** - Home inspection form (planned)
+## 🆘 Support
 
-## ✅ Completed Features
+### Quick Help
+- **Documentation**: Check `docs/INSTALLATION.md` for detailed setup
+- **Logs**: Check browser console and terminal output
+- **Database**: Use `npx prisma studio` to inspect data
 
-### Phase 1: Foundation ✅
-- [x] Database schema design with Prisma
-- [x] API endpoints for claims submission
-- [x] Workflow automation engine
-- [x] Email notification system
-- [x] CRM lead creation
-
-### Phase 2: Core Functionality ✅
-- [x] Claims submission with validation
-- [x] Automated triage and classification
-- [x] Preliminary estimate generation
-- [x] Admin dashboard with filters
-- [x] Activity logging and audit trail
-
-### Phase 3: Integration ✅
-- [x] Demo page API integration
-- [x] Workflow triggers on submission
-- [x] Email templates with estimates
-- [x] Status tracking and updates
-
-## 🚧 In Progress / Planned Features
-
-### Phase 4: Advanced Features (From PRD)
-- [ ] **Home Inspection Page**
-  - Multi-step form wizard
-  - Progressive data collection
-  - Auto-save functionality
-  
-- [ ] **GraphRAG Implementation**
-  - Vector embeddings for claims
-  - Similar claims matching
-  - Context-aware suggestions
-  - Knowledge graph construction
-
-- [ ] **File Processing**
-  - PDF text extraction
-  - OCR for images
-  - Multi-format support
-  - Drag-and-drop uploads
-
-- [ ] **Real-time Updates**
-  - WebSocket integration
-  - Live status updates
-  - Collaborative features
-  - Push notifications
-
-- [ ] **Claims Detail Page UI**
-  - Full claim visualization
-  - Document viewer
-  - Timeline view
-  - Action buttons
-
-- [ ] **Enhanced Analytics**
-  - Custom dashboards
-  - Export functionality
-  - Trend analysis
-  - Performance metrics
-
-## 🧪 Testing
-
-### Run Tests
-```bash
-npm test
-```
-
-### Test API Endpoints
-```bash
-# Submit a claim
-curl -X POST http://localhost:3000/api/claims/submit \
-  -H "Content-Type: application/json" \
-  -d '{
-    "type": "commercial",
-    "insuredName": "John Doe",
-    "insuredEmail": "john@example.com",
-    "insuredPhone": "555-0100",
-    "propertyAddress": "123 Main St, Dallas, TX",
-    "damageType": "Hurricane Wind Damage",
-    "severity": "Major"
-  }'
-
-# Get admin dashboard data
-curl http://localhost:3000/api/admin/claims
-```
-
-## 🔐 Security Considerations
-
-- API endpoints require authentication (to be implemented)
-- Environment variables for sensitive data
-- Input validation with Zod
-- SQL injection prevention via Prisma
-- XSS protection built into React
-
-## 📈 Performance Optimizations
-
-- Server-side rendering with Next.js
-- Database indexing on key fields
-- Lazy loading for images
-- Code splitting per route
-- Caching strategies (planned)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is proprietary software. All rights reserved.
-
-## 👥 Team
-
-- Product Engineering Team
-- AI/ML Team
-- Insurance Domain Experts
-
-## 📞 Support
-
-For questions or support, please contact:
-- Technical: dev@stellar-ai.com
-- Business: sales@stellar-ai.com
-
-## 🎯 Roadmap
-
-### Q1 2025
-- [x] Core platform development
-- [x] Workflow automation
-- [ ] GraphRAG integration
-
-### Q2 2025
-- [ ] Production deployment
-- [ ] Enterprise authentication
-- [ ] Advanced analytics
-
-### Q3 2025
-- [ ] Mobile application
-- [ ] Third-party integrations
-- [ ] International expansion
+### Contact
+- **Technical Issues**: Create issue in Azure DevOps repository
+- **Feature Requests**: Contact development team
+- **Deployment Help**: Reference this README or detailed docs
 
 ---
 
-**Built with ❤️ by the Stellar Intelligence Team**
+## 📋 Quick Commands Reference
+
+```bash
+# Development
+npm run dev              # Start development server
+npm run dev:turbo        # Start with turbo mode (faster)
+
+# Production
+npm run build           # Build for production
+npm start              # Start production server
+
+# Database
+npx prisma studio      # Open database interface
+npx prisma migrate dev # Apply database changes
+
+# Utilities
+npm run lint           # Check code quality
+git pull              # Update from repository
+```
+
+**🚀 Ready to deploy? Just run the Quick Deploy commands above and you'll have the full Stellar Intelligence Platform running in minutes!**

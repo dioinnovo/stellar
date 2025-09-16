@@ -444,7 +444,7 @@ export function generateEmailStyles(): string {
     
     /* Button styles */
     .btn-primary {
-      background-color: ${COMPONENTS.button.primary.backgroundColor};
+      background: ${COMPONENTS.button.primary.background};
       color: ${COMPONENTS.button.primary.color};
       padding: ${COMPONENTS.button.primary.padding};
       font-size: ${COMPONENTS.button.primary.fontSize};

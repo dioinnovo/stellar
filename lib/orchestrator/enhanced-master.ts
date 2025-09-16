@@ -196,7 +196,7 @@ async function uiInteractionNode(
       conversationTurn: {
         ...state.conversationTurn,
         waitingForUser: true,
-        lastQuestionAsked: askEmailMessage.content,
+        lastQuestionAsked: askEmailMessage.content.toString(),
         questionTimestamp: new Date(),
       },
     };
@@ -223,7 +223,7 @@ async function uiInteractionNode(
       conversationTurn: {
         ...state.conversationTurn,
         waitingForUser: true,
-        lastQuestionAsked: askPhoneMessage.content,
+        lastQuestionAsked: typeof askPhoneMessage.content === 'string' ? askPhoneMessage.content : JSON.stringify(askPhoneMessage.content),
         questionTimestamp: new Date(),
       },
     };
@@ -265,12 +265,11 @@ function routeAfterConversation(state: MasterOrchestratorState): string | typeof
 
   // Check if we should trigger UI collection
   // Only if we have business context but no contact info
-  const hasChallenges = state.customerInfo?.currentChallenges?.length > 0;
-  const hasBudget = !!state.customerInfo?.budget;
+  const hasChallenges = (state.customerInfo?.currentChallenges?.length ?? 0) > 0;
   const hasEmail = !!state.customerInfo?.email;
   const hasPhone = !!state.customerInfo?.phone;
-  
-  if ((hasChallenges || hasBudget) && !hasEmail && !hasPhone) {
+
+  if (hasChallenges && !hasEmail && !hasPhone) {
     return 'ui_interaction';
   }
 
@@ -370,7 +369,6 @@ export function buildEnhancedMasterOrchestrator() {
   // Compile with checkpointer for persistence
   const compiledGraph = workflow.compile({
     checkpointer: memorySaver,
-    recursionLimit: 50, // Increased limit for UI interactions
   });
   
   return {

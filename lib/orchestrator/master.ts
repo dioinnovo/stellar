@@ -417,9 +417,7 @@ export class MasterOrchestrator {
       const hasIndustry = !!state.customerInfo.industry;
       const hasChallenges = !!(state.customerInfo.currentChallenges?.length);
       const hasName = !!state.customerInfo.name;
-      const hasTimeline = !!state.customerInfo.timeline;
-      const hasBudget = !!state.customerInfo.budget;
-      const hasRole = !!state.customerInfo.role;
+      // Note: timeline, budget, role not available in CustomerInfo interface
       
       // Must have at least contact info to qualify
       if (!hasContact) {

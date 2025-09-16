@@ -65,10 +65,8 @@ async function evaluateBudgetNode(
   let score = 0;
   let status: BANTQualification['budget']['status'] = 'unknown';
   
-  // Extract budget from various fields
+  // Extract budget from conversation messages (budget/currentSpend not in CustomerInfo)
   const budgetIndicators = [
-    customerInfo.budget,
-    customerInfo.currentSpend,
     ...state.messages.map(m => m.content.toString().toLowerCase())
   ].join(' ').toLowerCase();
   

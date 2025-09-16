@@ -129,28 +129,28 @@ export class LangGraphMonitor {
     }
     
     // Output based on level
-    switch (entry.level) {
+    switch (logEntry.level) {
       case LogLevel.DEBUG:
-        console.debug(`[${entry.correlationId}] ${entry.message}`, entry.data);
+        console.debug(`[${logEntry.correlationId}] ${logEntry.message}`, logEntry.data);
         break;
       case LogLevel.INFO:
-        console.log(`[${entry.correlationId}] ${entry.message}`, entry.data);
+        console.log(`[${logEntry.correlationId}] ${logEntry.message}`, logEntry.data);
         break;
       case LogLevel.WARN:
-        console.warn(`[${entry.correlationId}] ${entry.message}`, entry.data);
+        console.warn(`[${logEntry.correlationId}] ${logEntry.message}`, logEntry.data);
         break;
       case LogLevel.ERROR:
-        console.error(`[${entry.correlationId}] ${entry.message}`, entry.error || entry.data);
+        console.error(`[${logEntry.correlationId}] ${logEntry.message}`, logEntry.error || logEntry.data);
         break;
       case LogLevel.CRITICAL:
-        console.error(`🚨 CRITICAL [${entry.correlationId}] ${entry.message}`, entry.error || entry.data);
+        console.error(`🚨 CRITICAL [${logEntry.correlationId}] ${logEntry.message}`, logEntry.error || logEntry.data);
         // Could trigger alerts here
         break;
     }
     
     // Update error metrics
-    if (entry.level === LogLevel.ERROR || entry.level === LogLevel.CRITICAL) {
-      this.updateErrorMetrics(entry);
+    if (logEntry.level === LogLevel.ERROR || logEntry.level === LogLevel.CRITICAL) {
+      this.updateErrorMetrics(logEntry);
     }
   }
   

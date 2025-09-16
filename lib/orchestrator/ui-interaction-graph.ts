@@ -342,12 +342,11 @@ export function shouldTriggerUICollection(state: MasterOrchestratorState): boole
   // Check if we need to collect contact info
   const hasEmail = !!state.customerInfo?.email;
   const hasPhone = !!state.customerInfo?.phone;
-  const hasChallenges = state.customerInfo?.currentChallenges && 
-                        state.customerInfo.currentChallenges.length > 0;
-  const hasBudget = !!state.customerInfo?.budget;
-  
+  const hasChallenges = !!(state.customerInfo?.currentChallenges &&
+                        state.customerInfo.currentChallenges.length > 0);
+
   // Trigger UI collection when we have business context but no contact
-  return !hasEmail && !hasPhone && (hasChallenges || hasBudget);
+  return !hasEmail && !hasPhone && hasChallenges;
 }
 
 /**
