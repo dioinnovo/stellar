@@ -368,11 +368,8 @@ export default function AreaInspectionPage() {
 
   // Handle area selection from cards
   const handleAreaSelect = (area: InspectionArea, index: number) => {
-    setNavigationMode('form')
-    setExpandedAreaId(area.id)
-    if (area.id !== areaId) {
-      router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)
-    }
+    // Navigate to the inspection details page when a card is clicked
+    router.push(`/dashboard/inspection/${inspectionId}/continue`)
   }
 
   // Handle navigate back to cards
@@ -393,9 +390,10 @@ export default function AreaInspectionPage() {
         expandedAreaId={navigationMode === 'form' ? expandedAreaId : null}
         propertyType={propertyType}
         className=""
+        inspectionId={inspectionId}
       >
         {/* Form Content - This is rendered inside the enhanced component when expanded */}
-        <div className="px-4 py-4 pb-24">
+        <div className="px-4 py-4 pb-16">
           <div className="space-y-4">
             {/* Photo Upload Section */}
             <div className="bg-white rounded-xl border border-gray-200 p-4">
@@ -609,17 +607,17 @@ export default function AreaInspectionPage() {
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleSkip}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg text-sm font-medium hover:bg-yellow-100 transition-colors"
               >
                 <SkipForward size={16} />
                 <span>Skip Area</span>
               </button>
               <button
                 onClick={handleComplete}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#E74C3C] text-white rounded-lg text-sm font-medium hover:bg-[#D73929] transition-colors"
+                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
               >
                 <CheckCircle size={16} />
-                <span>{isLastArea ? 'Complete' : 'Next Area'}</span>
+                <span>Complete Area</span>
               </button>
             </div>
           </div>

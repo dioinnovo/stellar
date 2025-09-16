@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft, User, Phone, Mail, MapPin, Calendar, Building2, Home,
   FileText, Camera, History, Shield, CheckCircle, Clock, AlertTriangle,
   DollarSign, Download, Edit, Save, X, Plus, Upload, Eye, Send,
   TrendingUp, AlertCircle, FileSearch, Briefcase, Star, CalendarCheck,
-  Droplets, Check, Target, Zap, Brain, Calculator
+  Droplets, Check, Target, Zap, Brain, Calculator, MoreHorizontal, ChevronDown
 } from 'lucide-react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -17,6 +17,20 @@ export default function ClaimDetailPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('overview')
   const [isEditing, setIsEditing] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowDropdown(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Mock data - in real app, fetch based on params.id
   const claim = {
@@ -229,26 +243,73 @@ export default function ClaimDetailPage() {
       {/* Tabs - Mobile Optimized */}
       <div className="bg-white rounded-xl shadow-sm">
         <div className="border-b border-gray-200">
-          {/* Mobile/Tablet: Horizontal scrollable tabs */}
+          {/* Mobile/Tablet: Show first 3 tabs + More dropdown */}
           <div className="sm:hidden">
-            <div className="flex overflow-x-auto scrollbar-hide">
-              {tabs.map((tab) => {
-                const Icon = tab.icon
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex flex-col items-center gap-1 py-3 px-4 border-b-2 transition-all whitespace-nowrap min-w-[80px] ${
-                      activeTab === tab.id
-                        ? 'border-stellar-orange text-stellar-orange bg-orange-50'
-                        : 'border-transparent text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    <Icon size={20} />
-                    <span className="text-xs font-medium">{tab.label}</span>
-                  </button>
-                )
-              })}
+            <div className="flex items-center justify-between">
+              {/* First 3 tabs */}
+              <div className="flex flex-1">
+                {tabs.slice(0, 3).map((tab) => {
+                  const Icon = tab.icon
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`flex-1 flex flex-col items-center gap-1 py-3 px-2 border-b-2 transition-all ${
+                        activeTab === tab.id
+                          ? 'border-stellar-orange text-stellar-orange bg-orange-50'
+                          : 'border-transparent text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      <Icon size={20} />
+                      <span className="text-xs font-medium">{tab.label}</span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* More dropdown for remaining tabs */}
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  className={`flex flex-col items-center gap-1 py-3 px-4 border-b-2 transition-all ${
+                    tabs.slice(3).some(tab => tab.id === activeTab)
+                      ? 'border-stellar-orange text-stellar-orange bg-orange-50'
+                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <MoreHorizontal size={20} />
+                  <span className="text-xs font-medium">More</span>
+                </button>
+
+                {/* Dropdown menu */}
+                {showDropdown && (
+                  <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    {tabs.slice(3).map((tab) => {
+                      const Icon = tab.icon
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => {
+                            setActiveTab(tab.id)
+                            setShowDropdown(false)
+                          }}
+                          className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
+                            activeTab === tab.id
+                              ? 'bg-orange-50 text-stellar-orange'
+                              : 'text-gray-700'
+                          }`}
+                        >
+                          <Icon size={18} />
+                          <span className="text-sm font-medium">{tab.label}</span>
+                          {activeTab === tab.id && (
+                            <Check size={16} className="ml-auto text-stellar-orange" />
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

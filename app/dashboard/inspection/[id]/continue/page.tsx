@@ -155,7 +155,7 @@ export default function ContinueInspectionPage() {
                   <span className="text-2xl font-bold text-emerald-600">{progress.percentage}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-3">
-                  <motion.div 
+                  <motion.div
                     className="bg-green-600 h-3 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${progress.percentage}%` }}
@@ -167,6 +167,40 @@ export default function ContinueInspectionPage() {
                   <span className="text-xs text-gray-500">{progress.remaining} areas remaining</span>
                 </div>
               </div>
+
+              {/* Finish Inspection Button - Show when progress is 100% */}
+              {progress.percentage === 100 ? (
+                <button
+                  onClick={() => router.push(`/dashboard/inspection/${inspectionId}/complete`)}
+                  className="w-full px-6 py-3 bg-stellar-orange text-white rounded-xl hover:bg-orange-600 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg mb-4"
+                >
+                  <CheckCircle size={20} />
+                  Finish Inspection
+                </button>
+              ) : progress.percentage >= 50 ? (
+                <div className="mb-4">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-3">
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="text-yellow-600 mt-0.5" size={16} />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-yellow-800">
+                          Incomplete Inspection
+                        </p>
+                        <p className="text-xs text-yellow-700 mt-1">
+                          {progress.remaining} areas still need inspection. You can finish now with partial data or continue inspecting.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => router.push(`/dashboard/inspection/${inspectionId}/complete`)}
+                    className="w-full px-6 py-3 bg-stellar-orange text-white rounded-xl hover:bg-orange-600 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg"
+                  >
+                    <CheckCircle size={20} />
+                    Finish Inspection
+                  </button>
+                </div>
+              ) : null}
               
               {/* Quick Stats */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -273,60 +307,79 @@ export default function ContinueInspectionPage() {
           {/* Overview Tab */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* Client and Property Info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Property Information</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Home size={16} className="text-gray-400" />
-                      <span className="text-gray-600">Address:</span>
-                      <span className="font-medium">{inspectionSummary.propertyAddress}</span>
+              {/* Two Column Layout for Property and Inspection Info */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Property Information Card */}
+                <div className="bg-gray-50 rounded-xl p-5">
+                  <h3 className="font-semibold text-gray-900 mb-4 text-base">Property Information</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Home size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Address</p>
+                        <p className="font-medium text-gray-900 text-sm break-words">{inspectionSummary.propertyAddress}</p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <User size={16} className="text-gray-400" />
-                      <span className="text-gray-600">Client:</span>
-                      <span className="font-medium">{inspectionSummary.clientName}</span>
+                    <div className="flex items-start gap-3">
+                      <User size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Client</p>
+                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary.clientName}</p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <User size={16} className="text-gray-400" />
-                      <span className="text-gray-600">Inspector:</span>
-                      <span className="font-medium">{inspectionSummary.inspector}</span>
+                    <div className="flex items-start gap-3">
+                      <User size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Inspector</p>
+                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary.inspector}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
-                
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3">Inspection Details</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock size={16} className="text-gray-400" />
-                      <span className="text-gray-600">Start Time:</span>
-                      <span className="font-medium">{formatDate(inspectionSummary.startTime)}</span>
+
+                {/* Inspection Details Card */}
+                <div className="bg-gray-50 rounded-xl p-5">
+                  <h3 className="font-semibold text-gray-900 mb-4 text-base">Inspection Details</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Clock size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Start Time</p>
+                        <p className="font-medium text-gray-900 text-sm">{formatDate(inspectionSummary.startTime)}</p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <BarChart3 size={16} className="text-gray-400" />
-                      <span className="text-gray-600">Progress:</span>
-                      <span className="font-medium">{progress.completed} of {progress.total} areas</span>
+                    <div className="flex items-start gap-3">
+                      <BarChart3 size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Progress</p>
+                        <p className="font-medium text-gray-900 text-sm">{progress.completed} of {progress.total} areas</p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin size={16} className="text-gray-400" />
-                      <span className="text-gray-600">Weather:</span>
-                      <span className="font-medium">{inspectionSummary.weatherConditions}</span>
+                    <div className="flex items-start gap-3">
+                      <MapPin size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Weather</p>
+                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary.weatherConditions}</p>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Next Steps */}
-              <div className="bg-blue-50 rounded-xl p-4">
-                <h3 className="font-semibold text-blue-900 mb-2">Next Steps</h3>
-                <p className="text-sm text-blue-800 mb-3">
-                  Continue with inspection of remaining {progress.remaining} areas to complete the assessment.
-                </p>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-blue-700">Next Area:</span>
-                  <span className="font-semibold text-blue-900">{inspectionSummary.nextArea}</span>
+              {/* Next Steps Card */}
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="text-blue-600 mt-0.5 flex-shrink-0" size={20} />
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-blue-900 mb-2 text-base">Next Steps</h3>
+                    <p className="text-sm text-blue-800 mb-3">
+                      Continue with inspection of remaining {progress.remaining} areas to complete the assessment.
+                    </p>
+                    <div className="bg-white/60 rounded-lg px-3 py-2 inline-block">
+                      <span className="text-xs text-blue-700">Next Area:</span>
+                      <span className="font-semibold text-blue-900 ml-2 text-sm">{inspectionSummary.nextArea}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -524,28 +577,91 @@ export default function ContinueInspectionPage() {
 
               {/* Key Findings */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Key Findings So Far</h3>
+                <h3 className="font-semibold text-gray-900 mb-4">Key Findings So Far</h3>
                 <div className="space-y-3">
                   {inspectionMediaData
                     .filter(area => area.status === 'completed' && area.priority === 'high')
-                    .map((area) => (
-                      <div key={area.areaId} className="bg-red-50 rounded-lg p-4 border border-red-200">
-                        <h4 className="font-semibold text-red-900 mb-1">{area.areaName}</h4>
-                        <p className="text-sm text-red-800 mb-2">{area.findings}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-red-700">
-                            Estimated Cost: ${area.estimatedCost.toLocaleString()}
-                          </span>
-                          <button
-                            onClick={() => setSelectedArea(area)}
-                            className="text-xs text-red-600 hover:text-red-800 font-medium flex items-center gap-1"
-                          >
-                            View Details
-                            <ChevronRight size={14} />
-                          </button>
+                    .map((area, index) => {
+                      // Determine severity based on cost or other factors
+                      const severity = area.estimatedCost > 15000 ? 'critical' :
+                                      area.estimatedCost > 8000 ? 'high' : 'moderate'
+
+                      return (
+                        <div
+                          key={area.areaId}
+                          className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              {/* Priority Indicator */}
+                              <div className={`
+                                w-1 h-12 rounded-full
+                                ${severity === 'critical' ? 'bg-red-500' :
+                                  severity === 'high' ? 'bg-orange-500' : 'bg-yellow-500'}
+                              `} />
+
+                              <div>
+                                <h4 className="font-semibold text-gray-900 text-base">{area.areaName}</h4>
+                                <span className={`
+                                  inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium mt-1
+                                  ${severity === 'critical'
+                                    ? 'bg-red-100 text-red-700'
+                                    : severity === 'high'
+                                    ? 'bg-orange-100 text-orange-700'
+                                    : 'bg-yellow-100 text-yellow-700'}
+                                `}>
+                                  <AlertTriangle size={10} />
+                                  {severity === 'critical' ? 'Critical Priority' :
+                                   severity === 'high' ? 'High Priority' : 'Moderate Priority'}
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Cost Badge - Most Important Visual Element */}
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-gray-900">
+                                ${area.estimatedCost.toLocaleString()}
+                              </p>
+                              <p className="text-xs text-gray-500">Estimated Cost</p>
+                            </div>
+                          </div>
+
+                          {/* Finding Description - Neutral Color */}
+                          <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                            {area.findings}
+                          </p>
+
+                          {/* Action Items if Available */}
+                          {area.recommendedActions && (
+                            <div className="bg-blue-50 rounded-lg p-3 mb-4">
+                              <p className="text-xs font-medium text-blue-900 mb-1">Recommended Action:</p>
+                              <p className="text-xs text-blue-800">{area.recommendedActions}</p>
+                            </div>
+                          )}
+
+                          {/* Footer with View Details */}
+                          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                            <div className="flex items-center gap-4">
+                              <span className="text-xs text-gray-500">
+                                Area #{index + 1} of {inspectionMediaData.filter(a => a.status === 'completed' && a.priority === 'high').length}
+                              </span>
+                              {area.aiInsights && (
+                                <span className="text-xs text-purple-600 font-medium">
+                                  AI Confidence: {area.aiInsights.costConfidence}%
+                                </span>
+                              )}
+                            </div>
+                            <button
+                              onClick={() => setSelectedArea(area)}
+                              className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 group"
+                            >
+                              View Details
+                              <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    })}
                 </div>
               </div>
             </div>

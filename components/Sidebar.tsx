@@ -45,10 +45,10 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
       description: 'All claims & details'
     },
     {
-      title: 'Property Inspection',
-      icon: Camera,
+      title: 'Schedule',
+      icon: CalendarDays,
       href: '/dashboard/inspection',
-      description: 'AI-powered comprehensive inspection'
+      description: 'Schedule and manage inspections'
     },
     {
       title: 'Reports',
@@ -74,12 +74,13 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
                 <span className="text-white font-bold text-xl">S</span>
               </div>
             ) : (
-              <Image 
-                src="/images/stellar_logo.png" 
-                alt="Stellar Adjusting" 
-                width={180} 
+              <Image
+                src="/images/stellar_logo.png"
+                alt="Stellar Adjusting"
+                width={180}
                 height={50}
                 className="object-contain"
+                priority
               />
             )}
           </Link>

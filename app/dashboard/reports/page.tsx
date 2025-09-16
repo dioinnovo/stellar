@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import {
   FileText, Download, Eye, Search, Filter, Calendar, CheckCircle,
   AlertCircle, Clock, MapPin, User, Building2, DollarSign,
-  TrendingUp, Star, Home, Shield, Award, Send
+  TrendingUp, Star, Home, Shield, Award, Send, Edit
 } from 'lucide-react'
 
 interface CompletedReport {
@@ -15,15 +16,15 @@ interface CompletedReport {
     address: string
     type: 'residential' | 'commercial'
     owner: string
-    imageUrl: string
+    imageUrl?: string
   }
-  completedDate: Date
+  completedDate: Date | string
   damageType: string
-  adjuster: {
+  adjuster?: {
     name: string
     rating: number
   }
-  status: 'approved' | 'pending_review' | 'requires_revision'
+  status: 'approved' | 'pending_approval' | 'in_review' | 'sent'
   settlement: {
     estimated: number
     approved: number
@@ -50,7 +51,7 @@ const mockCompletedReports: CompletedReport[] = [
       name: 'Michael Chen',
       rating: 4.9
     },
-    status: 'approved',
+    status: 'approved' as const,
     settlement: {
       estimated: 125000,
       approved: 142000,
@@ -75,7 +76,7 @@ const mockCompletedReports: CompletedReport[] = [
       name: 'Sarah Johnson',
       rating: 4.8
     },
-    status: 'approved',
+    status: 'approved' as const,
     settlement: {
       estimated: 450000,
       approved: 485000,
@@ -100,7 +101,7 @@ const mockCompletedReports: CompletedReport[] = [
       name: 'David Rodriguez',
       rating: 4.7
     },
-    status: 'pending_review',
+    status: 'pending_approval' as const,
     settlement: {
       estimated: 85000,
       approved: 0,
@@ -125,7 +126,7 @@ const mockCompletedReports: CompletedReport[] = [
       name: 'Michael Chen',
       rating: 4.9
     },
-    status: 'approved',
+    status: 'approved' as const,
     settlement: {
       estimated: 325000,
       approved: 368000,
@@ -150,7 +151,7 @@ const mockCompletedReports: CompletedReport[] = [
       name: 'Emily Watson',
       rating: 4.6
     },
-    status: 'requires_revision',
+    status: 'in_review' as const,
     settlement: {
       estimated: 45000,
       approved: 0,
@@ -175,7 +176,7 @@ const mockCompletedReports: CompletedReport[] = [
       name: 'Sarah Johnson',
       rating: 4.8
     },
-    status: 'approved',
+    status: 'approved' as const,
     settlement: {
       estimated: 65000,
       approved: 78000,
@@ -188,16 +189,31 @@ const mockCompletedReports: CompletedReport[] = [
 ]
 
 export default function ReportsPage() {
+  const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'approved' | 'pending' | 'revision'>('all')
-  const [reports] = useState<CompletedReport[]>(mockCompletedReports)
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'approved' | 'pending_approval' | 'in_review' | 'sent'>('all')
+  const [reports, setReports] = useState<CompletedReport[]>(mockCompletedReports)
+
+  useEffect(() => {
+    // Load reports from sessionStorage
+    const storedReports = sessionStorage.getItem('inspection_reports')
+    if (storedReports) {
+      const parsed = JSON.parse(storedReports)
+      // Merge with mock data, new reports first
+      setReports([...parsed, ...mockCompletedReports])
+    }
+  }, [])
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved':
         return 'bg-green-100 text-green-800 border-green-200'
-      case 'pending_review':
+      case 'pending_approval':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case 'in_review':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      case 'sent':
+        return 'bg-purple-100 text-purple-800 border-purple-200'
       case 'requires_revision':
         return 'bg-red-100 text-red-800 border-red-200'
       default:
@@ -209,8 +225,12 @@ export default function ReportsPage() {
     switch (status) {
       case 'approved':
         return <CheckCircle className="w-4 h-4" />
-      case 'pending_review':
+      case 'pending_approval':
         return <Clock className="w-4 h-4" />
+      case 'in_review':
+        return <Edit className="w-4 h-4" />
+      case 'sent':
+        return <Send className="w-4 h-4" />
       case 'requires_revision':
         return <AlertCircle className="w-4 h-4" />
       default:
@@ -231,13 +251,14 @@ export default function ReportsPage() {
       report.property.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
       report.claimNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       report.property.owner.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.adjuster.name.toLowerCase().includes(searchTerm.toLowerCase())
+      (report.adjuster?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false)
 
     const matchesFilter =
       selectedFilter === 'all' ||
       (selectedFilter === 'approved' && report.status === 'approved') ||
-      (selectedFilter === 'pending' && report.status === 'pending_review') ||
-      (selectedFilter === 'revision' && report.status === 'requires_revision')
+      (selectedFilter === 'pending_approval' && report.status === 'pending_approval') ||
+      (selectedFilter === 'in_review' && report.status === 'in_review') ||
+      (selectedFilter === 'sent' && report.status === 'sent')
 
     return matchesSearch && matchesFilter
   })
@@ -245,8 +266,9 @@ export default function ReportsPage() {
   const stats = {
     total: reports.length,
     approved: reports.filter(r => r.status === 'approved').length,
-    pending: reports.filter(r => r.status === 'pending_review').length,
-    revision: reports.filter(r => r.status === 'requires_revision').length,
+    pending: reports.filter(r => r.status === 'pending_approval').length,
+    inReview: reports.filter(r => r.status === 'in_review').length,
+    sent: reports.filter(r => r.status === 'sent').length,
     totalSettlement: reports.filter(r => r.status === 'approved').reduce((acc, r) => acc + r.settlement.approved, 0),
     averageIncrease: reports.filter(r => r.status === 'approved' && r.settlement.increase > 0)
       .reduce((acc, r, _, arr) => acc + r.settlement.increase / arr.length, 0)
@@ -321,7 +343,7 @@ export default function ReportsPage() {
             />
           </div>
           <div className="flex gap-2 flex-wrap">
-            {['all', 'approved', 'pending', 'revision'].map((filter) => (
+            {['all', 'approved', 'pending_approval', 'in_review', 'sent'].map((filter) => (
               <button
                 key={filter}
                 onClick={() => setSelectedFilter(filter as any)}
@@ -333,8 +355,10 @@ export default function ReportsPage() {
               >
                 {filter === 'all' ? `All (${stats.total})` :
                  filter === 'approved' ? `Approved (${stats.approved})` :
-                 filter === 'pending' ? `Pending (${stats.pending})` :
-                 `Revision (${stats.revision})`}
+                 filter === 'pending_approval' ? `Pending (${stats.pending})` :
+                 filter === 'in_review' ? `In Review (${stats.inReview})` :
+                 filter === 'sent' ? `Sent (${stats.sent})` :
+                 'Other'}
               </button>
             ))}
           </div>
@@ -350,11 +374,22 @@ export default function ReportsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
           >
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow group">
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer"
+                 onClick={() => {
+                   // For approved/sent reports, go to the comprehensive report view
+                   if (report.status === 'approved' || report.status === 'sent') {
+                     // Extract inspection ID from report if available, otherwise use a demo ID
+                     const inspectionId = report.id.startsWith('RPT-') ? 'INS-002' : report.id;
+                     router.push(`/dashboard/inspection/${inspectionId}/report`);
+                   } else {
+                     // For pending/in_review, go to the review page
+                     router.push(`/dashboard/reports/${report.id}/review`);
+                   }
+                 }}>
               {/* Property Image with Overlay */}
               <div className="relative h-48">
                 <img
-                  src={report.property.imageUrl}
+                  src={report.property.imageUrl || 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop'}
                   alt={report.property.address}
                   className="w-full h-full object-cover"
                 />
@@ -376,7 +411,9 @@ export default function ReportsPage() {
                   <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
                     {getStatusIcon(report.status)}
                     {report.status === 'approved' ? 'Approved' :
-                     report.status === 'pending_review' ? 'Pending' : 'Revision'}
+                     report.status === 'pending_approval' ? 'Pending' :
+                     report.status === 'in_review' ? 'In Review' :
+                     report.status === 'sent' ? 'Sent' : 'Revision'}
                   </span>
                 </div>
 
@@ -402,7 +439,9 @@ export default function ReportsPage() {
                   <div className="text-right">
                     <p className="text-xs text-gray-500">Completed</p>
                     <p className="font-medium text-gray-700">
-                      {report.completedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      {typeof report.completedDate === 'string'
+                        ? new Date(report.completedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                        : report.completedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </p>
                   </div>
                 </div>
@@ -458,24 +497,76 @@ export default function ReportsPage() {
                     <User className="w-4 h-4 text-gray-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{report.adjuster.name}</p>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                      <span className="text-xs text-gray-500">{report.adjuster.rating}</span>
-                    </div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {report.adjuster?.name || 'Pending Assignment'}
+                    </p>
+                    {report.adjuster && (
+                      <div className="flex items-center gap-1">
+                        <Star className="w-3 h-3 text-yellow-500 fill-current" />
+                        <span className="text-xs text-gray-500">{report.adjuster.rating}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="grid grid-cols-2 gap-2 pt-3">
-                  <button className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
-                    <Download className="w-4 h-4" />
-                    <span className="text-sm font-medium">PDF</span>
-                  </button>
-                  <button className="flex items-center justify-center gap-2 px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-red-600 transition">
-                    <Send className="w-4 h-4" />
-                    <span className="text-sm font-medium">Send</span>
-                  </button>
+                  {report.status === 'pending_approval' ? (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Use the inspection review page for all reviews
+                          const inspectionId = report.id.startsWith('RPT-') ? 'INS-002' : report.id;
+                          router.push(`/dashboard/inspection/${inspectionId}/review`);
+                        }}
+                        className="col-span-2 flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
+                      >
+                        <Edit className="w-4 h-4" />
+                        <span className="text-sm font-medium">Review & Approve</span>
+                      </button>
+                    </>
+                  ) : report.status === 'in_review' ? (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Use the inspection review page for all reviews
+                          const inspectionId = report.id.startsWith('RPT-') ? 'INS-002' : report.id;
+                          router.push(`/dashboard/inspection/${inspectionId}/review`);
+                        }}
+                        className="col-span-2 flex items-center justify-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition"
+                      >
+                        <Edit className="w-4 h-4" />
+                        <span className="text-sm font-medium">Continue Review</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // View the comprehensive report
+                          const inspectionId = report.id.startsWith('RPT-') ? 'INS-002' : report.id;
+                          router.push(`/dashboard/inspection/${inspectionId}/report`);
+                        }}
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+                      >
+                        <Eye className="w-4 h-4" />
+                        <span className="text-sm font-medium">View</span>
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          alert('PDF download would be triggered here');
+                        }}
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-red-600 transition"
+                      >
+                        <Download className="w-4 h-4" />
+                        <span className="text-sm font-medium">PDF</span>
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

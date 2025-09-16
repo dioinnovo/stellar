@@ -16,6 +16,11 @@ export const metadata: Metadata = {
   description: 'AI-Powered Public Adjusting Revolution',
   keywords: 'insurance, claims, AI, public adjusting, settlement, damage assessment',
   authors: [{ name: 'Stellar Adjusting Services' }],
+  icons: {
+    icon: '/images/stellar_logo.png',
+    shortcut: '/images/stellar_logo.png',
+    apple: '/images/stellar_logo.png',
+  },
   openGraph: {
     title: 'Stellar Intelligence Platform',
     description: 'Find $80,000+ in Overlooked Coverage in 3 Minutes',

@@ -3,13 +3,257 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
-import { 
+import {
   ArrowLeft, FileText, Download, Send, Edit3, CheckCircle,
   AlertTriangle, Camera, Mic, Brain, TrendingUp, DollarSign,
   Calendar, MapPin, User, Building2, Home, Eye, Star,
-  Lightbulb, History, Target, Sparkles, Zap
+  Lightbulb, History, Target, Sparkles, Zap, Check
 } from 'lucide-react'
 import Link from 'next/link'
+
+// Area Card Component
+function AreaCard({
+  area,
+  enrichmentComplete,
+  inspectionData,
+  setInspectionData,
+  getStatusIcon
+}: {
+  area: any
+  enrichmentComplete: boolean
+  inspectionData: any
+  setInspectionData: any
+  getStatusIcon: (status: string) => JSX.Element
+}) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedArea, setEditedArea] = useState(area)
+
+  return (
+    <div className="bg-gray-50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg">
+      {/* Clickable Header */}
+      <div
+        className="p-6 cursor-pointer transition-colors hover:bg-gray-100"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3">
+              <h3 className="text-lg font-semibold text-gray-900">{area.name}</h3>
+              {getStatusIcon(area.status)}
+              {enrichmentComplete && (
+                <span className="px-2 py-1 bg-stellar-orange/10 text-stellar-orange text-xs rounded-full flex items-center gap-1">
+                  <Sparkles size={12} />
+                  Enhanced
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-gray-600">{area.category} • {area.status}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 text-sm text-gray-500">
+              <span className="flex items-center gap-1">
+                <Camera size={16} />
+                {area.photoCount}
+              </span>
+              <span className="flex items-center gap-1">
+                <Mic size={16} />
+                {area.audioCount}
+              </span>
+            </div>
+            <motion.div
+              animate={{ rotate: isExpanded ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+
+      {/* Expanded Content */}
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={{
+          height: isExpanded ? 'auto' : 0,
+          opacity: isExpanded ? 1 : 0
+        }}
+        transition={{ duration: 0.3 }}
+        className="border-t border-gray-200"
+      >
+        <div className="p-6 bg-white">
+          {/* Action Buttons */}
+          <div className="flex gap-3 mb-6">
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsEditing(false)
+              }}
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                !isEditing
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              <Eye size={16} />
+              View Details
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsEditing(true)
+              }}
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                isEditing
+                  ? 'bg-stellar-orange text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              <Edit3 size={16} />
+              Edit Information
+            </button>
+            {isEditing && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  // Save edited data
+                  const updatedData = { ...inspectionData }
+                  const areaIndex = updatedData.areas.findIndex((a: any) => a.id === area.id)
+                  if (areaIndex !== -1) {
+                    updatedData.areas[areaIndex] = editedArea
+                    setInspectionData(updatedData)
+                  }
+                  setIsEditing(false)
+                }}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 transition-colors"
+              >
+                <CheckCircle size={16} />
+                Save Changes
+              </button>
+            )}
+          </div>
+
+          {/* Detailed Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Findings Section */}
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <FileText size={16} className="text-gray-500" />
+                  Inspection Findings
+                </h4>
+                {isEditing ? (
+                  <textarea
+                    className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                    rows={3}
+                    value={editedArea.findings}
+                    onChange={(e) => setEditedArea({ ...editedArea, findings: e.target.value })}
+                  />
+                ) : (
+                  <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">{area.findings}</p>
+                )}
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <AlertTriangle size={16} className="text-gray-500" />
+                  Damage Assessment
+                </h4>
+                {isEditing ? (
+                  <textarea
+                    className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                    rows={3}
+                    value={editedArea.damageDescription}
+                    onChange={(e) => setEditedArea({ ...editedArea, damageDescription: e.target.value })}
+                  />
+                ) : (
+                  <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">{area.damageDescription}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Key Insights and Media */}
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <Lightbulb size={16} className="text-gray-500" />
+                  Key Insights
+                </h4>
+                <div className="bg-gray-50 p-3 rounded-lg">
+                  {isEditing ? (
+                    <div className="space-y-2">
+                      {editedArea.keyInsights.map((insight: string, idx: number) => (
+                        <input
+                          key={idx}
+                          className="w-full p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                          value={insight}
+                          onChange={(e) => {
+                            const newInsights = [...editedArea.keyInsights]
+                            newInsights[idx] = e.target.value
+                            setEditedArea({ ...editedArea, keyInsights: newInsights })
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <ul className="text-sm text-gray-700 space-y-1">
+                      {area.keyInsights.map((insight: string, idx: number) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span className="text-stellar-orange mt-0.5">•</span>
+                          <span>{insight}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <Camera size={16} className="text-gray-500" />
+                  Media Documentation
+                </h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                    <Camera className="mx-auto text-blue-600 mb-1" size={24} />
+                    <p className="text-2xl font-bold text-blue-900">{area.photoCount}</p>
+                    <p className="text-xs text-blue-700">Photos</p>
+                  </div>
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+                    <Mic className="mx-auto text-green-600 mb-1" size={24} />
+                    <p className="text-2xl font-bold text-green-900">{area.audioCount}</p>
+                    <p className="text-xs text-green-700">Voice Notes</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Report Preview Section */}
+          <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <h4 className="font-semibold text-amber-900 mb-2 flex items-center gap-2">
+              <FileText size={16} />
+              Final Report Preview
+            </h4>
+            <p className="text-sm text-amber-800">
+              This information will be included in the final inspection report. Review carefully before approving.
+            </p>
+            <div className="mt-3 p-3 bg-white rounded border border-amber-300">
+              <p className="text-xs font-mono text-gray-700">
+                <span className="font-semibold">Area:</span> {area.name} ({area.category})<br/>
+                <span className="font-semibold">Status:</span> {area.status}<br/>
+                <span className="font-semibold">Documentation:</span> {area.photoCount} photos, {area.audioCount} audio recordings<br/>
+                <span className="font-semibold">Findings:</span> {area.findings.substring(0, 100)}...
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  )
+}
 
 interface InspectionSummary {
   propertyDetails: {
@@ -220,7 +464,7 @@ export default function InspectionReviewPage() {
 
   const handleGenerateReport = async () => {
     setIsGeneratingReport(true)
-    
+
     // Generate structured report data
     const reportData = {
       reportId: `RPT-${inspectionId}`,
@@ -247,15 +491,66 @@ export default function InspectionReviewPage() {
       historicalFindings: inspectionSummary.historicalFindings,
       enrichmentStatus: enrichmentComplete
     }
-    
+
     // Save report data to localStorage (in production, this would be saved to database)
     localStorage.setItem(`inspection-report-${inspectionId}`, JSON.stringify(reportData))
-    
+
     // Mock processing delay
     await new Promise(resolve => setTimeout(resolve, 2000))
     setIsGeneratingReport(false)
-    
+
     // Navigate to report page
+    router.push(`/dashboard/inspection/${inspectionId}/report`)
+  }
+
+  const handleApproveReport = async () => {
+    setIsGeneratingReport(true)
+
+    // Generate structured report data with approved status
+    const reportData = {
+      reportId: `RPT-${inspectionId}`,
+      generatedDate: new Date().toISOString(),
+      status: 'approved',
+      property: inspectionSummary.propertyDetails,
+      inspection: {
+        id: inspectionId,
+        completedAreas: inspectionSummary.overallInsights.completedAreas,
+        totalPhotos: inspectionSummary.overallInsights.totalPhotos,
+        totalAudioNotes: inspectionSummary.overallInsights.totalAudioNotes,
+        criticalIssues: inspectionSummary.overallInsights.criticalIssues
+      },
+      areas: inspectionSummary.areas.map(area => ({
+        ...area,
+        enrichedFindings: enrichmentComplete ? `Enhanced: ${area.findings} Additional AI analysis reveals potential hidden damage and code compliance issues.` : area.findings
+      })),
+      financialSummary: {
+        estimatedValue: inspectionSummary.overallInsights.estimatedRepairCost,
+        repairEstimate: inspectionSummary.overallInsights.repairEstimate,
+        potentialSupplemental: 52000,
+        totalRecoveryOpportunity: inspectionSummary.overallInsights.estimatedRepairCost + 52000
+      },
+      aiRecommendations: inspectionSummary.aiRecommendations,
+      historicalFindings: inspectionSummary.historicalFindings,
+      enrichmentStatus: enrichmentComplete
+    }
+
+    // Update report status to approved
+    const existingReports = JSON.parse(sessionStorage.getItem('inspection_reports') || '[]')
+    const reportIndex = existingReports.findIndex((r: any) => r.inspectionId === inspectionId)
+    if (reportIndex !== -1) {
+      existingReports[reportIndex].status = 'approved'
+      existingReports[reportIndex].settlement.approved = inspectionSummary.overallInsights.estimatedRepairCost
+    }
+    sessionStorage.setItem('inspection_reports', JSON.stringify(existingReports))
+
+    // Save report data to localStorage
+    localStorage.setItem(`inspection-report-${inspectionId}`, JSON.stringify(reportData))
+
+    // Mock processing delay
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    setIsGeneratingReport(false)
+
+    // Navigate to approved report page
     router.push(`/dashboard/inspection/${inspectionId}/report`)
   }
 
@@ -355,9 +650,9 @@ export default function InspectionReviewPage() {
               Back to Inspections
             </Link>
             
-            {/* Title and Actions Row */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
+            {/* Title Section */}
+            <div>
+              <div className="flex items-center gap-4 mb-4">
                 <div>
                   <h1 className="text-3xl font-semibold text-gray-900">
                     Inspection Review
@@ -382,6 +677,8 @@ export default function InspectionReviewPage() {
                   </div>
                 )}
               </div>
+
+              {/* Action Buttons Row - Below Title */}
               <div className="hidden md:flex items-center gap-3">
                 <Link
                   href={`/dashboard/inspection/${inspectionId}/area/exterior-roof`}
@@ -419,30 +716,22 @@ export default function InspectionReviewPage() {
                   )}
                 </button>
 
-                {/* Download Report Button */}
-                <button
-                  onClick={handleDownloadReport}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 cursor-pointer"
-                >
-                  <Download size={18} />
-                  Download Report
-                </button>
 
-                {/* Send Report Button */}
+                {/* Approve Report Button - Primary Action */}
                 <button
-                  onClick={handleGenerateReport}
-                  disabled={isGeneratingReport || !enrichmentComplete}
-                  className="bg-gray-900 text-white px-6 py-2 rounded-xl hover:bg-gray-800 hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
+                  onClick={handleApproveReport}
+                  disabled={isGeneratingReport}
+                  className="bg-green-600 text-white px-6 py-2 rounded-xl hover:bg-green-700 hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200 flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none font-medium"
                 >
                   {isGeneratingReport ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
-                      Sending...
+                      Approving...
                     </>
                   ) : (
                     <>
-                      <Send size={18} />
-                      Send Report
+                      <Check size={18} />
+                      Approve Report
                     </>
                   )}
                 </button>
@@ -454,7 +743,7 @@ export default function InspectionReviewPage() {
 
       {/* Summary Cards */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
           <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-600">Total Photos</span>
@@ -572,31 +861,22 @@ export default function InspectionReviewPage() {
               </button>
             </div>
             
-            <div className="grid grid-cols-2 gap-2">
-              {/* Download Report Button - Mobile */}
+            <div className="grid grid-cols-1 gap-2">
+              {/* Approve Report Button - Mobile */}
               <button
-                onClick={handleDownloadReport}
-                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 cursor-pointer text-sm"
-              >
-                <Download size={16} />
-                Download
-              </button>
-
-              {/* Send Report Button - Mobile */}
-              <button
-                onClick={handleGenerateReport}
-                disabled={isGeneratingReport || !enrichmentComplete}
-                className="bg-gray-900 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm"
+                onClick={handleApproveReport}
+                disabled={isGeneratingReport}
+                className="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 text-sm font-medium"
               >
                 {isGeneratingReport ? (
                   <>
                     <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white" />
-                    <span>Sending</span>
+                    <span>Approving</span>
                   </>
                 ) : (
                   <>
-                    <Send size={16} />
-                    <span>Send Report</span>
+                    <Check size={16} />
+                    <span>Approve</span>
                   </>
                 )}
               </button>
@@ -767,93 +1047,54 @@ export default function InspectionReviewPage() {
             {selectedTab === 'areas' && (
               <div className="space-y-6">
                 {inspectionSummary.areas.map((area) => (
-                  <div key={area.id} className="bg-gray-50 rounded-xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <div className="flex items-center gap-3">
-                          <h3 className="text-lg font-semibold text-gray-900">{area.name}</h3>
-                          {enrichmentComplete && (
-                            <span className="px-2 py-1 bg-stellar-orange/10 text-stellar-orange text-xs rounded-full flex items-center gap-1">
-                              <Sparkles size={12} />
-                              Enhanced
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600">{area.category} • {area.status}</p>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <span className="flex items-center gap-1">
-                          <Camera size={16} />
-                          {area.photoCount} photos
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Mic size={16} />
-                          {area.audioCount} audio
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-                      <div>
-                        <h4 className="font-medium text-gray-700 mb-2">Findings</h4>
-                        <p className="text-sm text-gray-600">{area.findings}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-gray-700 mb-2">Damage Description</h4>
-                        <p className="text-sm text-gray-600">{area.damageDescription}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-gray-700 mb-2">Key Insights</h4>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          {area.keyInsights.map((insight, idx) => (
-                            <li key={idx}>• {insight}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    {/* AI Enrichment Results */}
-                    {enrichmentComplete && (
-                      <div className="border-t border-gray-200 pt-4">
-                        <h4 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
-                          <Brain className="text-stellar-orange" size={16} />
-                          AI Enrichment Results
-                        </h4>
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                            <h5 className="font-medium text-blue-900 mb-2">Historical Data Match</h5>
-                            <p className="text-sm text-blue-800">
-                              Similar damage patterns in 2021 Hurricane Ida resulted in 23% higher settlements when roof decking replacement was included.
-                            </p>
-                            <div className="mt-2 text-xs text-blue-600 font-medium">
-                              +$12,000 potential increase
-                            </div>
-                          </div>
-                          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                            <h5 className="font-medium text-amber-900 mb-2">Code Compliance Gap</h5>
-                            <p className="text-sm text-amber-800">
-                              2023 Florida Building Code requires impact-resistant materials for roof replacement in this wind zone.
-                            </p>
-                            <div className="mt-2 text-xs text-amber-600 font-medium">
-                              Code upgrade opportunity
-                            </div>
-                          </div>
-                          {area.name === 'Living Room' && (
-                            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                              <h5 className="font-medium text-red-900 mb-2">Missing Coverage Detected</h5>
-                              <p className="text-sm text-red-800">
-                                Policy analysis reveals coverage for temporary housing costs during mold remediation not claimed.
-                              </p>
-                              <div className="mt-2 text-xs text-red-600 font-medium">
-                                +$8,500 potential recovery
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <AreaCard
+                    key={area.id}
+                    area={area}
+                    enrichmentComplete={enrichmentComplete}
+                    inspectionData={inspectionData}
+                    setInspectionData={setInspectionData}
+                    getStatusIcon={getStatusIcon}
+                  />
                 ))}
+
+                {/* AI Enrichment Results Section */}
+                {enrichmentComplete && (
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200 rounded-xl p-6">
+                    <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                      <Brain className="text-stellar-orange" size={20} />
+                      AI Enrichment Summary
+                    </h4>
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                      <div className="bg-white rounded-lg p-4">
+                        <h5 className="font-medium text-gray-900 mb-2">Historical Patterns</h5>
+                        <p className="text-sm text-gray-600">
+                          3 similar cases found with average 28% higher settlements
+                        </p>
+                        <div className="mt-2 text-lg font-semibold text-green-600">
+                          +$45,000 potential
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg p-4">
+                        <h5 className="font-medium text-gray-900 mb-2">Code Violations</h5>
+                        <p className="text-sm text-gray-600">
+                          5 building code updates require compliance
+                        </p>
+                        <div className="mt-2 text-lg font-semibold text-stellar-orange">
+                          Must address
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg p-4">
+                        <h5 className="font-medium text-gray-900 mb-2">Coverage Gaps</h5>
+                        <p className="text-sm text-gray-600">
+                          2 unclaimed coverage types identified
+                        </p>
+                        <div className="mt-2 text-lg font-semibold text-blue-600">
+                          +$12,500 available
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

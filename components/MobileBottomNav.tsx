@@ -27,8 +27,8 @@ export default function MobileBottomNav() {
       href: '/dashboard/claims',
     },
     {
-      title: 'Inspect',
-      icon: Camera,
+      title: 'Schedule',
+      icon: CalendarDays,
       href: '/dashboard/inspection',
     },
     {

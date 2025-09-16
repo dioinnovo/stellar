@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useRouter } from "next/navigation"
 
 import "swiper/css"
 import "swiper/css/effect-coverflow"
@@ -64,6 +65,7 @@ interface InspectionAreaCarouselProps {
   propertyType: 'residential' | 'commercial'
   className?: string
   children?: React.ReactNode
+  inspectionId?: string
 }
 
 export function InspectionAreaCarousel({
@@ -76,8 +78,10 @@ export function InspectionAreaCarousel({
   expandedAreaId,
   propertyType,
   className = "",
-  children
+  children,
+  inspectionId
 }: InspectionAreaCarouselProps) {
+  const router = useRouter()
   const [activeIndex, setActiveIndex] = useState(currentAreaIndex)
   const [isExpanded, setIsExpanded] = useState(false)
   const [showBottomNav, setShowBottomNav] = useState(true)
@@ -245,34 +249,25 @@ export function InspectionAreaCarousel({
           {/* Complete Inspection Button */}
           <button
             onClick={() => {
-              // Handle completion logic here
-              console.log('Complete inspection clicked')
+              // Navigate to complete inspection page which triggers animation and report generation
+              if (inspectionId) {
+                router.push(`/dashboard/inspection/${inspectionId}/complete`)
+              } else {
+                console.warn('No inspection ID provided for completion')
+              }
             }}
-            className={cn(
-              "w-full py-2.5 px-4 rounded-lg font-medium transition-all duration-200",
-              progress === 100
-                ? "bg-green-600 text-white hover:bg-green-700 shadow-md"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            )}
-            disabled={progress < 100}
+            className="w-full py-2.5 px-4 rounded-full font-medium transition-all duration-200 bg-green-600 text-white hover:bg-green-700 shadow-md"
           >
-            {progress === 100 ? (
-              <span className="flex items-center justify-center gap-2">
-                <CheckCircle size={18} />
-                Complete Inspection
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <Clock size={18} />
-                {progress > 0 ? `${100 - progress}% Remaining` : 'Start Inspection'}
-              </span>
-            )}
+            <span className="flex items-center justify-center gap-2">
+              <CheckCircle size={18} />
+              Confirm Inspection
+            </span>
           </button>
         </div>
       </div>
 
       {/* Carousel */}
-      <div className="h-[500px] overflow-hidden px-1 py-6">
+      <div className="h-[520px] px-1 py-4" style={{ overflow: 'visible' }}>
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper
@@ -286,8 +281,8 @@ export function InspectionAreaCarousel({
           coverflowEffect={{
             rotate: 0,
             stretch: 0,
-            depth: 50,
-            modifier: 0.8,
+            depth: 80,
+            modifier: 1.2,
           }}
           navigation={{
             nextEl: ".swiper-button-next-custom",
@@ -306,14 +301,14 @@ export function InspectionAreaCarousel({
             const hasContent = (area.photoCount || 0) > 0 || (area.notesCount || 0) > 0
 
             return (
-              <SwiperSlide key={area.id} className="!w-[250px] !h-[400px]">
+              <SwiperSlide key={area.id} className="!w-[250px] !h-[440px]">
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   className="cursor-pointer"
                   onClick={() => onAreaSelect(area, index)}
                 >
                   <div className={cn(
-                    "bg-white rounded-xl shadow-lg border-2 overflow-hidden relative h-[400px] max-h-[400px] flex flex-col",
+                    "bg-white rounded-xl shadow-lg border-2 overflow-hidden relative h-[420px] max-h-[420px] flex flex-col",
                     area.status === 'completed' && 'border-green-400',
                     area.status === 'in_progress' && 'border-blue-400',
                     area.status === 'skipped' && 'border-yellow-400',
@@ -361,11 +356,16 @@ export function InspectionAreaCarousel({
                     <div className="p-4 flex-1 flex flex-col">
                       {/* Preview Image or Placeholder */}
                       <div className="w-full h-[180px] bg-gray-100 rounded-lg mb-2 overflow-hidden">
-                        {area.previewImage ? (
-                          <img 
-                            src={area.previewImage} 
+                        {area.previewImage && !area.previewImage.startsWith('blob:') ? (
+                          <img
+                            src={area.previewImage}
                             alt={area.name}
                             className="w-full h-full object-cover"
+                            onError={(e) => {
+                              // Hide the image if it fails to load
+                              const target = e.target as HTMLImageElement
+                              target.style.display = 'none'
+                            }}
                           />
                         ) : (
                           <div className="w-full h-full flex flex-col items-center justify-center">
@@ -495,7 +495,7 @@ export function InspectionAreaCarousel({
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            className="bg-white border-t border-gray-200 px-3 pt-3 pb-0 flex-shrink-0"
+            className="bg-white border-t border-gray-200 px-4 pb-2 pt-0 flex-shrink-0"
           >
             {/* Category Groups */}
             <div className="space-y-0.5">

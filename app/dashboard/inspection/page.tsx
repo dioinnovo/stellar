@@ -68,7 +68,7 @@ export default function InspectionListPage() {
       estimatedDuration: '3 hours',
       completionRate: 65,
       imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop&q=80',
-      photosCount: 47,
+      photosCount: 16,
       currentArea: 'Kitchen & Dining',
       areasInspected: ['Exterior Roof', 'Exterior Siding', 'Living Room', 'Kitchen & Dining'],
       damageAssessment: {
@@ -258,7 +258,7 @@ export default function InspectionListPage() {
     <div className="space-y-6">
       {/* Header */}
       <PageHeader
-        title="Property Inspections"
+        title="Schedule Inspections"
         description="AI-powered comprehensive property assessments"
         className="border border-slate-200"
         action={
@@ -373,8 +373,8 @@ export default function InspectionListPage() {
             </div>
           </div>
 
-          {/* Scheduled Grid - 1 column when sidebar expanded on md, 2 when collapsed */}
-          <div className={`grid grid-cols-1 ${isCollapsed ? 'md:grid-cols-2' : 'md:grid-cols-1'} lg:grid-cols-3 gap-4`}>
+          {/* Scheduled Grid - 1 column on mobile and md screens */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             {activeScheduledInspections.map((inspection) => (
               <motion.div
                 key={inspection.id}
@@ -560,16 +560,6 @@ export default function InspectionListPage() {
                         <span>Continue Inspection</span>
                       </Link>
                     )}
-                  </div>
-
-                  <div className="flex items-center justify-center pt-2">
-                    <Link
-                      href={`/dashboard/inspection/${inspection.id}`}
-                      className="text-xs text-gray-500 hover:text-gray-700 transition-colors flex items-center gap-1 group"
-                    >
-                      <span>View Details</span>
-                      <ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
-                    </Link>
                   </div>
                 </div>
               </motion.div>

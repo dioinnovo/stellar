@@ -136,6 +136,40 @@
     background-color: rgba(255, 255, 255, 0.3);
   }
   
+  /* Swiper Carousel Custom Styles for Inspection Areas */
+  .inspection-carousel .swiper-slide-shadow-left,
+  .inspection-carousel .swiper-slide-shadow-right,
+  .inspection-carousel .swiper-slide-shadow-coverflow {
+    border-radius: 0.75rem !important; /* Match the rounded-xl of cards */
+  }
+
+  /* Additional overlay for non-active slides with rounded corners */
+  .inspection-carousel .swiper-slide:not(.swiper-slide-active) > div > div {
+    position: relative;
+  }
+
+  .inspection-carousel .swiper-slide:not(.swiper-slide-active) > div > div::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 0.75rem; /* Match the rounded-xl of cards */
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Scale active slide to appear closer */
+  .inspection-carousel .swiper-slide-active {
+    transform: scale(1.05) !important;
+    z-index: 10;
+    transition: transform 0.3s ease;
+  }
+
+  /* Ensure smooth transition for non-active slides */
+  .inspection-carousel .swiper-slide {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
   /* Sequential fade-in animations */
   @keyframes fadeInSlide {
     from {
