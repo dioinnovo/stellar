@@ -228,9 +228,9 @@ export default function InspectionStartPage() {
     setEditedClaimData(prev => ({
       ...prev!,
       [section]: {
-        ...prev![section],
+        ...(typeof prev![section] === 'object' && prev![section] !== null ? prev![section] : {}),
         [field]: value
-      }
+      } as any
     }))
   }
 
@@ -246,72 +246,72 @@ export default function InspectionStartPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Header - Mobile Optimized */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/dashboard/inspection"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 cursor-pointer"
-              >
-                <ArrowLeft size={20} />
-                <span className="hidden sm:inline">Back to Inspections</span>
-              </Link>
-              <div className="w-px h-6 bg-gray-300 hidden sm:block" />
-              <h1 className="text-xl sm:text-3xl font-semibold text-gray-900">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
+          <div>
+            <Link
+              href="/dashboard/inspection"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-3"
+            >
+              <ArrowLeft className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+              <span>Back to Inspections</span>
+            </Link>
+            <div className="flex items-center justify-between">
+              <h1 className="text-lg sm:text-xl lg:text-3xl font-semibold text-gray-900">
                 Inspection Setup - {inspectionId}
               </h1>
-            </div>
-            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
               {!isEditMode ? (
                 <button
                   onClick={handleEdit}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                  className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 text-gray-700 hover:text-gray-900 cursor-pointer"
                 >
-                  <Edit2 size={18} />
+                  <Edit2 className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
                   <span className="hidden sm:inline">Edit</span>
                 </button>
               ) : (
                 <>
                   <button
                     onClick={handleCancelEdit}
-                    className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+                    className="flex items-center gap-1 px-2 sm:px-3 py-2 text-gray-600 hover:text-gray-900 cursor-pointer"
                   >
-                    <X size={18} />
+                    <X className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
                     <span className="hidden sm:inline">Cancel</span>
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex items-center gap-2 px-4 py-2 bg-[#E74C3C] text-white rounded-lg hover:bg-[#D73929] cursor-pointer"
+                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 bg-[#E74C3C] text-white rounded-lg hover:bg-[#D73929] cursor-pointer text-sm sm:text-base"
                   >
-                    <Check size={18} />
+                    <Check className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
                     {isSaving ? 'Saving...' : 'Save'}
                   </button>
                 </>
               )}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
+      {/* Mobile-First Container */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          {/* Main Content - Mobile Optimized */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Loading State */}
             {isLoading && !claimData && (
-              <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center">
+              <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-6 sm:p-12 text-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4" />
-                <p className="text-gray-600">Loading claim information...</p>
+                <p className="text-gray-600 text-sm sm:text-base">Loading claim information...</p>
               </div>
             )}
 
             {/* Claim Overview */}
             {claimData && (
               <>
-                <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6" data-testid="claim-information">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="p-2 bg-stellar-orange/10 rounded-lg">
                       <FileText className="text-stellar-orange" size={20} />
@@ -319,7 +319,7 @@ export default function InspectionStartPage() {
                     <h2 className="text-lg font-semibold text-gray-900">Claim Information</h2>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <h3 className="font-medium text-gray-700 mb-3">Property Details</h3>
                       {!isEditMode ? (
@@ -518,7 +518,7 @@ export default function InspectionStartPage() {
                 </div>
 
                 {/* Inspection Setup */}
-                <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="p-2 bg-stellar-orange/10 rounded-lg">
                       <Camera className="text-stellar-orange" size={20} />
@@ -527,17 +527,23 @@ export default function InspectionStartPage() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div>
+                    <div className="relative">
                       <label className="block text-sm font-medium text-gray-700 mb-1">Inspector *</label>
                       <select
                         value={inspectionSetup.inspector}
                         onChange={(e) => updateInspectionField('inspector', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+                        className="w-full px-4 py-2 pr-10 text-base md:text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white appearance-none cursor-pointer min-h-[44px]"
+                        style={{ fontSize: '16px' }}
                       >
                         <option value="James Rodriguez">James Rodriguez</option>
                         <option value="Maria Garcia">Maria Garcia</option>
                         <option value="Michael Thompson">Michael Thompson</option>
                       </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none" style={{ paddingTop: '28px' }}>
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Scheduled Date *</label>
@@ -594,13 +600,13 @@ export default function InspectionStartPage() {
           </div>
 
           {/* Sidebar - AI Insights */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Historical Data */}
             {isLoading ? (
-              <div className="bg-white rounded-2xl border border-gray-200 p-6">
+              <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <Brain className="text-stellar-orange animate-pulse" size={20} />
-                  <h3 className="font-semibold">Analyzing History...</h3>
+                  <h3 className="font-semibold text-sm sm:text-base">Analyzing History...</h3>
                 </div>
                 <div className="animate-pulse space-y-2">
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -611,7 +617,7 @@ export default function InspectionStartPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl border border-gray-200 p-6"
+                className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6"
               >
                 <div className="flex items-center gap-2 mb-4">
                   <Brain className="text-stellar-orange" size={20} />
@@ -642,19 +648,19 @@ export default function InspectionStartPage() {
               </motion.div>
             )}
 
-            {/* Start Inspection Button */}
+            {/* Start Inspection Button - Mobile Optimized */}
             <button
               onClick={handleStartInspection}
               disabled={!isFormValid}
-              className={`w-full p-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
+              className={`w-full p-3 sm:p-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm sm:text-base ${
                 isFormValid
                   ? 'bg-stellar-orange text-white hover:bg-orange-600 cursor-pointer shadow-lg shadow-stellar-orange/25'
                   : 'bg-gray-200 text-gray-500 cursor-not-allowed'
               }`}
             >
-              <Camera size={20} />
+              <Camera className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
               Start Property Inspection
-              <ArrowRight size={20} />
+              <ArrowRight className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
             </button>
           </div>
         </div>

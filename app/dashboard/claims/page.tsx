@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { HandshakeIcon, ChevronRight, Plus } from 'lucide-react'
 import Link from 'next/link'
+import { PageHeader } from '@/components/ui/page-header'
 
 export default function ClaimsAnalysisPage() {
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
@@ -17,7 +18,8 @@ export default function ClaimsAnalysisPage() {
       status: 'Under Review',
       value: 285000,
       date: '2024-03-15',
-      phase: 'documentation'
+      phase: 'documentation',
+      imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop&q=80'
     },
     {
       id: 'RP-2024-94783',
@@ -27,7 +29,8 @@ export default function ClaimsAnalysisPage() {
       status: 'Negotiating',
       value: 125000,
       date: '2024-03-14',
-      phase: 'negotiation'
+      phase: 'negotiation',
+      imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop&q=80'
     },
     {
       id: 'CP-2024-94784',
@@ -37,60 +40,84 @@ export default function ClaimsAnalysisPage() {
       status: 'Inspecting',
       value: 195000,
       date: '2024-03-13',
-      phase: 'inspection'
+      phase: 'inspection',
+      imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=600&fit=crop&q=80'
     }
   ]
 
 
   return (
-    <div className="space-y-4 pb-24">
+    <div className="space-y-4">
       {/* Header */}
-      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-stellar-dark">Claim Analysis Center</h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">Complete end-to-end claim processing workflow</p>
-          </div>
+      <PageHeader 
+        title="Claim Analysis Center"
+        description="Complete end-to-end claim processing workflow"
+        action={
           <button 
             onClick={() => setShowNewClaimForm(true)}
-            className="px-4 sm:px-6 py-2.5 sm:py-3 bg-stellar-orange text-white rounded-lg hover:bg-orange-600 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto"
+            className="h-12 px-6 bg-stellar-orange text-white rounded-full hover:bg-orange-600 flex items-center justify-center gap-2 cursor-pointer w-full sm:w-auto transition-colors"
           >
             <Plus size={20} />
-            <span>New Claim</span>
+            <span className="font-medium">New Claim</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Recent Claims */}
       <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-        <h2 className="text-lg sm:text-xl font-bold text-stellar-dark mb-4">Active Claims</h2>
+        <h2 className="text-xl font-bold text-stellar-dark mb-4">Active Claims</h2>
         <div className="space-y-3">
           {recentClaims.map((claim) => (
             <Link
               key={claim.id}
               href={`/dashboard/claims/${claim.id}`}
-              className="block border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-stellar-orange transition cursor-pointer"
+              className="block border border-gray-200 rounded-lg overflow-hidden hover:border-stellar-orange transition cursor-pointer"
             >
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className="font-bold text-sm sm:text-base text-stellar-dark">{claim.id}</span>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      claim.status === 'Negotiating' ? 'bg-amber-100 text-amber-700' :
-                      claim.status === 'Under Review' ? 'bg-gray-100 text-gray-700' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
-                      {claim.status}
-                    </span>
-                  </div>
-                  <p className="font-medium text-sm sm:text-base truncate">{claim.client}</p>
-                  <p className="text-xs sm:text-sm text-gray-600 truncate">{claim.property}</p>
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2">
-                    <span className="text-xs sm:text-sm text-gray-500">{claim.type}</span>
-                    <span className="text-xs sm:text-sm font-semibold text-green-600">${claim.value.toLocaleString()}</span>
-                  </div>
+              {/* Property Image with Address Overlay */}
+              <div className="relative h-48 sm:h-56 bg-gray-100">
+                <img 
+                  src={claim.imageUrl} 
+                  alt={claim.property}
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Dark gradient from bottom */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0A1628] via-[#0A1628]/60 to-transparent" />
+                
+                {/* Property Address */}
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h3 className="font-bold text-white text-lg leading-tight drop-shadow-lg">
+                    {claim.property}
+                  </h3>
                 </div>
-                <ChevronRight className="text-gray-400 flex-shrink-0" size={20} />
+                
+                {/* Status Badge */}
+                <div className="absolute top-3 right-3">
+                  <span className={`inline-block px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg ${
+                    claim.status === 'Negotiating' ? 'bg-amber-500 text-white' :
+                    claim.status === 'Under Review' ? 'bg-gray-600 text-white' :
+                    'bg-blue-600 text-white'
+                  }`}>
+                    {claim.status}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Claim Details */}
+              <div className="p-3 sm:p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="font-bold text-sm sm:text-base text-stellar-dark">{claim.id}</span>
+                    </div>
+                    <p className="font-medium text-sm sm:text-base truncate">{claim.client}</p>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2">
+                      <span className="text-xs sm:text-sm text-gray-500">{claim.type}</span>
+                      <span className="text-xs sm:text-sm font-semibold text-green-600">${claim.value.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <ChevronRight className="text-gray-400 flex-shrink-0" size={20} />
+                </div>
               </div>
             </Link>
           ))}

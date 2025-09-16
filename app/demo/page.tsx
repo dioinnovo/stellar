@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, FileText, TrendingUp, Download, CheckCircle, Camera, DollarSign, Clock, ArrowRight, Brain, Zap, Shield, BarChart3, Eye, FileCheck, AlertCircle, Users, Home, Building2, FileImage, X, AlertTriangle, Banknote, UserCheck } from 'lucide-react'
+import { Upload, FileText, TrendingUp, Download, CheckCircle, Camera, DollarSign, Clock, ArrowRight, Brain, Zap, Shield, Eye, FileCheck, AlertCircle, Users, Home, Building2, FileImage, X, AlertTriangle, Banknote, UserCheck } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -147,7 +147,6 @@ export default function DemoPage() {
     { id: 'claims-intelligence', label: 'Claims Intelligence', icon: Brain },
     { id: 'estimation', label: 'AI Estimates', icon: DollarSign },
     { id: 'coverage-analysis', label: 'Coverage Analysis', icon: Shield },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
   ]
 
   return (
@@ -522,16 +521,6 @@ export default function DemoPage() {
                               <p className="text-xs text-gray-500">Find overlooked benefits</p>
                             </div>
                           </button>
-                          <button
-                            onClick={() => setActiveTab('analytics')}
-                            className="flex items-center justify-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-stellar-orange transition"
-                          >
-                            <BarChart3 className="text-blue-600" size={24} />
-                            <div className="text-left">
-                              <p className="font-medium text-gray-900">View Analytics</p>
-                              <p className="text-xs text-gray-500">Performance metrics</p>
-                            </div>
-                          </button>
                         </div>
                       </div>
                     )}
@@ -655,7 +644,7 @@ export default function DemoPage() {
                                 <Camera className="text-gray-400" size={32} />
                               </div>
                               <p className="text-sm text-gray-700">{image.name}</p>
-                              {selectedImage >= image.id && (
+                              {selectedImage !== null && selectedImage >= image.id && (
                                 <div className="absolute top-2 right-2">
                                   <CheckCircle className="text-green-500" size={24} />
                                 </div>
@@ -1043,89 +1032,6 @@ export default function DemoPage() {
                 </div>
               )}
 
-              {/* Analytics Dashboard Tab */}
-              {activeTab === 'analytics' && (
-                <div className="bg-white rounded-2xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold text-stellar-dark mb-4">
-                    Real-Time Claims Analytics
-                  </h2>
-                  <p className="text-gray-600 mb-8">
-                    Monitor performance metrics and identify optimization opportunities across your claims operations.
-                  </p>
-
-                  {/* KPI Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    {[
-                      { label: 'Claims Processed Today', value: '247', change: '+12%', positive: true },
-                      { label: 'Average Processing Time', value: '2.4 hrs', change: '-35%', positive: true },
-                      { label: 'First Touch Resolution', value: '78%', change: '+8%', positive: true },
-                      { label: 'Customer Satisfaction', value: '4.8/5', change: '+0.3', positive: true },
-                    ].map((kpi, index) => (
-                      <div key={index} className="bg-gray-50 rounded-lg p-6">
-                        <p className="text-sm text-gray-600 mb-2">{kpi.label}</p>
-                        <div className="flex items-end justify-between">
-                          <div>
-                            <p className="text-2xl font-bold text-stellar-dark">{kpi.value}</p>
-                            <p className={`text-sm ${kpi.positive ? 'text-green-600' : 'text-red-600'}`}>
-                              {kpi.change} vs last month
-                            </p>
-                          </div>
-                          <TrendingUp className={kpi.positive ? 'text-green-500' : 'text-red-500'} size={24} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Charts */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Claims Volume Chart */}
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="font-semibold text-gray-800 mb-4">Claims Volume Trend</h3>
-                      <div className="h-48 flex items-end justify-between gap-2">
-                        {[65, 78, 82, 91, 88, 95, 102].map((height, index) => (
-                          <div key={index} className="flex-1">
-                            <div 
-                              className="bg-stellar-orange rounded-t"
-                              style={{ height: `${height}%` }}
-                            />
-                            <p className="text-xs text-gray-600 text-center mt-2">
-                              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Loss Type Distribution */}
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="font-semibold text-gray-800 mb-4">Loss Type Distribution</h3>
-                      <div className="space-y-3">
-                        {[
-                          { type: 'Hurricane', percentage: 30, color: 'bg-blue-500' },
-                          { type: 'Water', percentage: 25, color: 'bg-cyan-500' },
-                          { type: 'Wind/Hail', percentage: 20, color: 'bg-indigo-500' },
-                          { type: 'Fire', percentage: 15, color: 'bg-red-500' },
-                          { type: 'Theft', percentage: 7, color: 'bg-purple-500' },
-                          { type: 'Other', percentage: 3, color: 'bg-gray-500' },
-                        ].map((type, index) => (
-                          <div key={index}>
-                            <div className="flex justify-between text-sm mb-1">
-                              <span className="text-gray-700">{type.type}</span>
-                              <span className="font-medium">{type.percentage}%</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div 
-                                className={`${type.color} h-2 rounded-full`}
-                                style={{ width: `${type.percentage}%` }}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
             </motion.div>
           </AnimatePresence>
 

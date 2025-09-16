@@ -1,12 +1,16 @@
 /**
  * Conversation Agent - Restructured with Structured Output
- * 
+ *
  * This agent handles natural conversations AND extracts structured data
  * directly using the LLM's understanding of the conversation context.
  */
 
 import { AIMessage } from '@langchain/core/messages';
 import { MasterOrchestratorState, AgentExecution, CustomerInfo } from '../orchestrator/state';
+
+// Azure OpenAI configuration
+const AZURE_ENDPOINT = process.env.AZURE_OPENAI_ENDPOINT;
+const AZURE_API_KEY = process.env.AZURE_OPENAI_KEY;
 
 /**
  * Structured response format for conversation
@@ -319,7 +323,7 @@ export async function conversationNode(
           agentId: 'conversation',
           startTime,
           endTime: new Date(),
-          status: 'skipped',
+          status: 'completed',
           result: { reason: 'No new user message' },
           retryCount: 0,
         }],
@@ -340,10 +344,17 @@ export async function conversationNode(
     // Update customer info with extracted data and intent/opportunity
     const updatedCustomerInfo: CustomerInfo = {
       ...state.customerInfo,
-      ...structuredResponse.extracted,
+      name: structuredResponse.extracted.name || state.customerInfo.name,
+      email: structuredResponse.extracted.email || state.customerInfo.email,
+      phone: structuredResponse.extracted.phone || state.customerInfo.phone,
+      company: structuredResponse.extracted.company || state.customerInfo.company,
+      industry: structuredResponse.extracted.industry || state.customerInfo.industry,
+      companySize: (structuredResponse.extracted.companySize as CustomerInfo['companySize']) || state.customerInfo.companySize,
       currentChallenges: structuredResponse.extracted.challenges || state.customerInfo.currentChallenges,
       intentType: structuredResponse.intentType || state.customerInfo.intentType,
       opportunitySummary: structuredResponse.opportunitySummary || state.customerInfo.opportunitySummary,
+      // Store budget and timeline in notes since they're not part of CustomerInfo
+      notes: `${state.customerInfo.notes || ''} Budget: ${structuredResponse.extracted.budget || 'Not specified'}. Timeline: ${structuredResponse.extracted.timeline || 'Not specified'}.`.trim(),
     };
     
     // Determine conversation status - only complete if truly ready

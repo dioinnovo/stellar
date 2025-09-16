@@ -3,22 +3,23 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { 
-  LayoutDashboard, 
-  Home, 
-  FileSearch, 
-  MessageSquare, 
-  FileText, 
-  DollarSign, 
-  Users, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  Home,
+  FileSearch,
+  MessageSquare,
+  FileText,
+  DollarSign,
+  Users,
+  CalendarDays,
   Settings,
   ChevronLeft,
   ChevronRight,
   Brain,
   Camera,
   History,
-  HandshakeIcon
+  HandshakeIcon,
+  FileCheck
 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -50,23 +51,17 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
       description: 'AI-powered comprehensive inspection'
     },
     {
-      title: 'Stella AI',
-      icon: Brain,
-      href: '/dashboard/assistant',
-      description: 'AI-powered claim assistant'
-    },
-    {
-      title: 'AI Analytics',
-      icon: BarChart3,
-      href: '/dashboard/analytics',
-      description: 'ML predictions & insights'
+      title: 'Reports',
+      icon: FileCheck,
+      href: '/dashboard/reports',
+      description: 'Completed reports'
     }
   ]
 
   return (
-    <aside 
+    <aside
       className={`
-        bg-slate-50 text-gray-800 h-screen sticky top-0 transition-all duration-300 flex flex-col rounded-2xl border border-gray-200 shadow-xl shadow-gray-300/20
+        bg-slate-50 text-gray-800 h-[calc(100vh-1rem)] fixed top-2 left-2 z-40 transition-all duration-300 flex flex-col rounded-2xl border border-gray-200 shadow-lg shadow-gray-400/30
         ${isCollapsed ? 'w-20' : 'w-64'}
       `}
     >

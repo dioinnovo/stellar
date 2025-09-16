@@ -30,7 +30,7 @@ interface BusinessContext {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { messages, quickAction } = body
+    const { messages, quickAction, generateTitle } = body
 
     if (!AZURE_ENDPOINT || !AZURE_API_KEY) {
       return NextResponse.json(
@@ -102,9 +102,38 @@ export async function POST(request: NextRequest) {
     // Generate context-aware suggestions for follow-up
     const suggestions = generateSmartSuggestions(userMessage, aiResponse, context)
 
+    // If title generation is requested, generate a concise title
+    let title = undefined
+    if (generateTitle) {
+      const titleResponse = await fetch(`${AZURE_ENDPOINT}/openai/deployments/${AZURE_DEPLOYMENT}/chat/completions?api-version=${API_VERSION}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': AZURE_API_KEY!,
+        },
+        body: JSON.stringify({
+          messages: [
+            { 
+              role: 'system', 
+              content: 'Generate a brief title (max 30 chars) summarizing the conversation topic. Output only the title.' 
+            },
+            ...messages.slice(-3)
+          ],
+          max_tokens: 20,
+          temperature: 0.5
+        })
+      })
+      
+      if (titleResponse.ok) {
+        const titleData = await titleResponse.json()
+        title = titleData.choices[0]?.message?.content?.trim().substring(0, 30)
+      }
+    }
+
     return NextResponse.json({
       response: aiResponse,
       suggestions,
+      title,
       context: {
         hasClaimData: !!context.claimData,
         hasFinancialData: !!context.financialMetrics,

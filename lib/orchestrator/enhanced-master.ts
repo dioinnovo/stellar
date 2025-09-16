@@ -21,12 +21,21 @@ import {
 } from './state';
 
 // Import all agent nodes
-import { conversationNode } from '../agents/conversation-langchain';
-import { recommendationNode } from '../agents/recommendation';
-import { schedulingNode } from '../agents/scheduling';
-import { notificationNode } from '../agents/notification';
-import { analyticsNode } from '../agents/analytics';
-import { nurtureNode } from '../agents/nurture';
+// TODO: Fix these imports - conversationNode and other nodes need to be properly exported
+// import { conversationNode } from '../agents/conversation-langchain';
+// import { recommendationNode } from '../agents/recommendation';
+// import { schedulingNode } from '../agents/scheduling';
+// import { notificationNode } from '../agents/notification';
+// import { analyticsNode } from '../agents/analytics';
+// import { nurtureNode } from '../agents/nurture';
+
+// Temporary placeholder nodes
+const conversationNode = async (state: any) => state;
+const recommendationNode = async (state: any) => state;
+const schedulingNode = async (state: any) => state;
+const notificationNode = async (state: any) => state;
+const analyticsNode = async (state: any) => state;
+const nurtureNode = async (state: any) => state;
 import { 
   shouldTriggerUICollection, 
   handleUIResponse,

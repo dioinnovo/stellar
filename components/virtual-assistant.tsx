@@ -25,7 +25,7 @@ const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
   apiEndpoint = process.env.NEXT_PUBLIC_AI_API_ENDPOINT || "/api/chat",
   apiKey = process.env.NEXT_PUBLIC_AI_API_KEY,
   model = process.env.NEXT_PUBLIC_AI_MODEL || "gpt-3.5-turbo",
-  systemPrompt = "You are Stella, a helpful insurance claim assistant for Stellar Adjusting. You help homeowners and property owners with insurance claims, provide claim status updates, schedule free claim analysis and home inspections, and answer questions about maximizing insurance coverage. Be empathetic, professional, and focused on helping customers get the coverage they deserve. Always offer to help with claim inquiries, free analysis, or scheduling inspections.",
+  systemPrompt = "You are Stella, the elite Lead Generation Specialist for Stellar Adjusting. Your PRIMARY mission is to identify property owners who have been lowballed, denied, or delayed by their insurance company and convert them into clients. You work for a company that fights insurance companies to get people every dollar they deserve. Always focus on: 1) Identifying if they have an active claim, 2) Uncovering how their insurance company is screwing them, 3) Creating urgency around getting professional help, 4) Scheduling a free claim review. You only get paid when clients get more money - NO WIN, NO FEE. Be empathetic but results-focused, and always position Stellar as the solution to insurance company abuse.",
   useCallbackAgent = false
 }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -178,7 +178,7 @@ const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
         setTimeout(() => {
           setShowTypingIndicator(false)
           setMessages([{
-            text: "Hi! I'm Stella, your insurance claim assistant. I can help you check your claim status, schedule a free claim analysis or home inspection, or answer any questions about maximizing your insurance coverage. How can I help you today?",
+            text: "Hi! I'm Stella from Stellar Adjusting. I help property owners who are getting lowballed, delayed, or denied by their insurance companies. If you have an active claim or recent property damage, I can tell you right now if your insurance company is trying to screw you over. What's going on with your claim?",
             isUser: false,
             timestamp: new Date()
           }])
@@ -552,12 +552,12 @@ const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
           "fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50",
           "w-96 h-[600px] max-h-[80vh]",
           // Mobile responsive styles
-          "sm:w-96 sm:h-[600px] sm:right-6 sm:bottom-6 sm:rounded-[22px]",
+          "sm:w-96 sm:h-[600px] sm:right-6 sm:bottom-6 sm:rounded-[40px]",
           "max-sm:w-[calc(100vw-32px)] max-sm:h-[500px] max-sm:right-4 max-sm:bottom-4",
           // Fullscreen on mobile when voice is active
           (isVoiceConnecting || isCallActive) && "max-sm:w-screen max-sm:h-screen max-sm:right-0 max-sm:bottom-0 max-sm:rounded-none",
           "bg-white dark:bg-[#2C3E50]",
-          "rounded-[22px] overflow-hidden",
+          "rounded-[40px] overflow-hidden",
           "shadow-[0_0_2px_rgba(0,0,0,0.12),0_8px_16px_rgba(0,0,0,0.14)]",
           "flex flex-col",
           "transition-all duration-300",
@@ -927,8 +927,8 @@ const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
                   const hasMeaningfulHistory = messages.length > 0 && 
                     messages.some(msg => msg.isUser); // Has user messages
                   
-                  // Start the call with context awareness
-                  await startCall(hasMeaningfulHistory);
+                  // Start the call with context awareness  
+                  await startCall();
                   
                   // Send existing conversation context if there is any
                   if (hasMeaningfulHistory) {
@@ -976,7 +976,7 @@ const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
                 placeholder={isLoading ? "Processing your request..." : (hasEngaged ? "Ask about your claim..." : "How can I help with your insurance claim?")}
                 disabled={isLoading}
                 rows={1}
-                className="w-full pl-5 pr-14 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-300 disabled:opacity-50 focus:bg-white dark:focus:bg-gray-700 focus:border-stellar-orange dark:focus:border-stellar-orange focus:outline-none focus:ring-1 focus:ring-stellar-orange/20 resize-none overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent"
+                className="w-full pl-5 pr-14 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-300 disabled:opacity-50 focus:bg-white dark:focus:bg-gray-700 focus:border-stellar-orange dark:focus:border-stellar-orange focus:outline-none focus:ring-1 focus:ring-stellar-orange/20 resize-none overflow-hidden"
                 style={{ 
                   minHeight: '44px', 
                   maxHeight: '120px'

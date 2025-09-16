@@ -33,33 +33,33 @@ const DAMAGE_TYPES = [
 ]
 
 const SEVERITY_LEVELS = [
-  { value: 'minor', label: 'Minor', color: 'border-blue-500 bg-blue-50 text-blue-700', icon: '🟢' },
-  { value: 'moderate', label: 'Moderate', color: 'border-yellow-500 bg-yellow-50 text-yellow-700', icon: '🟡' },
-  { value: 'major', label: 'Major', color: 'border-orange-500 bg-orange-50 text-orange-700', icon: '🟠' },
-  { value: 'total_loss', label: 'Total Loss', color: 'border-red-500 bg-red-50 text-red-700', icon: '🔴' }
+  { value: 'minor', label: 'Minor', shortLabel: 'Minor', color: 'border-blue-500 bg-blue-50 text-blue-700', icon: '🟢' },
+  { value: 'moderate', label: 'Moderate', shortLabel: 'Moderate', color: 'border-yellow-500 bg-yellow-50 text-yellow-700', icon: '🟡' },
+  { value: 'major', label: 'Major', shortLabel: 'Major', color: 'border-orange-500 bg-orange-50 text-orange-700', icon: '🟠' },
+  { value: 'total_loss', label: 'Total Loss', shortLabel: 'Total', color: 'border-red-500 bg-red-50 text-red-700', icon: '🔴' }
 ]
 
 const URGENCY_LEVELS = [
-  { 
-    value: 'routine', 
-    label: 'Routine', 
+  {
+    value: 'routine',
+    label: 'Routine',
     description: 'Within 48-72 hours',
     color: 'border-gray-300 bg-gray-50',
-    icon: <Clock className="w-4 h-4" />
+    icon: <Clock className="w-6 h-6 text-gray-600" />
   },
-  { 
-    value: 'urgent', 
-    label: 'Urgent', 
+  {
+    value: 'urgent',
+    label: 'Urgent',
     description: 'Within 24 hours',
     color: 'border-yellow-500 bg-yellow-50',
-    icon: <Zap className="w-4 h-4 text-yellow-600" />
+    icon: <Zap className="w-6 h-6 text-yellow-600" />
   },
-  { 
-    value: 'emergency', 
-    label: 'Emergency', 
+  {
+    value: 'emergency',
+    label: 'Emergency',
     description: 'Immediate response',
     color: 'border-red-500 bg-red-50',
-    icon: <AlertTriangle className="w-4 h-4 text-red-600" />
+    icon: <AlertTriangle className="w-6 h-6 text-red-600" />
   }
 ]
 
@@ -180,28 +180,25 @@ export default function NewInspectionPage() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/dashboard/inspection"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <ArrowLeft size={20} />
-                <span className="hidden sm:inline">Cancel</span>
-              </Link>
-              <div className="w-px h-6 bg-gray-300 hidden sm:block" />
-              <div>
-                <h1 className="text-xl sm:text-3xl font-semibold text-gray-900">
-                  Quick Inspection Setup
-                </h1>
-                <p className="text-sm text-gray-600 mt-1">Start inspection immediately - details can be added later</p>
-              </div>
+          <div>
+            <Link
+              href="/dashboard/inspection"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-3"
+            >
+              <ArrowLeft size={20} />
+              <span>Cancel</span>
+            </Link>
+            <div>
+              <h1 className="text-xl sm:text-3xl font-semibold text-gray-900">
+                Quick Inspection Setup
+              </h1>
+              <p className="text-sm text-gray-600 mt-1">Start inspection immediately - details can be added later</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="max-w-4xl mx-auto sm:px-6 py-4 sm:py-6">
         <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -219,7 +216,7 @@ export default function NewInspectionPage() {
               
               <div className="space-y-4">
                 {/* Date of Loss */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Date of Loss *
@@ -259,13 +256,13 @@ export default function NewInspectionPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Damage Types * (Select all that apply)
                   </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     {DAMAGE_TYPES.map((type) => (
                       <button
                         key={type}
                         type="button"
                         onClick={() => toggleDamageType(type)}
-                        className={`px-3 py-2 rounded-lg border-2 transition-all text-sm font-medium ${
+                        className={`px-2 py-2 rounded-lg border-2 transition-all text-xs sm:text-sm font-medium ${
                           formData.incident.damageTypes.includes(type)
                             ? 'border-[#E74C3C] bg-[#E74C3C]/10 text-[#E74C3C]'
                             : 'border-gray-200 hover:border-gray-300 text-gray-700'
@@ -285,20 +282,29 @@ export default function NewInspectionPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Damage Severity *
                   </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-4 gap-2">
                     {SEVERITY_LEVELS.map((level) => (
                       <button
                         key={level.value}
                         type="button"
                         onClick={() => updateField('incident', 'severity', level.value)}
-                        className={`px-4 py-3 rounded-lg border-2 transition-all text-sm font-medium ${
+                        className={`p-3 rounded-lg border-2 transition-all flex flex-col items-center justify-center gap-1 ${
                           formData.incident.severity === level.value
                             ? level.color + ' border-2'
-                            : 'border-gray-200 hover:border-gray-300'
+                            : 'border-gray-200 hover:border-gray-300 text-gray-700'
                         }`}
                       >
-                        <span className="text-lg mr-1">{level.icon}</span>
-                        {level.label}
+                        <span className="text-2xl mb-1">{level.icon}</span>
+                        <span className="text-xs font-medium">
+                          {level.value === 'total_loss' ? (
+                            <>
+                              <span className="block sm:hidden">Total</span>
+                              <span className="hidden sm:block">Total Loss</span>
+                            </>
+                          ) : (
+                            level.label
+                          )}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -397,23 +403,27 @@ export default function NewInspectionPage() {
                 <h2 className="text-lg font-semibold text-gray-900">Inspection Urgency</h2>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-2">
                 {URGENCY_LEVELS.map((level) => (
                   <button
                     key={level.value}
                     type="button"
                     onClick={() => updateField('inspection', 'urgency', level.value)}
-                    className={`p-4 rounded-lg border-2 transition-all ${
+                    className={`p-3 rounded-lg border-2 transition-all flex flex-col items-center justify-center ${
                       formData.inspection.urgency === level.value
                         ? level.color + ' border-2'
-                        : 'border-gray-200 hover:border-gray-300'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2">
                       {level.icon}
-                      <span className="font-semibold">{level.label}</span>
                     </div>
-                    <p className="text-xs text-gray-600 text-left">{level.description}</p>
+                    <div className="text-center">
+                      <div className="font-medium text-sm">
+                        {level.label}
+                      </div>
+                      <div className="text-[10px] text-gray-500 mt-0.5">{level.description}</div>
+                    </div>
                   </button>
                 ))}
               </div>

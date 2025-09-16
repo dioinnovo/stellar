@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chroma-core/default-embed": "^0.1.8",
     "@hookform/resolvers": "^5.2.1",
     "@langchain/anthropic": "^0.3.27",
     "@langchain/core": "^0.3.75",
@@ -50,6 +51,7 @@
     "resend": "^6.0.3",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
+    "swiper": "^12.0.1",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^13.0.0",
@@ -63,7 +65,7 @@
     "eslint": "^8",
     "eslint-config-next": "^15.5.2",
     "postcss": "^8",
-    "puppeteer": "^24.20.0",
+    "puppeteer": "^24.21.0",
     "tailwindcss": "^4.1.13",
     "typescript": "^5"
   }

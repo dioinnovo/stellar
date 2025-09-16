@@ -557,21 +557,19 @@ export default function InspectionReportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Header - Non-printable */}
       <div className="bg-white border-b border-gray-200 print:hidden">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-2 sm:gap-4">
-              <Link 
-                href={`/dashboard/inspection/${inspectionId}/review`}
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 cursor-pointer"
-              >
-                <ArrowLeft size={20} />
-                <span className="hidden sm:inline">Back to Review</span>
-                <span className="sm:hidden">Back</span>
-              </Link>
-              <div className="w-px h-6 bg-gray-300" />
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
+          <div>
+            <Link
+              href={`/dashboard/inspection/${inspectionId}/review`}
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-3"
+            >
+              <ArrowLeft size={20} />
+              <span>Back to Review</span>
+            </Link>
+            <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-lg sm:text-xl font-semibold text-gray-900">
                   <span className="hidden sm:inline">Inspection Report - </span>{reportData.metadata.reportId}
@@ -580,8 +578,7 @@ export default function InspectionReportPage() {
                   Generated {reportData.metadata.generatedDate}
                 </p>
               </div>
-            </div>
-            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={handleDownloadPDF}
                 disabled={isDownloading}
@@ -601,7 +598,7 @@ export default function InspectionReportPage() {
                 className={`px-4 sm:px-6 py-2 rounded-xl font-medium transition-colors flex items-center gap-1 sm:gap-2 text-sm sm:text-base ${
                   reportSent
                     ? 'bg-green-600 text-white'
-                    : 'bg-stellar-orange text-white hover:bg-orange-600 cursor-pointer disabled:opacity-50'
+                    : 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer disabled:opacity-50'
                 }`}
               >
                 {isSending ? (
@@ -624,12 +621,13 @@ export default function InspectionReportPage() {
                 )}
               </button>
             </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Report Content */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-8 print:px-0 print:py-0">
+      <div className="max-w-7xl mx-auto py-3 sm:py-8 print:py-0">
         {/* Professional Cover Page - Print Only */}
         <div className="hidden print:block print:page-break-after">
           <div className="relative h-[400px] mb-8">
@@ -765,7 +763,7 @@ export default function InspectionReportPage() {
           <div className="p-3 sm:p-6 lg:p-8 print:p-4 border-b border-gray-200 print:border-gray-400 print:break-inside-avoid">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-6 print:mb-3">
               <div className="flex-1">
-                <h1 className="text-lg sm:text-2xl lg:text-3xl print:text-2xl font-bold text-gray-900 mb-1 sm:mb-2 print:mb-1 print:text-center print:uppercase">
+                <h1 className="text-3xl font-bold text-gray-900 mb-1 sm:mb-2 print:mb-1 print:text-center print:uppercase">
                   Property Inspection Report
                 </h1>
                 <p className="text-sm sm:text-base print:hidden text-gray-600">

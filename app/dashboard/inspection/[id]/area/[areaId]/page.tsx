@@ -10,7 +10,7 @@ import {
   Save, SkipForward, RotateCcw
 } from 'lucide-react'
 import Link from 'next/link'
-import { PropertyAreaSwipeEnhanced } from '@/components/ui/property-area-swipe-enhanced'
+import { InspectionAreaCarousel } from '@/components/ui/inspection-area-carousel'
 
 interface MediaFile {
   id: string
@@ -41,7 +41,7 @@ interface InspectionArea {
   id: string
   name: string
   category: string
-  icon: any
+  icon?: any
   status?: 'not_started' | 'in_progress' | 'completed' | 'skipped'
   photoCount?: number
   notesCount?: number
@@ -125,8 +125,8 @@ export default function AreaInspectionPage() {
   })
   
   // Navigation states
-  const [navigationMode, setNavigationMode] = useState<'cards' | 'form'>('form')
-  const [expandedAreaId, setExpandedAreaId] = useState<string | null>(areaId)
+  const [navigationMode, setNavigationMode] = useState<'cards' | 'form'>('cards')
+  const [expandedAreaId, setExpandedAreaId] = useState<string | null>(null)
   
   // Track completion status for all areas
   const [areasStatus, setAreasStatus] = useState<Record<string, any>>({})
@@ -382,15 +382,16 @@ export default function AreaInspectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <PropertyAreaSwipeEnhanced
+    <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-64px)] bg-gray-50 overflow-auto">
+      <InspectionAreaCarousel
         areas={enhancedAreas}
         currentAreaIndex={currentIndex}
-        onSwipeRight={handleComplete}
-        onSwipeLeft={handleSkip}
+        onAreaComplete={handleComplete}
+        onAreaSkip={handleSkip}
         onAreaSelect={handleAreaSelect}
         onNavigateBack={handleNavigateBack}
         expandedAreaId={navigationMode === 'form' ? expandedAreaId : null}
+        propertyType={propertyType}
         className=""
       >
         {/* Form Content - This is rendered inside the enhanced component when expanded */}
@@ -403,7 +404,7 @@ export default function AreaInspectionPage() {
                 <select
                   value={selectedPhotoCategory}
                   onChange={(e) => setSelectedPhotoCategory(e.target.value)}
-                  className="px-3 py-1 border border-gray-200 rounded-lg text-sm"
+                  className="px-3 py-2 border border-gray-200 rounded-lg text-base"
                 >
                   {PHOTO_CATEGORIES.map(category => (
                     <option key={category} value={category}>{category}</option>
@@ -623,7 +624,7 @@ export default function AreaInspectionPage() {
             </div>
           </div>
         </div>
-      </PropertyAreaSwipeEnhanced>
+      </InspectionAreaCarousel>
     </div>
   )
 }

@@ -155,7 +155,7 @@ export class WorkflowEnforcer {
    */
   static getMandatoryQuestion(state: ConversationState): string {
     const questions: Record<ConversationState, string> = {
-      [ConversationState.INITIAL]: "Hello! I'm Luci, your AI strategist. What's the biggest bottleneck slowing your team down right now?",
+      [ConversationState.INITIAL]: "Hello! I'm Stella, your claims intelligence assistant. What's the biggest bottleneck slowing your team down right now?",
       [ConversationState.CHALLENGES]: "What specific challenges are you looking to solve with automation or AI?",
       [ConversationState.EMAIL]: "I'm going to put together a custom automation roadmap for your situation. What's the best email to send your personalized strategy?",
       [ConversationState.PHONE]: "For something this transformative, I want to make sure you get direct access to our senior team. What's the best number for a quick strategy call?",

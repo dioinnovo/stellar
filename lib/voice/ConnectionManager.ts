@@ -6,7 +6,7 @@
  */
 
 import { IVoiceProvider } from './providers/IVoiceProvider';
-import ProviderFactory from './ProviderFactory';
+// import ProviderFactory from './ProviderFactory';
 
 export enum CircuitState {
   CLOSED = 'closed',    // Normal operation

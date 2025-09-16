@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, CheckCircle2, DollarSign, Clock, TrendingUp, Shield, FileText, Camera, Zap, Users, BarChart3, Brain, AlertTriangle, UserCheck, Banknote } from 'lucide-react'
+import { ArrowRight, CheckCircle2, DollarSign, Clock, TrendingUp, Shield, FileText, Camera, Zap, Users, BarChart3, Brain, UserCheck, Banknote } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import VirtualAssistant from '@/components/virtual-assistant'
@@ -363,28 +363,28 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Fraud Detection Stats */}
+          {/* Value Maximization Stats */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             viewport={{ once: true }}
-            className="mt-12 bg-red-50 rounded-2xl p-8"
+            className="mt-12 bg-green-50 rounded-2xl p-8"
           >
             <h3 className="text-2xl font-bold text-stellar-dark mb-6 text-center">
-              Fraud Detection Performance
+              Productivity & Value Performance
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {[
-                { metric: '$2.4M', label: 'Annual Fraud Prevention', trend: '+42%' },
-                { metric: '95%', label: 'Detection Accuracy', trend: '+15%' },
-                { metric: '0.3%', label: 'False Positive Rate', trend: '-67%' },
-                { metric: '24hrs', label: 'Investigation Time Saved', trend: '-80%' },
+                { metric: '35%', label: 'Higher Settlements', trend: '+12%' },
+                { metric: '15 min', label: 'Report Generation', trend: '-85%' },
+                { metric: '3x', label: 'Inspector Productivity', trend: '+200%' },
+                { metric: '$45K', label: 'Avg Recovery Increase', trend: '+28%' },
               ].map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="text-3xl font-bold text-red-600">{stat.metric}</div>
+                  <div className="text-3xl font-bold text-green-600">{stat.metric}</div>
                   <div className="text-gray-700 mt-1">{stat.label}</div>
-                  <div className="text-sm text-green-600 mt-1">{stat.trend} vs manual</div>
+                  <div className="text-sm text-stellar-orange mt-1">{stat.trend} improvement</div>
                 </div>
               ))}
             </div>

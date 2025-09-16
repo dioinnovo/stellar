@@ -218,7 +218,7 @@ export function PropertyAreaSwipeEnhanced({
     <div className={`relative w-full ${className}`}>
       {/* Header */}
       <div className="px-4 py-3 mb-4">
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">Select Area to Inspect</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">Swipe Area to Inspect</h2>
         <p className="text-sm text-gray-600">Tap a card to start documenting or swipe to navigate</p>
       </div>
 

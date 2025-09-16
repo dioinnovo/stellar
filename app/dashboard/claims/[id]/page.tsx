@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { 
+import {
   ArrowLeft, User, Phone, Mail, MapPin, Calendar, Building2, Home,
   FileText, Camera, History, Shield, CheckCircle, Clock, AlertTriangle,
   DollarSign, Download, Edit, Save, X, Plus, Upload, Eye, Send,
@@ -47,7 +47,8 @@ export default function ClaimDetailPage() {
       stories: 3,
       construction: 'Concrete Block',
       roofType: 'Flat/Built-up',
-      lastRenovation: '2019'
+      lastRenovation: '2019',
+      imageUrl: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=600&fit=crop&q=80'
     },
     
     // Damage Assessment
@@ -116,85 +117,109 @@ export default function ClaimDetailPage() {
   }
 
   return (
-    <div className="space-y-4 pb-24 px-4">
+    <div className="space-y-4">
       {/* Header */}
       <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push('/dashboard/claims')}
-              className="p-2 hover:bg-gray-100 rounded-lg transition flex-shrink-0"
-            >
-              <ArrowLeft size={20} />
-            </button>
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-stellar-dark truncate">
-                  Claim #{claim.id}
-                </h1>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(claim.status)}`}>
-                  {claim.status}
-                </span>
-                <span className="px-3 py-1 bg-stellar-orange/10 text-stellar-orange rounded-full text-sm font-medium">
-                  {claim.phase}
-                </span>
-              </div>
-            </div>
+        {/* Back button and Status on same line */}
+        <div className="flex items-center justify-between mb-4">
+          <button
+            onClick={() => router.push('/dashboard/claims')}
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition"
+          >
+            <ArrowLeft size={20} />
+            <span className="text-sm">Back to Claims</span>
+          </button>
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(claim.status)}`}>
+            {claim.status}
+          </span>
+        </div>
+
+        {/* Title Row */}
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold text-stellar-dark">
+              Claim #{claim.id}
+            </h1>
           </div>
+        </div>
+
+        {/* Property Image with Address Overlay */}
+        <div className="relative h-48 sm:h-64 bg-gray-100 rounded-lg overflow-hidden">
+          <img 
+            src={claim.property.imageUrl} 
+            alt={claim.property.address}
+            className="w-full h-full object-cover"
+          />
+          
+          {/* Dark gradient from bottom */}
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0A1628] via-[#0A1628]/60 to-transparent" />
+          
+          {/* Property Address */}
+          <div className="absolute bottom-0 left-0 right-0 p-4">
+            <h3 className="font-bold text-white text-lg sm:text-xl leading-tight drop-shadow-lg">
+              {claim.property.address}
+            </h3>
+          </div>
+          
+          {/* Property Type Badge */}
+          <div className="absolute top-3 left-3">
+            <span className="inline-block px-3 py-1.5 rounded-full text-xs font-semibold bg-white/90 text-gray-800 shadow-lg">
+              {claim.property.type}
+            </span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-3 mt-4">
           <button
             onClick={() => setIsEditing(!isEditing)}
-            className="px-3 py-1.5 bg-stellar-orange text-white rounded-md hover:bg-red-600 transition flex items-center gap-1.5 text-sm flex-shrink-0"
+            className="px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-red-600 transition flex items-center gap-2 text-sm font-medium"
             title={isEditing ? "Save changes" : "Edit claim information"}
           >
             {isEditing ? (
               <>
-                <Save size={14} />
-                Save
+                <Save size={16} />
+                <span>Save</span>
               </>
             ) : (
               <>
-                <Edit size={14} />
-                Edit
+                <Edit size={16} />
+                <span>Edit</span>
               </>
             )}
           </button>
-        </div>
-        
-        <p className="text-gray-600 mt-1">{claim.property.address}</p>
-        
-        <div className="flex items-center gap-3 mt-4">
-          <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2">
-            <Download size={18} />
-            Export
+          <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm font-medium">
+            <Download size={16} />
+            <span>Export</span>
           </button>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-sm text-gray-600">Estimated Value</p>
-            <p className="text-lg sm:text-xl font-bold text-stellar-dark">
+        {/* Quick Stats - Changed to 2 columns */}
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <p className="text-sm text-gray-600 mb-1">Estimated Value</p>
+            <p className="text-xl sm:text-2xl font-bold text-stellar-dark">
               ${claim.estimatedValue.toLocaleString()}
             </p>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-sm text-gray-600">Current Offer</p>
-            <p className="text-lg sm:text-xl font-bold text-stellar-orange">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <p className="text-sm text-gray-600 mb-1">Current Offer</p>
+            <p className="text-xl sm:text-2xl font-bold text-stellar-orange">
               ${claim.currentOffer.toLocaleString()}
             </p>
           </div>
-          <div className="bg-gray-50 rounded-lg p-3">
-            <p className="text-sm text-gray-600">Potential Recovery</p>
-            <p className="text-lg sm:text-xl font-bold text-green-600">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <p className="text-sm text-gray-600 mb-1">Potential Recovery</p>
+            <p className="text-xl sm:text-2xl font-bold text-green-600">
               +${(claim.estimatedValue - claim.currentOffer).toLocaleString()}
             </p>
           </div>
-          <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-            <p className="text-sm text-gray-600 flex items-center gap-1">
-              <Clock className="w-3 h-3" />
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <p className="text-sm text-gray-600 flex items-center gap-1 mb-1">
+              <Clock className="w-4 h-4" />
               Est. Days to Close
             </p>
-            <p className="text-lg sm:text-xl font-bold text-blue-600">
+            <p className="text-xl sm:text-2xl font-bold text-blue-600">
               14-21 days
             </p>
             <p className="text-xs text-gray-500 mt-1">Based on similar cases</p>
@@ -231,37 +256,6 @@ export default function ClaimDetailPage() {
           {/* Overview Tab - Combined Client, Property & Financial Info */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* Financial Summary */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-white p-4 rounded-lg border">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-500">Estimated Value</span>
-                    <TrendingUp className="w-4 h-4 text-green-500" />
-                  </div>
-                  <p className="text-xl sm:text-2xl font-bold text-stellar-dark">
-                    ${claim.estimatedValue.toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-white p-4 rounded-lg border">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-500">Current Offer</span>
-                    <DollarSign className="w-4 h-4 text-amber-500" />
-                  </div>
-                  <p className="text-xl sm:text-2xl font-bold text-stellar-dark">
-                    ${claim.currentOffer.toLocaleString()}
-                  </p>
-                </div>
-                <div className="bg-white p-4 rounded-lg border">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-gray-500">Recovery Gap</span>
-                    <AlertTriangle className="w-4 h-4 text-red-500" />
-                  </div>
-                  <p className="text-xl sm:text-2xl font-bold text-red-600">
-                    ${(claim.estimatedValue - claim.currentOffer).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-              
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Client Information */}
                 <div className="bg-white p-6 rounded-lg border">
@@ -333,16 +327,10 @@ export default function ClaimDetailPage() {
 
               {/* Insurance Information */}
               <div className="bg-white p-6 rounded-lg border">
-                <div className="flex items-start justify-between mb-4">
-                  <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Briefcase className="w-5 h-5" />
-                    Insurance & Damage Details
-                  </h3>
-                  <div className="text-right text-xs text-gray-500">
-                    <p>Created: {claim.createdDate}</p>
-                    <p>Updated: {claim.lastUpdated}</p>
-                  </div>
-                </div>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <Briefcase className="w-5 h-5" />
+                  Insurance & Damage Details
+                </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm text-gray-500">Carrier</p>
@@ -410,6 +398,16 @@ export default function ClaimDetailPage() {
                     </p>
                   </div>
                 </div>
+                
+                {/* Dates at the bottom */}
+                <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-100">
+                  <div className="text-xs text-gray-500">
+                    <span>Created: {claim.createdDate}</span>
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    <span>Updated: {claim.lastUpdated}</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -417,39 +415,44 @@ export default function ClaimDetailPage() {
           {/* Assessment Tab - Comprehensive AI-Powered Analysis */}
           {activeTab === 'assessment' && (
             <div className="space-y-6">
-              {/* Assessment Success Dashboard */}
-              <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg sm:text-xl font-bold text-stellar-dark">🎯 Claim Assessment Intelligence</h3>
-                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Analysis Complete</span>
+              {/* Assessment Success Dashboard - Simplified colors */}
+              <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-stellar-dark flex items-center gap-2">
+                    <Target className="text-stellar-orange" size={20} />
+                    Claim Assessment Intelligence
+                  </h3>
+                  <span className="px-3 py-1.5 bg-green-50 text-green-700 border border-green-200 rounded-full text-xs sm:text-sm font-medium self-start sm:self-auto">
+                    Analysis Complete
+                  </span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                  <div className="text-center">
-                    <p className="text-2xl sm:text-3xl font-bold text-green-600">97.2%</p>
-                    <p className="text-sm text-gray-600">AI Confidence</p>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 text-center">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-stellar-dark">97.2%</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">AI Confidence</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl sm:text-3xl font-bold text-stellar-orange">$385,450</p>
-                    <p className="text-sm text-gray-600">Maximum Recovery</p>
+                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 text-center">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-stellar-orange">$385K</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">Max Recovery</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl sm:text-3xl font-bold text-blue-600">+$190,450</p>
-                    <p className="text-sm text-gray-600">Above Initial Offer</p>
+                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 text-center">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">+$190K</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">Above Offer</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl sm:text-3xl font-bold text-purple-600">94%</p>
-                    <p className="text-sm text-gray-600">Success Probability</p>
+                  <div className="bg-gray-50 rounded-lg p-3 sm:p-4 text-center">
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-stellar-dark">94%</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mt-1">Success Rate</p>
                   </div>
                 </div>
-                <div className="bg-white/50 rounded-lg p-4">
+                <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-stellar-dark">Recovery Potential Analysis</h4>
                     <span className="text-sm text-green-600 font-medium">Excellent</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
-                    <div className="bg-green-500 h-3 rounded-full" style={{ width: '94%' }}></div>
+                  <div className="w-full bg-gray-100 rounded-full h-2 mb-2">
+                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: '94%' }}></div>
                   </div>
-                  <p className="text-sm text-gray-700">Strong evidence package with multiple recovery opportunities identified</p>
+                  <p className="text-sm text-gray-600">Strong evidence package with multiple recovery opportunities identified</p>
                 </div>
               </div>
 
@@ -475,28 +478,28 @@ export default function ClaimDetailPage() {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.1 }}
-                          className="bg-gray-50 rounded-lg p-4 border-l-4 border-stellar-orange"
+                          className="bg-white rounded-lg p-4 border border-gray-200"
                         >
                           <div className="flex justify-between items-start mb-2">
                             <div className="flex-1">
                               <p className="font-medium text-gray-900">{damage.type}</p>
-                              <p className={`text-sm font-medium ${
-                                damage.severity === 'Major' ? 'text-red-600' :
-                                damage.severity === 'Moderate' ? 'text-orange-600' :
-                                damage.severity === 'Replace' ? 'text-purple-600' :
-                                'text-blue-600'
+                              <p className={`text-sm ${
+                                damage.severity === 'Major' ? 'text-red-600 font-medium' :
+                                damage.severity === 'Moderate' ? 'text-yellow-600' :
+                                damage.severity === 'Replace' ? 'text-orange-600' :
+                                'text-gray-600'
                               }`}>
                                 {damage.severity} Damage
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="text-lg font-bold text-stellar-orange">{damage.amount}</p>
-                              <p className="text-xs text-green-600 font-medium">{damage.confidence}% confidence</p>
+                              <p className="text-lg font-bold text-gray-900">{damage.amount}</p>
+                              <p className="text-xs text-gray-500">{damage.confidence}% confidence</p>
                             </div>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-green-500 h-2 rounded-full"
+                          <div className="w-full bg-gray-100 rounded-full h-1.5">
+                            <div
+                              className="bg-blue-500 h-1.5 rounded-full"
                               style={{ width: `${damage.confidence}%` }}
                             ></div>
                           </div>
@@ -515,19 +518,19 @@ export default function ClaimDetailPage() {
                         { type: 'Electrical Panel Corrosion', detection: 'High', amount: '$3,200', action: 'Document' },
                         { type: 'Insulation Contamination', detection: 'Medium', amount: '$2,750', action: 'Verify' }
                       ].map((hidden, index) => (
-                        <div key={index} className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                        <div key={index} className="bg-white border border-gray-200 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex-1">
                               <p className="font-medium text-gray-900 text-sm">{hidden.type}</p>
-                              <p className={`text-xs font-medium ${
-                                hidden.detection === 'High' ? 'text-red-600' : 'text-orange-600'
+                              <p className={`text-xs ${
+                                hidden.detection === 'High' ? 'text-gray-700 font-medium' : 'text-gray-600'
                               }`}>
                                 {hidden.detection} Probability
                               </p>
                             </div>
                             <div className="text-right">
-                              <p className="font-bold text-yellow-700">{hidden.amount}</p>
-                              <button className="text-xs text-stellar-orange hover:underline font-medium">
+                              <p className="font-bold text-gray-900">{hidden.amount}</p>
+                              <button className="text-xs text-blue-600 hover:underline font-medium">
                                 {hidden.action}
                               </button>
                             </div>
@@ -535,9 +538,9 @@ export default function ClaimDetailPage() {
                         </div>
                       ))}
                     </div>
-                    <div className="mt-3 p-3 bg-yellow-100 rounded-lg">
-                      <p className="text-sm text-yellow-800">
-                        <strong>💡 Recovery Tip:</strong> Document these hidden damages to add $29,450 to settlement
+                    <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <p className="text-sm text-gray-700">
+                        <strong>Recovery Tip:</strong> Document these hidden damages to add $29,450 to settlement
                       </p>
                     </div>
                   </div>
@@ -545,15 +548,15 @@ export default function ClaimDetailPage() {
               </div>
 
               {/* Coverage Intelligence Engine */}
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
-                  <Shield className="text-blue-600" size={20} />
+              <div className="bg-white border border-gray-200 rounded-xl p-6">
+                <h3 className="text-lg font-bold text-stellar-dark mb-4 flex items-center gap-2">
+                  <Shield className="text-gray-600" size={20} />
                   Coverage Intelligence & Policy Matching
                 </h3>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Coverage Analysis */}
                   <div>
-                    <h4 className="font-semibold text-blue-900 mb-3">Automated Coverage Analysis</h4>
+                    <h4 className="font-semibold text-gray-900 mb-3">Automated Coverage Analysis</h4>
                     <div className="space-y-2">
                       {[
                         { coverage: 'Dwelling Protection', status: 'Covered', amount: '$185,000', match: 'Confirmed' },
@@ -562,20 +565,39 @@ export default function ClaimDetailPage() {
                         { coverage: 'Business Interruption', status: 'Covered', amount: '$32,000', match: 'Applicable' },
                         { coverage: 'Additional Living Exp', status: 'Available', amount: '$18,000', match: 'Eligible' }
                       ].map((coverage, index) => (
-                        <div key={index} className="bg-white rounded-lg p-3 flex justify-between items-center">
-                          <div className="flex-1">
-                            <p className="font-medium text-sm text-gray-900">{coverage.coverage}</p>
-                            <p className={`text-xs ${
-                              coverage.match === 'Confirmed' ? 'text-green-600' :
-                              coverage.match === 'Opportunity' ? 'text-orange-600' :
-                              coverage.match === 'Applicable' ? 'text-blue-600' :
-                              'text-purple-600'
-                            }`}>
-                              {coverage.match} • {coverage.status}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-blue-700">{coverage.amount}</p>
+                        <div key={index} className="bg-white rounded-lg p-3 border border-gray-200 hover:border-gray-300 transition-colors">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3 flex-1">
+                              <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
+                                coverage.match === 'Confirmed' ? 'bg-green-50' :
+                                coverage.match === 'Opportunity' ? 'bg-amber-50' :
+                                'bg-blue-50'
+                              }`}>
+                                {coverage.match === 'Confirmed' ? (
+                                  <CheckCircle className="w-5 h-5 text-green-600" />
+                                ) : coverage.match === 'Opportunity' ? (
+                                  <AlertCircle className="w-5 h-5 text-amber-600" />
+                                ) : (
+                                  <AlertCircle className="w-5 h-5 text-blue-600" />
+                                )}
+                              </div>
+                              <div className="flex-1">
+                                <p className="font-medium text-sm text-gray-900">{coverage.coverage}</p>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
+                                    coverage.status === 'Covered' ? 'bg-green-100 text-green-700' :
+                                    'bg-gray-100 text-gray-700'
+                                  }`}>
+                                    {coverage.status}
+                                  </span>
+                                  <span className="text-xs text-gray-500">•</span>
+                                  <span className="text-xs text-gray-600">{coverage.match}</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-gray-900">{coverage.amount}</p>
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -584,7 +606,7 @@ export default function ClaimDetailPage() {
 
                   {/* Policy Compliance */}
                   <div>
-                    <h4 className="font-semibold text-blue-900 mb-3">Policy Compliance Check</h4>
+                    <h4 className="font-semibold text-gray-900 mb-3">Policy Compliance Check</h4>
                     <div className="space-y-3">
                       <div className="bg-white rounded-lg p-4">
                         <div className="flex items-center gap-3 mb-2">
@@ -677,8 +699,8 @@ export default function ClaimDetailPage() {
                   <div>
                     <h4 className="font-semibold text-gray-900 mb-3">Pricing Intelligence</h4>
                     <div className="space-y-3">
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <h5 className="font-medium text-green-900 mb-2">Data Sources</h5>
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <h5 className="font-medium text-gray-900 mb-2">Data Sources</h5>
                         <div className="space-y-2">
                           <div className="flex items-center gap-2 text-sm">
                             <CheckCircle className="text-green-500" size={16} />
@@ -699,12 +721,12 @@ export default function ClaimDetailPage() {
                         </div>
                       </div>
 
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <h5 className="font-medium text-blue-900 mb-2">Market Analysis</h5>
+                      <div className="bg-gray-50 rounded-lg p-4">
+                        <h5 className="font-medium text-gray-900 mb-2">Market Analysis</h5>
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span className="text-gray-600">Local Market Position:</span>
-                            <span className="font-semibold text-blue-700">Above Average</span>
+                            <span className="font-semibold text-gray-700">Above Average</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-600">Pricing Confidence:</span>
@@ -717,7 +739,7 @@ export default function ClaimDetailPage() {
                         </div>
                       </div>
 
-                      <div className="bg-stellar-orange/10 border border-stellar-orange/30 rounded-lg p-4">
+                      <div className="bg-gray-50 rounded-lg p-4">
                         <h5 className="font-medium text-stellar-dark mb-2">Action Items</h5>
                         <div className="space-y-2">
                           <button className="w-full text-sm bg-stellar-orange text-white py-2 rounded hover:bg-red-600 transition">
@@ -739,14 +761,14 @@ export default function ClaimDetailPage() {
               {/* Settlement Strategy & Evidence Analyzer */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Settlement Strategy */}
-                <div className="bg-purple-50 border border-purple-200 rounded-xl p-6">
-                  <h3 className="text-lg font-bold text-purple-900 mb-4 flex items-center gap-2">
-                    <Target className="text-purple-600" size={20} />
+                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-stellar-dark mb-4 flex items-center gap-2">
+                    <Target className="text-gray-600" size={20} />
                     Settlement Strategy Module
                   </h3>
                   <div className="space-y-4">
                     <div className="bg-white rounded-lg p-4">
-                      <h4 className="font-semibold text-purple-900 mb-2">AI Recommendations</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">AI Recommendations</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex items-start gap-2">
                           <CheckCircle className="text-green-500 mt-0.5" size={16} />
@@ -768,7 +790,7 @@ export default function ClaimDetailPage() {
                     </div>
                     
                     <div className="bg-white rounded-lg p-4">
-                      <h4 className="font-semibold text-purple-900 mb-2">Success Indicators</h4>
+                      <h4 className="font-semibold text-gray-900 mb-2">Success Indicators</h4>
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Negotiation Success:</span>
@@ -776,7 +798,7 @@ export default function ClaimDetailPage() {
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Expected Settlement:</span>
-                          <span className="font-semibold text-stellar-orange">$340K - $365K</span>
+                          <span className="font-semibold text-gray-900">$340K - $365K</span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">Time to Settlement:</span>
@@ -788,21 +810,21 @@ export default function ClaimDetailPage() {
                 </div>
 
                 {/* Evidence Strength Analyzer */}
-                <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-                  <h3 className="text-lg font-bold text-green-900 mb-4 flex items-center gap-2">
-                    <FileSearch className="text-green-600" size={20} />
+                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-stellar-dark mb-4 flex items-center gap-2">
+                    <FileSearch className="text-gray-600" size={20} />
                     Evidence Strength Analyzer
                   </h3>
                   <div className="space-y-4">
                     <div className="bg-white rounded-lg p-4">
                       <div className="flex items-center justify-between mb-3">
-                        <h4 className="font-semibold text-green-900">Documentation Score</h4>
+                        <h4 className="font-semibold text-gray-900">Documentation Score</h4>
                         <span className="text-xl sm:text-2xl font-bold text-green-600">87%</span>
                       </div>
-                      <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
-                        <div className="bg-green-500 h-3 rounded-full" style={{ width: '87%' }}></div>
+                      <div className="w-full bg-gray-100 rounded-full h-2 mb-2">
+                        <div className="bg-blue-500 h-2 rounded-full" style={{ width: '87%' }}></div>
                       </div>
-                      <p className="text-sm text-green-800">Strong evidence package with room for improvement</p>
+                      <p className="text-sm text-gray-600">Strong evidence package with room for improvement</p>
                     </div>
 
                     <div className="space-y-2">
@@ -839,75 +861,29 @@ export default function ClaimDetailPage() {
                       ))}
                     </div>
 
-                    <div className="bg-yellow-100 rounded-lg p-3">
-                      <p className="text-sm text-yellow-800">
-                        <strong>📈 Improvement Tip:</strong> Add weather report (+8%) and complete comparables (+5%) to reach 95% documentation score
+                    <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                      <p className="text-sm text-gray-700">
+                        <strong>Improvement Tip:</strong> Add weather report (+8%) and complete comparables (+5%) to reach 95% documentation score
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Action Command Center */}
-              <div className="bg-stellar-orange/10 border border-stellar-orange/30 rounded-xl p-6">
-                <h3 className="text-lg font-bold text-stellar-dark mb-4">Assessment Command Center</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <h4 className="font-medium text-stellar-dark mb-3">Immediate Actions</h4>
-                    <div className="space-y-2">
-                      <button className="w-full px-4 py-3 bg-stellar-orange text-white rounded-lg hover:bg-red-600 transition font-medium text-left flex items-center justify-between">
-                        Generate Demand Package
-                        <Send size={18} />
-                      </button>
-                      <button className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium text-left flex items-center justify-between">
-                        Obtain Missing Evidence
-                        <FileSearch size={18} />
-                      </button>
-                      <button className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium text-left flex items-center justify-between">
-                        Schedule Re-inspection
-                        <Calendar size={18} />
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-stellar-dark mb-3">Analysis Tools</h4>
-                    <div className="space-y-2">
-                      <button className="w-full px-4 py-3 bg-white border border-stellar-orange text-stellar-orange rounded-lg hover:bg-stellar-orange/10 transition font-medium text-left flex items-center justify-between">
-                        Export Full Report
-                        <Download size={18} />
-                      </button>
-                      <button className="w-full px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-left flex items-center justify-between">
-                        Compare Estimates
-                        <Calculator size={18} />
-                      </button>
-                      <button className="w-full px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium text-left flex items-center justify-between">
-                        Update Analysis
-                        <Brain size={18} />
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-stellar-dark mb-3">Key Metrics Summary</h4>
-                    <div className="bg-white rounded-lg p-4 space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Maximum Recovery:</span>
-                        <span className="font-bold text-stellar-orange">$385,450</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Evidence Score:</span>
-                        <span className="font-bold text-green-600">87%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Success Probability:</span>
-                        <span className="font-bold text-green-600">94%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Hidden Damages:</span>
-                        <span className="font-bold text-yellow-600">+$29,450</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              {/* Quick Actions */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button className="px-4 py-3 bg-stellar-orange text-white rounded-lg hover:bg-red-600 transition flex items-center justify-between">
+                  <span className="font-medium">Generate Demand Package</span>
+                  <Send size={18} />
+                </button>
+                <button className="px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition flex items-center justify-between">
+                  <span className="font-medium">Export Full Report</span>
+                  <Download size={18} />
+                </button>
+                <button className="px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition flex items-center justify-between">
+                  <span className="font-medium">Schedule Re-inspection</span>
+                  <Calendar size={18} />
+                </button>
               </div>
             </div>
           )}
@@ -916,13 +892,13 @@ export default function ClaimDetailPage() {
           {activeTab === 'inspection' && (
             <div className="space-y-6">
               {/* Status Banner */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Camera className="text-blue-600" size={24} />
+                    <Camera className="text-gray-600" size={24} />
                     <div>
-                      <h3 className="font-semibold text-blue-900">Inspection Status</h3>
-                      <p className="text-sm text-blue-700">
+                      <h3 className="font-semibold text-gray-900">Inspection Status</h3>
+                      <p className="text-sm text-gray-600">
                         {claim.inspection.status === 'Scheduled' 
                           ? `Scheduled for ${claim.inspection.scheduled} with ${claim.inspection.inspector}`
                           : 'No inspection scheduled yet'}
@@ -1416,20 +1392,20 @@ export default function ClaimDetailPage() {
 
                 {/* Summary Statistics */}
                 <div className="bg-gray-50 rounded-lg p-5">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                  <div className="grid grid-cols-3 gap-3 sm:gap-4 text-center">
                     <div>
-                      <p className="text-sm text-gray-600">Total Past Claims</p>
-                      <p className="text-xl sm:text-2xl font-bold text-gray-900">
-                        ${claim.history.reduce((sum, item) => sum + item.amount, 0).toLocaleString()}
+                      <p className="text-xs sm:text-sm text-gray-600">Total Past Claims</p>
+                      <p className="text-base sm:text-xl md:text-2xl font-bold text-gray-900">
+                        $85K
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Identified Underpayments</p>
-                      <p className="text-xl sm:text-2xl font-bold text-red-600">$26,500</p>
+                      <p className="text-xs sm:text-sm text-gray-600">Underpayments</p>
+                      <p className="text-base sm:text-xl md:text-2xl font-bold text-red-600">$26.5K</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Recovery Potential</p>
-                      <p className="text-xl sm:text-2xl font-bold text-green-600">85%</p>
+                      <p className="text-xs sm:text-sm text-gray-600">Recovery Rate</p>
+                      <p className="text-base sm:text-xl md:text-2xl font-bold text-green-600">85%</p>
                     </div>
                   </div>
                 </div>

@@ -1,35 +1,56 @@
 'use client'
 
-import { useState } from 'react'
+import { usePathname } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import MobileBottomNav from '@/components/MobileBottomNav'
+import { SidebarProvider, useSidebar } from '@/contexts/SidebarContext'
+
+function DashboardLayoutContent({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const pathname = usePathname()
+  const { isCollapsed, setIsCollapsed } = useSidebar()
+
+  // Inspection area page needs special layout
+  const isInspectionAreaPage = pathname.includes('/dashboard/inspection/') && pathname.includes('/area/')
+
+  return (
+    <div className="min-h-screen bg-slate-100 p-2">
+      {/* Sidebar - Hidden only on phones, visible on tablets and desktop */}
+      <div className="hidden sm:block">
+        <Sidebar
+          isCollapsed={isCollapsed}
+          onToggle={() => setIsCollapsed(!isCollapsed)}
+        />
+      </div>
+
+      {/* Main Content with margin for sidebar */}
+      <main className={`${isCollapsed ? 'sm:ml-[5.5rem]' : 'sm:ml-[17rem]'} transition-all duration-300 ${isInspectionAreaPage ? 'overflow-auto' : 'overflow-hidden'} pb-24 sm:pb-0`}>
+        <div className={
+          isInspectionAreaPage
+            ? 'max-w-[100vw] bg-white sm:rounded-2xl sm:border sm:border-gray-200 sm:shadow-sm'
+            : 'p-4 sm:p-6 max-w-[100vw] bg-white sm:rounded-2xl sm:border sm:border-gray-200 sm:shadow-sm'
+        }>
+          {children}
+        </div>
+      </main>
+
+      {/* Mobile Bottom Navigation - Only visible on mobile */}
+      <MobileBottomNav />
+    </div>
+  )
+}
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
-
   return (
-    <div className="flex min-h-screen bg-gray-50 md:gap-6">
-      {/* Desktop Sidebar - Hidden on mobile */}
-      <div className="hidden md:block">
-        <Sidebar 
-          isCollapsed={isSidebarCollapsed} 
-          onToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-        />
-      </div>
-      
-      {/* Main Content */}
-      <main className="flex-1 overflow-x-hidden overflow-y-auto pb-24 md:pb-0">
-        <div className="p-4 sm:p-6 max-w-[100vw] bg-white md:rounded-2xl md:border md:border-gray-200 md:shadow-sm">
-          {children}
-        </div>
-      </main>
-      
-      {/* Mobile Bottom Navigation - Only visible on mobile */}
-      <MobileBottomNav />
-    </div>
+    <SidebarProvider>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </SidebarProvider>
   )
 }
