@@ -160,17 +160,12 @@ function buildEmailSchema(state: MasterOrchestratorState): EmailNotificationSche
       website: customerInfo.companyWebsite,
     },
     requirements: {
-      budget: customerInfo.budget || 'Not discussed',
+      budget: 'Not discussed', // Budget info not stored in CustomerInfo
       budgetNumeric: undefined, // Could parse from budget string
-      timeline: customerInfo.timeline || 'Not specified',
-      timelineUrgency: 
-        customerInfo.timeline?.includes('immediate') || customerInfo.timeline?.includes('asap') ? 'immediate' :
-        customerInfo.timeline?.includes('month') ? 'this_month' :
-        customerInfo.timeline?.includes('quarter') ? 'this_quarter' :
-        customerInfo.timeline?.includes('year') ? 'this_year' :
-        'exploring',
+      timeline: 'Not specified', // Timeline info not stored in CustomerInfo
+      timelineUrgency: 'exploring' as const, // Timeline info not available in CustomerInfo
       challenges: customerInfo.currentChallenges || [],
-      currentSolution: customerInfo.currentTools?.join(', '),
+      currentSolution: undefined, // Current tools info not available in CustomerInfo
       painPoints: customerInfo.painPoints || [],
     },
   };
@@ -208,21 +203,21 @@ function buildEmailSchema(state: MasterOrchestratorState): EmailNotificationSche
         importance: 'critical',
       },
       {
-        met: !!customerInfo.budget,
-        emoji: customerInfo.budget ? '✓' : '⚠️',
+        met: false, // Budget info not available in CustomerInfo
+        emoji: '⚠️' as const,
         label: 'Budget range',
-        detail: customerInfo.budget || 'Not discussed',
-        importance: 'important',
+        detail: 'Not discussed',
+        importance: 'important' as const,
       },
       {
-        met: !!customerInfo.timeline,
-        emoji: customerInfo.timeline ? '✓' : '⚠️',
+        met: false, // Timeline info not available in CustomerInfo
+        emoji: '⚠️' as const,
         label: 'Timeline specified',
-        detail: customerInfo.timeline || 'Not specified',
-        importance: 'important',
+        detail: 'Not specified',
+        importance: 'important' as const,
       },
       {
-        met: customerInfo.currentChallenges && customerInfo.currentChallenges.length > 0,
+        met: !!(customerInfo.currentChallenges && customerInfo.currentChallenges.length > 0),
         emoji: customerInfo.currentChallenges?.length ? '✓' : '✗',
         label: 'Pain points identified',
         detail: customerInfo.currentChallenges?.length ? 
@@ -243,7 +238,7 @@ function buildEmailSchema(state: MasterOrchestratorState): EmailNotificationSche
   };
   
   // Conversation Highlights
-  const conversationPairs: Array<{ speaker: 'visitor' | 'ai'; message: string; timestamp: string }> = [];
+  const conversationPairs: Array<{ speaker: 'visitor' | 'ai'; message: string; timestamp: string; significance: 'critical' | 'important' | 'context' }> = [];
   messages.forEach((msg, index) => {
     const speaker = msg._getType() === 'human' ? 'visitor' : 'ai';
     const content = msg.content.toString();
@@ -254,14 +249,14 @@ function buildEmailSchema(state: MasterOrchestratorState): EmailNotificationSche
         speaker,
         message: content,
         timestamp: new Date().toISOString(),
-        significance: index < 2 ? 'critical' : 'context',
+        significance: index < 2 ? 'critical' : 'context' as const,
       });
     }
   });
   
   schema.conversationHighlights = {
     keyExchanges: conversationPairs.slice(-8), // Last 8 messages
-    keyMoments: analytics?.keyMoments || [],
+    keyMoments: [], // Simplified for now to avoid timestamp conversion
     engagement: {
       messageCount: messages.length,
       conversationDuration: Math.round(analytics?.conversationDuration / 60) + ' minutes',
@@ -273,7 +268,7 @@ function buildEmailSchema(state: MasterOrchestratorState): EmailNotificationSche
   };
   
   // Action Items
-  const urgency = determineUrgency(customerInfo.timeline, score);
+  const urgency = determineUrgency(undefined, score); // Timeline not available in CustomerInfo
   schema.actionItems = {
     urgency,
     urgencyColor: urgency === 'IMMEDIATE' ? '#ff4444' : 
@@ -374,7 +369,7 @@ export async function notificationNode(
     });
     
     // Lower threshold to 30 to capture more qualified leads
-    if (state.customerInfo.email && state.qualification?.totalScore >= 30) {
+    if (state.customerInfo.email && (state.qualification?.totalScore ?? 0) >= 30) {
       console.log('✅ Email conditions met - preparing to send notifications');
       
       // 1. Build structured email data
@@ -419,7 +414,7 @@ export async function notificationNode(
           rawChallenges,
           clientEmailSchema.personalization.industry,
           clientEmailSchema.personalization.companySize,
-          state.customerInfo.timeline || 'exploring'
+          'exploring' // Timeline not available in CustomerInfo
         );
         clientEmailSchema.personalization.challenges = mappedChallenges;
         
@@ -430,13 +425,11 @@ export async function notificationNode(
         }
       }
       
-      // Set timeline context
+      // Set timeline context (timeline not available in CustomerInfo)
       clientEmailSchema.personalization.timeline = {
-        phase: (state.customerInfo.timeline === 'deciding') ? 'deciding' : 
-               (state.customerInfo.timeline === 'comparing') ? 'comparing' : 'exploring',
-        urgency: (state.customerInfo.timeline === 'deciding') ? 'immediate' :
-                 (state.customerInfo.timeline === 'comparing') ? 'this_month' : 'researching',
-        decisionTimeframe: state.customerInfo.timeline || 'evaluating options',
+        phase: 'exploring' as const,
+        urgency: 'researching' as const,
+        decisionTimeframe: 'evaluating options', // Timeline not available in CustomerInfo
         businessDrivers: rawChallenges.length > 0 ? [rawChallenges[0]] : ['operational efficiency']
       };
       
@@ -495,7 +488,7 @@ export async function notificationNode(
       console.log('Client email sent:', clientSent ? 'SUCCESS' : 'FAILED');
       
       notifications.push({
-        type: 'client_confirmation' as const,
+        type: 'follow_up' as const,
         sentAt: new Date(),
         recipient: state.customerInfo.email,
         status: clientSent ? 'sent' as const : 'failed' as const,

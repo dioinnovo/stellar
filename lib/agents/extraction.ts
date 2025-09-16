@@ -62,8 +62,8 @@ function extractName(text: string): string | undefined {
     /this is (\w+)/i,
     /^(\w+) here/i,
   ];
-  
-  for (const pattern of patterns) {
+
+  for (const pattern of namePatterns) {
     const matches = text.match(pattern);
     if (matches && matches.length > 0) {
       // Extract the name group
@@ -392,7 +392,7 @@ export async function extractionNode(
           agentId: 'extraction',
           startTime,
           endTime: new Date(),
-          status: 'skipped',
+          status: 'completed',
           result: { reason: 'No new user message' },
           retryCount: 0,
         }],

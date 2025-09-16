@@ -513,31 +513,72 @@ function generateHTMLReport(data: InspectionReportData): string {
   return html
 }
 
-// Generate PDF using browser's print functionality
-export async function generateInspectionPDF(data: InspectionReportData): Promise<Uint8Array> {
-  const htmlContent = generateHTMLReport(data)
-  
-  // Create a blob from the HTML content
-  const blob = new Blob([htmlContent], { type: 'text/html' })
-  const url = URL.createObjectURL(blob)
-  
-  // Open in new window for printing
-  const printWindow = window.open(url, '_blank')
-  
-  if (printWindow) {
-    printWindow.onload = () => {
-      // Trigger print dialog
-      printWindow.print()
-      
-      // Clean up
+// Generate and download actual PDF file
+export async function generateInspectionPDF(data: InspectionReportData): Promise<void> {
+  try {
+    const htmlContent = generateHTMLReport(data)
+
+    // Create a hidden iframe to render the content
+    const iframe = document.createElement('iframe')
+    iframe.style.position = 'absolute'
+    iframe.style.width = '8.5in'
+    iframe.style.height = '11in'
+    iframe.style.left = '-9999px'
+    iframe.style.top = '-9999px'
+
+    document.body.appendChild(iframe)
+
+    // Write content to iframe
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
+    if (iframeDoc) {
+      iframeDoc.open()
+      iframeDoc.write(htmlContent)
+      iframeDoc.close()
+
+      // Wait for content to load and then print to PDF
       setTimeout(() => {
-        URL.revokeObjectURL(url)
+        const printWindow = iframe.contentWindow
+        if (printWindow) {
+          // Set the title to suggest PDF saving
+          const titleElement = iframeDoc.querySelector('title')
+          if (titleElement) {
+            titleElement.textContent = `Inspection_Report_${data.metadata.claimNumber}.pdf`
+          }
+
+          printWindow.focus()
+          printWindow.print()
+        }
+
+        // Clean up after a delay
+        setTimeout(() => {
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe)
+          }
+        }, 1000)
       }, 1000)
     }
+
+  } catch (error) {
+    console.error('Error generating PDF:', error)
+
+    // Fallback: Open in new window for manual PDF save
+    const htmlContent = generateHTMLReport(data)
+    const printWindow = window.open('', '_blank')
+
+    if (printWindow) {
+      printWindow.document.write(htmlContent)
+      printWindow.document.close()
+
+      // Set document title to suggest PDF filename
+      printWindow.document.title = `Inspection_Report_${data.metadata.claimNumber}.pdf`
+
+      // Focus and trigger print dialog
+      printWindow.focus()
+      setTimeout(() => {
+        printWindow.print()
+      }, 500)
+    }
   }
-  
-  // Return empty array as we're using print dialog
-  return new Uint8Array()
 }
 
 // Alternative: Download as HTML file that can be opened and printed

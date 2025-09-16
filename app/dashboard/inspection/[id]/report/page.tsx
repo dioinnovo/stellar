@@ -562,12 +562,9 @@ export default function InspectionReportPage() {
         }
       }
       
-      // Generate and download report
-      // This will open a print dialog for PDF generation
+      // Generate and download PDF report
+      // This will open a print dialog where users can save as PDF
       await generateInspectionPDF(pdfData)
-      
-      // Also download as HTML for backup
-      downloadHTMLReport(pdfData)
       
       console.log('PDF report generated successfully')
     } catch (error) {

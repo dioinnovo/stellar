@@ -19,10 +19,8 @@ export class StreamingConversationHandler {
   constructor() {
     // Initialize with streaming enabled
     this.model = new ChatOpenAI({
-      azureOpenAIApiKey: process.env.AZURE_OPENAI_KEY,
-      azureOpenAIApiInstanceName: process.env.AZURE_OPENAI_ENDPOINT?.replace('https://', '').replace('.openai.azure.com', ''),
-      azureOpenAIApiDeploymentName: process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o-mini',
-      azureOpenAIApiVersion: process.env.AZURE_OPENAI_VERSION || '2024-12-01-preview',
+      openAIApiKey: process.env.OPENAI_API_KEY,
+      modelName: 'gpt-4o-mini',
       streaming: true, // Enable streaming
       temperature: 0.8,
       maxTokens: 500,
@@ -228,8 +226,7 @@ export async function* streamingConversationNode(
     
     // Yield incremental state update
     yield {
-      currentPhase: 'streaming',
-      streamingResponse: fullResponse,
+      currentPhase: 'discovery',
     };
   }
 
@@ -237,7 +234,6 @@ export async function* streamingConversationNode(
   yield {
     messages: [new AIMessage(fullResponse)],
     currentPhase: 'discovery',
-    streamingResponse: undefined,
   };
 }
 

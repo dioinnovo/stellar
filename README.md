@@ -91,50 +91,214 @@ stellar/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Git
 
-### Installation
+Before installing the Stellar Intelligence Platform, ensure you have the following installed on your system:
 
-1. Clone the repository:
+- **Node.js 20.x or higher** (LTS recommended)
+  - Download from [nodejs.org](https://nodejs.org/)
+  - Verify installation: `node --version` and `npm --version`
+- **Git** (for cloning the repository)
+  - Download from [git-scm.com](https://git-scm.com/)
+  - Verify installation: `git --version`
+- **Text Editor** (VS Code recommended)
+  - Download from [code.visualstudio.com](https://code.visualstudio.com/)
+
+### Step-by-Step Installation
+
+#### 1. Clone the Repository
+
 ```bash
-git clone https://github.com/your-org/stellar-intelligence.git
-cd stellar-intelligence
+# Clone the repository
+git clone https://dev.azure.com/Innovoco/Innovoco%20-%20Infrastructure%20and%20Internal%20Development/_git/AI-Stellar-HomeInspection
+
+# Navigate to the project directory
+cd AI-Stellar-HomeInspection
 ```
 
-2. Install dependencies:
+#### 2. Install Dependencies
+
 ```bash
+# Install all project dependencies (this may take 2-3 minutes)
 npm install
+
+# If you encounter permission errors on macOS/Linux, try:
+sudo npm install
+
+# Alternative: Use yarn if you prefer
+# yarn install
 ```
 
-3. Set up environment variables:
+#### 3. Set Up Environment Variables
+
 ```bash
-cp .env.example .env.local
+# Create environment file from the existing template
+cp .env.local .env.local.backup
 ```
 
-Edit `.env.local` with your API keys:
+**Important**: The application comes with a pre-configured `.env.local` file that includes:
+- Azure OpenAI integration
+- Voice chat capabilities
+- Email services
+- Google Maps integration
+
+**For basic setup**, you can use the existing configuration as-is. The app will run in demo mode.
+
+**For production setup**, update these key variables in `.env.local`:
+
 ```env
-# Required
+# Change to production URL when deploying
+NEXTAUTH_URL=http://localhost:3002
+
+# Update to false for production
+NEXT_PUBLIC_DEMO_MODE=false
+
+# Database (SQLite by default, PostgreSQL for production)
 DATABASE_URL="file:./dev.db"
-ANTHROPIC_API_KEY=your-key
-OPENAI_API_KEY=your-key
 
-# Optional
-RESEND_API_KEY=your-key
+# Optional: Add your own API keys for enhanced features
+ANTHROPIC_API_KEY=your_anthropic_key_here
+OPENAI_API_KEY=your_openai_key_here
 ```
 
-4. Run database migrations:
+#### 4. Initialize the Database
+
 ```bash
-npx prisma migrate dev
+# Generate Prisma client (required for database operations)
+npx prisma generate
+
+# Create and migrate database schema
+npx prisma migrate dev --name init
+
+# Optional: Seed database with demo data
+npx prisma db seed
 ```
 
-5. Start the development server:
+#### 5. Start the Development Server
+
 ```bash
+# Start the development server
+npm run dev
+
+# Alternative: Use turbo mode for faster development
+npm run dev:turbo
+```
+
+#### 6. Verify Installation
+
+1. **Open your browser** and navigate to: `http://localhost:3002`
+2. **You should see** the Stellar Intelligence dashboard automatically load
+3. **Test the application** by:
+   - Navigating through different sections (Schedule, Claims, Reports)
+   - Creating a new inspection
+   - Viewing existing claims
+
+### 🚀 Quick Start Commands
+
+```bash
+# Complete setup in one go
+git clone https://dev.azure.com/Innovoco/Innovoco%20-%20Infrastructure%20and%20Internal%20Development/_git/AI-Stellar-HomeInspection
+cd AI-Stellar-HomeInspection
+npm install
+npx prisma generate
+npx prisma migrate dev --name init
 npm run dev
 ```
 
-The application will be available at `http://localhost:3000`
+### 🔧 Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server on port 3002 |
+| `npm run dev:turbo` | Start development server with Turbo mode |
+| `npm run build` | Build the application for production |
+| `npm start` | Start the production server |
+| `npm run lint` | Run ESLint to check code quality |
+
+### 🐛 Troubleshooting
+
+#### Common Issues and Solutions
+
+**1. Port Already in Use**
+```bash
+# If port 3002 is busy, the app will automatically use 3001, 3003, etc.
+# Check the terminal output for the actual port being used
+```
+
+**2. Node Version Compatibility**
+```bash
+# Check your Node.js version
+node --version
+
+# If you have an older version, update Node.js or use nvm:
+nvm install 20
+nvm use 20
+```
+
+**3. Database Connection Issues**
+```bash
+# Reset the database
+rm -f prisma/dev.db
+npx prisma migrate dev --name init
+```
+
+**4. Missing Dependencies**
+```bash
+# Clear npm cache and reinstall
+npm cache clean --force
+rm -rf node_modules package-lock.json
+npm install
+```
+
+**5. Permission Errors (macOS/Linux)**
+```bash
+# Fix npm permissions
+sudo chown -R $(whoami) ~/.npm
+sudo chown -R $(whoami) /usr/local/lib/node_modules
+```
+
+### 🌐 Accessing the Application
+
+Once running, the application provides these main sections:
+
+- **📅 Schedule Dashboard**: `http://localhost:3002/dashboard/inspection`
+- **📋 Claims Management**: `http://localhost:3002/dashboard/claims`
+- **📊 Reports**: `http://localhost:3002/dashboard/reports`
+- **🏠 Property Inspection**: Create new inspections and manage workflows
+
+### 🔐 Environment Configuration Details
+
+The application uses these key environment variables:
+
+| Variable | Purpose | Required |
+|----------|---------|----------|
+| `DATABASE_URL` | Database connection string | ✅ Yes |
+| `AZURE_OPENAI_KEY` | AI services integration | ✅ Yes |
+| `RESEND_API_KEY` | Email notifications | ⚠️ Optional |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Address autocomplete | ⚠️ Optional |
+| `NEXT_PUBLIC_DEMO_MODE` | Demo vs production mode | ⚠️ Optional |
+
+### 🚀 Production Deployment
+
+For production deployment:
+
+1. **Update environment variables**:
+   ```bash
+   NODE_ENV=production
+   NEXT_PUBLIC_DEMO_MODE=false
+   NEXTAUTH_URL=https://your-domain.com
+   ```
+
+2. **Build the application**:
+   ```bash
+   npm run build
+   npm start
+   ```
+
+3. **Use a process manager** (PM2 recommended):
+   ```bash
+   npm install -g pm2
+   pm2 start npm --name "stellar-app" -- start
+   ```
 
 ## 📍 Key Pages
 

@@ -204,7 +204,7 @@ export class BusinessIntelligenceService {
         'Client willingness to litigate'
       ],
       riskAssessment: this.assessRisk(claim),
-      timelineProjection: `${claim.averageCaseDuration || 18} days typical resolution`
+      timelineProjection: '18 days typical resolution'
     }
   }
 

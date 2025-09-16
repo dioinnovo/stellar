@@ -717,7 +717,7 @@ export default function InspectionReviewPage() {
                 </button>
 
 
-                {/* Approve Report Button - Primary Action */}
+                {/* Approve Button - Primary Action */}
                 <button
                   onClick={handleApproveReport}
                   disabled={isGeneratingReport}
@@ -731,7 +731,7 @@ export default function InspectionReviewPage() {
                   ) : (
                     <>
                       <Check size={18} />
-                      Approve Report
+                      Approve
                     </>
                   )}
                 </button>
@@ -862,7 +862,7 @@ export default function InspectionReviewPage() {
             </div>
             
             <div className="grid grid-cols-1 gap-2">
-              {/* Approve Report Button - Mobile */}
+              {/* Approve Button - Mobile */}
               <button
                 onClick={handleApproveReport}
                 disabled={isGeneratingReport}

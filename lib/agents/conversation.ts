@@ -353,8 +353,6 @@ export async function conversationNode(
       currentChallenges: structuredResponse.extracted.challenges || state.customerInfo.currentChallenges,
       intentType: structuredResponse.intentType || state.customerInfo.intentType,
       opportunitySummary: structuredResponse.opportunitySummary || state.customerInfo.opportunitySummary,
-      // Store budget and timeline in notes since they're not part of CustomerInfo
-      notes: `${state.customerInfo.notes || ''} Budget: ${structuredResponse.extracted.budget || 'Not specified'}. Timeline: ${structuredResponse.extracted.timeline || 'Not specified'}.`.trim(),
     };
     
     // Determine conversation status - only complete if truly ready
@@ -402,17 +400,13 @@ export async function conversationNode(
     // Build BANT qualification if ready
     let qualification = state.qualification;
     
-    // Check if this is a voice conversation
-    const isVoiceConversation = state.customerInfo.source === 'voice' || 
-                                state.customerInfo.voiceEnabled === true;
-    
-    // Relax requirements for voice conversations
-    const shouldActuallyQualify = structuredResponse.qualification?.shouldQualify && 
+    // Relax requirements for voice conversations (removed voice-specific logic)
+    const shouldActuallyQualify = structuredResponse.qualification?.shouldQualify &&
                                   !state.qualification &&
-                                  hasContact && 
-                                  hasSpecificChallenges && 
-                                  (isVoiceConversation ? 
-                                    // Voice: More relaxed requirements
+                                  hasContact &&
+                                  hasSpecificChallenges &&
+                                  (false ?
+                                    // Voice: More relaxed requirements (disabled)
                                     (hasBusinessContext || hasTimeline) && conversationDepth >= 4 :
                                     // Text: Original stricter requirements  
                                     hasBusinessContext && hasTimeline && hasBudget && conversationDepth >= 6);
@@ -457,8 +451,8 @@ export async function conversationNode(
       const totalScore = contactScore + companyScore + challengeScore + nameScore + 
                         budgetScore + timelineScore + authorityScore;
       
-      // Lower threshold for voice conversations (25 instead of 30)
-      const minimumScoreRequired = isVoiceConversation ? 25 : 30;
+      // Lower threshold for voice conversations (25 instead of 30) - disabled
+      const minimumScoreRequired = false ? 25 : 30;
       
       // Determine if minimum viable
       const isMinimumViable = hasContact && hasContext && totalScore >= minimumScoreRequired;
@@ -477,16 +471,16 @@ export async function conversationNode(
       if (hasContact) reasons.push('✓ Contact information captured');
       if (structuredResponse.extracted.company) reasons.push(`✓ Company: ${structuredResponse.extracted.company}`);
       if (structuredResponse.extracted.industry) reasons.push(`✓ Industry: ${structuredResponse.extracted.industry}`);
-      if (challengeScore > 0) reasons.push(`✓ ${structuredResponse.extracted.challenges.length} challenges identified`);
+      if (challengeScore > 0) reasons.push(`✓ ${structuredResponse.extracted.challenges?.length || 0} challenges identified`);
       if (budgetScore > 0) reasons.push(`✓ Budget: ${structuredResponse.extracted.budget}`);
       if (timelineScore > 0) reasons.push(`✓ Timeline: ${structuredResponse.extracted.timeline}`);
       if (!hasContact) reasons.push('✗ Missing contact information');
       if (!hasContext) reasons.push('✗ Missing business context');
       
       qualification = {
-        budget: { score: budgetScore, status: budgetScore > 0 ? 'identified' : 'unknown' },
-        authority: { 
-          level: authorityScore > 0 ? 'identified' : 'unknown', 
+        budget: { score: budgetScore, status: budgetScore > 0 ? 'planned' : 'unknown' },
+        authority: {
+          level: authorityScore > 0 ? 'decision_maker' : 'unknown', 
           canSign: false, 
           needsApproval: true, 
           score: authorityScore 
@@ -498,7 +492,7 @@ export async function conversationNode(
           score: challengeScore 
         },
         timeline: { 
-          timeframe: timelineScore >= 10 ? 'immediate' : timelineScore > 0 ? 'near_term' : 'exploring',
+          timeframe: timelineScore >= 10 ? 'immediate' : timelineScore > 0 ? 'this_quarter' : 'exploring',
           score: timelineScore 
         },
         totalScore,

@@ -164,7 +164,7 @@ export function determinePriority(score: number): EmailNotificationSchema['heade
 /**
  * Helper function to get priority emoji
  */
-export function getPriorityEmoji(priority: EmailNotificationSchema['header']['priority']): string {
+export function getPriorityEmoji(priority: EmailNotificationSchema['header']['priority']): '🔥' | '⚡' | '📌' {
   switch (priority) {
     case 'HIGH': return '🔥';
     case 'MEDIUM': return '⚡';
