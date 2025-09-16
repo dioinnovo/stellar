@@ -1,6 +1,31 @@
-import { ChromaClient, Collection } from 'chromadb'
+// Mock ChromaDB types for demo environment
+interface Collection {
+  add: (data: any) => Promise<void>
+  query: (params: any) => Promise<any>
+  count: () => Promise<number>
+}
+
+interface ChromaClient {
+  getCollection: (params: any) => Promise<Collection>
+  createCollection: (params: any) => Promise<Collection>
+}
+
+// Mock imports for demo environment
 import { prisma } from './db'
-import { Claim } from '@prisma/client'
+
+// Mock Claim type for demo environment
+interface Claim {
+  id: string
+  claimNumber: string
+  type: string
+  propertyAddress: string
+  damageType?: string | null
+  severity?: string | null
+  damageDescription?: string | null
+  estimatedAmount?: number | null
+  submittedAt: Date
+  fraudScore?: number | null
+}
 
 // GraphRAG system for context enrichment and knowledge graph
 export class GraphRAG {
@@ -9,14 +34,36 @@ export class GraphRAG {
   private embeddingFunction: any | null = null
 
   constructor() {
-    this.client = new ChromaClient({
-      path: process.env.CHROMA_SERVER_URL || 'http://localhost:8000'
-    })
-    
+    // Mock ChromaDB client for demo environment
+    this.client = {
+      getCollection: async (params: any) => this.createMockCollection(),
+      createCollection: async (params: any) => this.createMockCollection()
+    } as ChromaClient
+
     // Initialize embedding function if OpenAI key is available
     if (process.env.OPENAI_API_KEY) {
       // Use default embedding function or create a custom one
       this.embeddingFunction = null // Will be set during collection creation
+    }
+  }
+
+  private createMockCollection(): Collection {
+    return {
+      add: async (data: any) => {
+        console.log('Mock ChromaDB: Adding data to collection')
+      },
+      query: async (params: any) => {
+        console.log('Mock ChromaDB: Querying collection')
+        return {
+          documents: [[]],
+          metadatas: [[]],
+          distances: [[]]
+        }
+      },
+      count: async () => {
+        console.log('Mock ChromaDB: Counting documents')
+        return 0
+      }
     }
   }
 

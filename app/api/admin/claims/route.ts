@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
-import { ClaimStatus, Priority } from '@prisma/client'
+
+// Mock Prisma enums for demo environment
+enum ClaimStatus {
+  SUBMITTED = 'SUBMITTED',
+  TRIAGING = 'TRIAGING',
+  UNDER_REVIEW = 'UNDER_REVIEW',
+  ESTIMATING = 'ESTIMATING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  SETTLED = 'SETTLED'
+}
+
+enum Priority {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  URGENT = 'URGENT'
+}
 
 export async function GET(request: NextRequest) {
   try {

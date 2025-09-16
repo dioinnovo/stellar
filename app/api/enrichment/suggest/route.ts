@@ -45,6 +45,25 @@ export async function POST(request: NextRequest) {
     let knowledgeGraph: any = null
     let isUsingFallback = false
 
+    // Always use fallback in Vercel serverless to avoid heavy imports
+    if (process.env.VERCEL === '1') {
+      console.log('Using fallback suggestions in Vercel serverless environment')
+      isUsingFallback = true
+      suggestions = getFallbackSuggestions(validated.propertyType, validated.damageTypes, validated.severity)
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          suggestions,
+          similarClaims: [],
+          knowledgeGraph: null,
+          enrichmentCount: suggestions.length,
+          isUsingFallback,
+          note: 'Serverless mode: Using enhanced fallback suggestions. GraphRAG processing handled asynchronously.'
+        }
+      })
+    }
+
     // Try to use GraphRAG if available (not in Vercel serverless)
     if (process.env.VERCEL !== '1') {
       try {

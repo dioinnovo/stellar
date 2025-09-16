@@ -1,7 +1,30 @@
 import { prisma } from './db'
-import { ClaimStatus, WorkflowStatus, Priority } from '@prisma/client'
 import { sendEmail } from './email'
 import { graphRAG } from './graphrag'
+
+// Mock Prisma enums for demo environment
+enum ClaimStatus {
+  SUBMITTED = 'SUBMITTED',
+  TRIAGING = 'TRIAGING',
+  UNDER_REVIEW = 'UNDER_REVIEW',
+  ESTIMATING = 'ESTIMATING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
+}
+
+enum WorkflowStatus {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED'
+}
+
+enum Priority {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  URGENT = 'URGENT'
+}
 
 export interface WorkflowStep {
   name: string

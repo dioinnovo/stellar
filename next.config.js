@@ -9,17 +9,27 @@ const nextConfig = {
       bodySizeLimit: '10mb',
     },
   },
-  webpack: (config, { isServer, dev }) => {
-    if (isServer && !dev) {
-      // Add externals for heavy dependencies
+  webpack: (config, { isServer, dev, webpack }) => {
+    if (isServer) {
+      // Use IgnorePlugin to completely ignore heavy packages during build
+      config.plugins = config.plugins || []
+
+      config.plugins.push(
+        new webpack.IgnorePlugin({
+          resourceRegExp: /^(onnxruntime-node|chromadb|@prisma\/client|\.prisma|@tensorflow|@huggingface|sharp|canvas|puppeteer|playwright)$/,
+        })
+      )
+
+      // Also add externals as fallback
       config.externals = config.externals || []
       config.externals.push(
-        // Exclude onnxruntime-node (404MB) from serverless bundles
         'onnxruntime-node',
-        // Exclude chromadb to prevent ML dependencies
         'chromadb',
-        // Other heavy ML/AI dependencies
+        '@prisma/client',
+        '.prisma/client',
         '@tensorflow/tfjs-node',
+        '@huggingface/transformers',
+        'sharp',
         'canvas',
         'puppeteer',
         'playwright'

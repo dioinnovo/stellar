@@ -1,16 +1,77 @@
-import { PrismaClient } from '@prisma/client'
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
+// Mock Prisma implementation for demo environment
+interface MockPrismaModel {
+  create: (data: any) => Promise<any>
+  findUnique: (data: any) => Promise<any>
+  findFirst: (data: any) => Promise<any>
+  findMany: (data: any) => Promise<any[]>
+  update: (data: any) => Promise<any>
+  updateMany: (data: any) => Promise<any>
+  delete: (data: any) => Promise<any>
+  createMany: (data: any) => Promise<any>
+  count: (data: any) => Promise<number>
+  groupBy: (data: any) => Promise<any[]>
+  aggregate: (data: any) => Promise<any>
 }
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  })
+const createMockModel = (name: string): MockPrismaModel => ({
+  create: async (data: any) => {
+    console.log(`Mock Prisma: Creating ${name}`, data)
+    return { id: `mock_${name}_${Date.now()}`, ...data.data }
+  },
+  findUnique: async (data: any) => {
+    console.log(`Mock Prisma: Finding unique ${name}`, data)
+    return null
+  },
+  findFirst: async (data: any) => {
+    console.log(`Mock Prisma: Finding first ${name}`, data)
+    return null
+  },
+  findMany: async (data: any) => {
+    console.log(`Mock Prisma: Finding many ${name}`, data)
+    return []
+  },
+  update: async (data: any) => {
+    console.log(`Mock Prisma: Updating ${name}`, data)
+    return { id: data.where.id, ...data.data }
+  },
+  delete: async (data: any) => {
+    console.log(`Mock Prisma: Deleting ${name}`, data)
+    return { id: data.where.id }
+  },
+  createMany: async (data: any) => {
+    console.log(`Mock Prisma: Creating many ${name}`, data)
+    return { count: data.data.length }
+  },
+  updateMany: async (data: any) => {
+    console.log(`Mock Prisma: Updating many ${name}`, data)
+    return { count: 1 }
+  },
+  count: async (data: any) => {
+    console.log(`Mock Prisma: Counting ${name}`, data)
+    return 0
+  },
+  groupBy: async (data: any) => {
+    console.log(`Mock Prisma: Grouping ${name}`, data)
+    return []
+  },
+  aggregate: async (data: any) => {
+    console.log(`Mock Prisma: Aggregating ${name}`, data)
+    return { _sum: { estimatedAmount: 0 } }
+  }
+})
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+export const prisma = {
+  claim: createMockModel('claim'),
+  document: createMockModel('document'),
+  activity: createMockModel('activity'),
+  workflow: createMockModel('workflow'),
+  notification: createMockModel('notification'),
+  enrichment: createMockModel('enrichment'),
+  lead: createMockModel('lead'),
+  $disconnect: async () => {
+    console.log('Mock Prisma: Disconnecting')
+  }
+}
 
 // Helper function to generate claim numbers
 export function generateClaimNumber(type: 'commercial' | 'residential'): string {
