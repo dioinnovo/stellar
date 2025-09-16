@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { prisma, generateClaimNumber } from '@/lib/db'
-import { WorkflowEngine } from '@/lib/workflow'
 import { z } from 'zod'
 
 // Validation schema
@@ -24,10 +22,13 @@ const claimSubmissionSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Validate input
     const validatedData = claimSubmissionSchema.parse(body)
-    
+
+    // Dynamic import of heavy dependencies
+    const { prisma, generateClaimNumber } = await import('@/lib/db')
+
     // Generate claim number
     const claimNumber = generateClaimNumber(validatedData.type)
     
@@ -79,25 +80,34 @@ export async function POST(request: NextRequest) {
       }
     })
     
-    // Trigger workflow asynchronously
-    const workflowEngine = new WorkflowEngine()
-    
-    // Don't await - let it run in background
-    workflowEngine.triggerWorkflow('claim-submission', claim.id, {
-      type: validatedData.type,
-      severity: validatedData.severity
-    }).catch(error => {
-      console.error('Workflow failed:', error)
-      // Log error but don't fail the request
-      prisma.activity.create({
-        data: {
-          claimId: claim.id,
-          action: 'WORKFLOW_ERROR',
-          description: `Workflow failed: ${error.message}`,
-          metadata: JSON.stringify({ error: error.message })
-        }
-      }).catch(console.error)
-    })
+    // Trigger workflow asynchronously (only if not in serverless environment)
+    if (process.env.VERCEL !== '1') {
+      try {
+        const { WorkflowEngine } = await import('@/lib/workflow')
+        const workflowEngine = new WorkflowEngine()
+
+        // Don't await - let it run in background
+        workflowEngine.triggerWorkflow('claim-submission', claim.id, {
+          type: validatedData.type,
+          severity: validatedData.severity
+        }).catch(error => {
+          console.error('Workflow failed:', error)
+          // Log error but don't fail the request
+          prisma.activity.create({
+            data: {
+              claimId: claim.id,
+              action: 'WORKFLOW_ERROR',
+              description: `Workflow failed: ${error.message}`,
+              metadata: JSON.stringify({ error: error.message })
+            }
+          }).catch(console.error)
+        })
+      } catch (error) {
+        console.log('Workflow engine not available in serverless environment')
+      }
+    } else {
+      console.log('Skipping workflow in Vercel serverless environment')
+    }
     
     // Return success response
     return NextResponse.json({
@@ -136,14 +146,17 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const claimNumber = searchParams.get('claimNumber')
     const claimId = searchParams.get('claimId')
-    
+
     if (!claimNumber && !claimId) {
       return NextResponse.json({
         success: false,
         error: 'Please provide claimNumber or claimId'
       }, { status: 400 })
     }
-    
+
+    // Dynamic import of Prisma
+    const { prisma } = await import('@/lib/db')
+
     const claim = await prisma.claim.findFirst({
       where: claimNumber ? { claimNumber } : { id: claimId! },
       include: {

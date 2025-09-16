@@ -1,0 +1,18 @@
+{
+  "functions": {
+    "app/api/claims/submit/route.ts": {
+      "maxDuration": 30
+    },
+    "app/api/enrichment/suggest/route.ts": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "VERCEL": "1"
+  },
+  "build": {
+    "env": {
+      "VERCEL": "1"
+    }
+  }
+}

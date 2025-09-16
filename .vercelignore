@@ -1,0 +1,33 @@
+# Exclude heavy dependencies from Vercel deployment
+node_modules/onnxruntime-node/
+node_modules/@img/sharp-*/
+node_modules/chromadb/
+node_modules/@tensorflow/
+node_modules/canvas/
+node_modules/puppeteer/
+node_modules/playwright/
+
+# Exclude development files
+*.log
+.env.local
+.env.development
+coverage/
+.nyc_output/
+junit.xml
+
+# Exclude test files
+__tests__/
+*.test.ts
+*.test.js
+*.spec.ts
+*.spec.js
+
+# Exclude documentation
+docs/
+*.md
+!README.md
+!CLAUDE.md
+
+# Exclude build artifacts
+.next/static/
+.turbo/
