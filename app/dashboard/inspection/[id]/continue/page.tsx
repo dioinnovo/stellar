@@ -133,7 +133,7 @@ export default function ContinueInspectionPage() {
       </div>
 
       {/* Progress Overview */}
-      <div className="max-w-7xl mx-auto py-6">
+      <div className="max-w-7xl mx-auto py-4 md:py-6 px-4">
         {/* Main Progress Card */}
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -203,7 +203,7 @@ export default function ContinueInspectionPage() {
               ) : null}
               
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-gray-50 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <ImageIcon size={16} className="text-blue-600" />
