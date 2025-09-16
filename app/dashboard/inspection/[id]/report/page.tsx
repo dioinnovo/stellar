@@ -185,8 +185,15 @@ export default function InspectionReportPage() {
         setIsApproved(false)
       }
     } else {
-      // No report found - not approved
-      setIsApproved(false)
+      // Check if this is a demo report ID from the reports page (these are always approved)
+      // Demo report IDs are: '1', '2', '4', '6' (the approved ones from mockCompletedReports)
+      const demoApprovedIds = ['1', '2', '4', '6', 'INS-002']
+      if (demoApprovedIds.includes(inspectionId)) {
+        setIsApproved(true)
+      } else {
+        // No report found - not approved
+        setIsApproved(false)
+      }
     }
   }, [inspectionId])
 
