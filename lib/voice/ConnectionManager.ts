@@ -6,7 +6,7 @@
  */
 
 import { IVoiceProvider } from './providers/IVoiceProvider';
-// import ProviderFactory from './ProviderFactory';
+import { VoiceProviderFactory } from './ProviderFactory';
 
 export enum CircuitState {
   CLOSED = 'closed',    // Normal operation
@@ -129,7 +129,7 @@ export class ConnectionManager {
   private circuitBreakers: Map<string, CircuitBreaker> = new Map();
   private connectionPool: IVoiceProvider[] = [];
   private metrics: ConnectionMetrics;
-  private factory: ProviderFactory;
+  private factory: VoiceProviderFactory;
   
   private readonly defaultCircuitConfig: CircuitBreakerConfig = {
     failureThreshold: 3,
@@ -147,7 +147,7 @@ export class ConnectionManager {
   };
   
   constructor() {
-    this.factory = new ProviderFactory();
+    this.factory = VoiceProviderFactory.getInstance();
     this.metrics = {
       totalConnections: 0,
       activeConnections: 0,
@@ -212,7 +212,8 @@ export class ConnectionManager {
   ): Promise<IVoiceProvider> {
     try {
       const startTime = Date.now();
-      const connection = this.factory.createProvider(provider, config);
+      const voiceConfig = { provider, ...config };
+      const connection = this.factory.createProvider(voiceConfig);
       
       await connection.connect(
         config?.apiKey,

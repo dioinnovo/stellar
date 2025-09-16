@@ -374,8 +374,9 @@ export async function runUIInteraction(
   // Extract UI tool calls from messages
   const uiCalls: UIToolCall[] = [];
   result.messages.forEach((msg: BaseMessage) => {
-    if (msg.additional_kwargs?.ui_action) {
-      uiCalls.push(msg.additional_kwargs.ui_action);
+    const uiAction = msg.additional_kwargs?.ui_action;
+    if (uiAction && typeof uiAction === 'object' && 'type' in uiAction) {
+      uiCalls.push(uiAction as UIToolCall);
     }
   });
   

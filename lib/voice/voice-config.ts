@@ -121,8 +121,7 @@ export const VOICE_MODELS: VoiceModel[] = [
     provider: 'azure',
     description: 'Azure OpenAI default voice',
     gender: 'neutral',
-    style: 'professional',
-    isFallback: true
+    style: 'professional'
   }
 ];
 

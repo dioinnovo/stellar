@@ -635,9 +635,7 @@ export class OpenAIVoiceProvider extends IVoiceProvider {
           noiseSuppression: true,
           autoGainControl: true,
           sampleRate: 24000,
-          channelCount: 1,
-          sampleSize: 16,
-          latency: 0.01
+          channelCount: 1
         }
       });
 

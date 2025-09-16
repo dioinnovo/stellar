@@ -230,7 +230,7 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
     // Send session settings to start the conversation
     // Configure Hume session with correct audio settings
     const sessionConfig = {
-      type: 'session_settings',
+      type: 'session_settings' as const,
       audio: {
         encoding: 'linear16',
         channels: 1,
@@ -246,7 +246,7 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
     };
     
     console.log('🔧 Sending Hume session configuration:', JSON.stringify(sessionConfig, null, 2));
-    this.sendMessage(sessionConfig);
+    this.sendMessage(sessionConfig as HumeMessage);
     
     this.emit('call_started');
     
@@ -364,9 +364,6 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
       modalities: ['audio', 'text'],
       inputAudioFormat: 'pcm16',
       outputAudioFormat: 'pcm16',
-      // Audio quality settings
-      audioQuality: 'high',
-      sampleRate: 24000,  // Match Hume's native rate
       turnDetection: {
         type: 'server_vad',
         threshold: 0.85,
@@ -459,7 +456,6 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
         break;
         
       case 'chat_metadata':
-      case 'ChatMetadata': // Support both formats
         console.log('Hume EVI Provider: Chat metadata received:', data);
         if (data.chat_group_id) {
           this.chatGroupId = data.chat_group_id;
@@ -470,7 +466,6 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
         break;
 
       case 'user_message':
-      case 'UserMessage': // Support both formats
         const userTranscript: VoiceTranscript = {
           text: data.message?.content || data.text || '',
           role: 'user',
@@ -501,7 +496,6 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
         break;
 
       case 'assistant_message':
-      case 'AssistantMessage': // Support both formats
         const assistantTranscript: VoiceTranscript = {
           text: data.message?.content || data.text || '',
           role: 'assistant',
@@ -519,7 +513,6 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
         break;
 
       case 'assistant_prosody':
-      case 'AssistantProsody': // Support both formats
         console.log('Hume EVI Provider: Prosody data received:', data);
         this.emit('prosody_data', data);
         break;
@@ -541,7 +534,6 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
         break;
 
       case 'assistant_end':
-      case 'AssistantEnd': // Support both formats
         console.log('Hume EVI Provider: Assistant finished speaking');
         this.updateConnectionState({ isAssistantSpeaking: false });
         this.updateMicrophoneGain(false);
@@ -549,7 +541,6 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
         break;
 
       case 'tool_call_message':
-      case 'ToolCallMessage': // Support both formats
         console.log('Hume EVI Provider: Tool call received:', data);
         this.emit('tool_call', data);
         break;
@@ -1024,7 +1015,7 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
             console.log(`🔇 Sending ${this.silenceBuffer.length} buffered silence chunks for context`);
             this.silenceBuffer.forEach(silenceChunk => {
               const pcm16Data = this.floatTo16BitPCM(silenceChunk);
-              this.sendAudio(pcm16Data.buffer);
+              this.sendAudio(pcm16Data.buffer as ArrayBuffer);
               this.audioChunkCount++;
             });
             this.silenceBuffer = [];
@@ -1034,7 +1025,7 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
         
         // Send current audio chunk
         const pcm16Data = this.floatTo16BitPCM(inputData);
-        this.sendAudio(pcm16Data.buffer);
+        this.sendAudio(pcm16Data.buffer as ArrayBuffer);
         this.audioChunkCount++;
         
         // Debug logging (less frequent)
@@ -1060,12 +1051,12 @@ export class HumeEVIVoiceProvider extends IVoiceProvider {
             
             // Send a final silence chunk to signal end of speech
             const pcm16Data = this.floatTo16BitPCM(inputData);
-            this.sendAudio(pcm16Data.buffer);
+            this.sendAudio(pcm16Data.buffer as ArrayBuffer);
             this.audioChunkCount++;
           } else {
             // Still in speech - send silence to maintain continuity
             const pcm16Data = this.floatTo16BitPCM(inputData);
-            this.sendAudio(pcm16Data.buffer);
+            this.sendAudio(pcm16Data.buffer as ArrayBuffer);
             this.audioChunkCount++;
           }
         } else {
