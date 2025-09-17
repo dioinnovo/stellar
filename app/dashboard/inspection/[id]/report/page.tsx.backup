@@ -89,9 +89,23 @@ function AreaCard({
             <button
               onClick={(e) => {
                 e.stopPropagation()
+                setIsEditing(false)
+              }}
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
+                !isEditing
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              <Eye size={16} />
+              View Details
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
                 setIsEditing(true)
               }}
-              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors cursor-pointer ${
+              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition-colors ${
                 isEditing
                   ? 'bg-stellar-orange text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -113,7 +127,7 @@ function AreaCard({
                   }
                   setIsEditing(false)
                 }}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 transition-colors cursor-pointer"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2 transition-colors"
               >
                 <CheckCircle size={16} />
                 Save Changes

@@ -549,13 +549,7 @@ export default function InspectionReportPage() {
           damageDescription: area.description,
           photos: [] // Would include base64 photos in production
         })),
-        aiInsights: {
-          hiddenDamageEstimate: reportData.aiInsights.hiddenDamageEstimate,
-          codeUpgradeOpportunities: reportData.aiInsights.codeUpgradeOpportunities,
-          historicalRecovery: reportData.aiInsights.historicalRecovery,
-          marketComparison: reportData.aiInsights.marketComparison,
-          riskAssessment: reportData.aiInsights.riskAssessment
-        },
+        aiInsights: reportData.aiInsights,
         financialSummary: {
           subtotal: reportData.financialSummary.currentClaimValue,
           hiddenDamage: reportData.aiInsights.hiddenDamageEstimate,
@@ -656,10 +650,10 @@ export default function InspectionReportPage() {
             <div>
               <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 break-words">
                 <span className="block sm:inline">Inspection Report</span>
-                <span className="block sm:inline sm:ml-1">- {reportData.metadata.reportId}</span>
+                <span className="block sm:inline sm:ml-1">- {reportData?.metadata?.reportId || `RPT-${inspectionId}`}</span>
               </h1>
               <p className="text-sm sm:text-base text-gray-600 mb-4">
-                Generated {reportData.metadata.generatedDate}
+                Generated {reportData?.metadata?.generatedDate || new Date().toLocaleDateString()}
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
                 <button
@@ -668,7 +662,7 @@ export default function InspectionReportPage() {
                   className={`flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-lg transform transition-all duration-200 text-sm sm:text-base w-full sm:w-auto ${
                     isDownloading
                       ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-white border border-gray-300 text-gray-700 hover:text-gray-900 hover:bg-gray-50 hover:shadow-sm hover:scale-[1.02] cursor-pointer'
+                      : 'bg-black border border-black text-white hover:bg-gray-800 hover:shadow-sm hover:scale-[1.02] cursor-pointer'
                   }`}
                 >
                   <Download size={18} className={isDownloading ? 'animate-pulse' : ''} />
@@ -721,7 +715,7 @@ export default function InspectionReportPage() {
             </div>
             {/* Property Address Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-              <h1 className="text-4xl font-bold mb-2">{reportData.metadata.property.address}</h1>
+              <h1 className="text-4xl font-bold mb-2">{reportData?.metadata?.property?.address || '1234 Ocean Drive, Miami Beach, FL'}</h1>
               <p className="text-xl opacity-90">Miami, FL 33101</p>
             </div>
           </div>
@@ -738,11 +732,11 @@ export default function InspectionReportPage() {
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Report Number:</span>
-                    <span className="font-medium">{reportData.metadata.reportId}</span>
+                    <span className="font-medium">{reportData?.metadata?.reportId || `RPT-${inspectionId}`}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Inspection Date:</span>
-                    <span className="font-medium">{reportData.metadata.generatedDate}</span>
+                    <span className="font-medium">{reportData?.metadata?.generatedDate || new Date().toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Property Type:</span>
@@ -858,7 +852,7 @@ export default function InspectionReportPage() {
                   </span>
                 </div>
                 <div className="text-xl sm:text-2xl print:text-lg font-bold text-gray-900 print:mb-1">
-                  Report #{reportData.metadata.reportId}
+                  Report #{reportData?.metadata?.reportId || `RPT-${inspectionId}`}
                 </div>
                 <div className="text-sm print:text-xs text-gray-600">
                   Date: {reportData.metadata.generatedDate}
@@ -914,28 +908,28 @@ export default function InspectionReportPage() {
             
             <div className="grid grid-cols-2 lg:grid-cols-4 print:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 print:gap-2 mb-3 sm:mb-6 print:mb-3">
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium mb-1">Total Damage Value</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 print:text-center">
                   ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
                 </div>
-                <div className="text-[10px] sm:text-sm print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium">Total Damage Value</div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium mb-1">Critical Issues</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-red-600 print:text-gray-900 print:text-center">
                   {reportData.executiveSummary.criticalIssues}
                 </div>
-                <div className="text-[10px] sm:text-sm print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium">Critical Issues</div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium mb-1">Confidence Score</div>
                 <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-green-600 print:text-gray-900 print:text-center">
                   {reportData.executiveSummary.confidenceScore}%
                 </div>
-                <div className="text-[10px] sm:text-sm print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium">Confidence Score</div>
               </div>
               <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
-                <div className="text-sm sm:text-lg print:text-xs font-bold text-gray-900 print:text-center">
-                  {reportData.executiveSummary.timelineEstimate}
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium mb-1">Restoration Timeline</div>
+                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 print:text-center">
+                  {reportData.executiveSummary.timelineEstimate.split(' ')[0]}
                 </div>
-                <div className="text-[10px] sm:text-sm print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium">Repair Timeline</div>
               </div>
             </div>
 
@@ -944,47 +938,47 @@ export default function InspectionReportPage() {
               <h3 className="font-semibold text-gray-900 mb-4 text-sm sm:text-base print:text-sm print:uppercase print:text-center">
                 ESTIMATED REPAIR COSTS
               </h3>
-              <div className="grid grid-cols-3 gap-4 sm:gap-6">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
                 <div className="text-center">
-                  <div className="text-xs sm:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
                     IMMEDIATE
                   </div>
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-red-600 print:text-gray-900 print:text-base">
+                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-red-600 print:text-gray-900 print:text-base">
                     ${(reportData.executiveSummary.totalDamageValue * 0.25).toLocaleString()}
                   </div>
-                  <div className="text-[10px] sm:text-xs text-gray-500 mt-1 print:hidden">
+                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-1 print:hidden">
                     0-30 days
                   </div>
                 </div>
                 <div className="text-center border-x border-gray-300 print:border-gray-400">
-                  <div className="text-xs sm:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
                     SHORT-TERM
                   </div>
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-orange-600 print:text-gray-900 print:text-base">
+                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-orange-600 print:text-gray-900 print:text-base">
                     ${(reportData.executiveSummary.totalDamageValue * 0.45).toLocaleString()}
                   </div>
-                  <div className="text-[10px] sm:text-xs text-gray-500 mt-1 print:hidden">
+                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-1 print:hidden">
                     1-3 months
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xs sm:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
                     LONG-TERM
                   </div>
-                  <div className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 print:text-base">
+                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-gray-900 print:text-base">
                     ${(reportData.executiveSummary.totalDamageValue * 0.30).toLocaleString()}
                   </div>
-                  <div className="text-[10px] sm:text-xs text-gray-500 mt-1 print:hidden">
+                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-1 print:hidden">
                     3+ months
                   </div>
                 </div>
               </div>
               <div className="mt-4 pt-3 border-t border-gray-300 print:border-gray-400">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
                   <span className="text-xs sm:text-sm text-gray-600 font-medium print:text-[10px] print:uppercase print:font-bold">
                     TOTAL ESTIMATED COST
                   </span>
-                  <span className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 print:text-base">
+                  <span className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 print:text-base">
                     ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
                   </span>
                 </div>
@@ -1096,26 +1090,30 @@ export default function InspectionReportPage() {
             <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-6">Detailed Area Findings</h2>
             
             <div className="space-y-3 sm:space-y-6">
-              {reportData.areaFindings.map((area, idx) => (
+              {(reportData?.areaFindings || []).map((area, idx) => (
                 <div key={idx} className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
                   {/* Mobile-optimized header with prominent repair cost */}
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3 sm:mb-4">
                     <div className="flex-1">
-                      <h3 className="text-base sm:text-lg font-semibold text-gray-900">{area.area}</h3>
-                      <p className="text-xs sm:text-sm text-gray-600">{area.category}</p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                      {/* Status Badge */}
-                      <span className={`${getStatusBadge(area.status, area.priority)} text-xs sm:text-sm inline-block`}>
-                        {area.status} - {area.priority}
-                      </span>
-                      {/* Repair Estimate - Prominently displayed */}
-                      <div className="bg-stellar-orange text-white px-3 py-1.5 rounded-lg w-full sm:w-auto">
-                        <span className="text-xs font-medium">Repair Estimate:</span>
-                        <span className="text-base sm:text-lg font-bold ml-1 block sm:inline">
-                          ${area.estimatedCost.toLocaleString()}
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900">{area.area}</h3>
+                        {/* Status Badge - Moved to top right on mobile */}
+                        <span className={`${getStatusBadge(area.status, area.priority)} text-xs sm:text-sm inline-block sm:hidden uppercase`}>
+                          {area.priority}
                         </span>
                       </div>
+                      <p className="text-xs sm:text-sm text-gray-600">{area.category}</p>
+                      {/* Status Badge - Desktop position */}
+                      <span className={`${getStatusBadge(area.status, area.priority)} text-xs sm:text-sm hidden sm:inline-block mt-2 uppercase`}>
+                        {area.priority}
+                      </span>
+                    </div>
+                    {/* Repair Estimate - Now separate and prominent */}
+                    <div className="bg-stellar-orange text-white px-3 py-1.5 rounded-lg w-full sm:w-auto">
+                      <span className="text-xs font-medium">Repair Estimate:</span>
+                      <span className="text-base sm:text-lg font-bold ml-1 block sm:inline">
+                        ${area.estimatedCost.toLocaleString()}
+                      </span>
                     </div>
                   </div>
                   

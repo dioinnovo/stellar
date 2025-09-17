@@ -87,7 +87,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
           {onToggle && (
             <button
               onClick={onToggle}
-              className="p-1.5 hover:bg-gray-200 rounded-lg transition"
+              className="p-1.5 hover:bg-gray-200 rounded-lg transition cursor-pointer"
             >
               {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
             </button>

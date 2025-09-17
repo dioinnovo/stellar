@@ -178,7 +178,7 @@ export default function ContinueInspectionPage() {
           <p className="text-red-600 mb-4">{error || 'Failed to load inspection data'}</p>
           <button
             onClick={() => router.push('/dashboard/inspection')}
-            className="px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-orange-600"
+            className="px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-orange-600 cursor-pointer"
           >
             Back to Inspections
           </button>
@@ -234,7 +234,7 @@ export default function ContinueInspectionPage() {
                 </div>
                 <button
                   onClick={() => {}}
-                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg cursor-pointer"
                 >
                   <MoreVertical size={20} />
                 </button>
@@ -245,7 +245,7 @@ export default function ContinueInspectionPage() {
             {progress.percentage >= 50 && (
               <button
                 onClick={() => router.push(`/dashboard/inspection/${inspectionId}/complete`)}
-                className="w-full px-6 py-2.5 bg-stellar-orange text-white rounded-full hover:bg-orange-600 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg"
+                className="w-full px-6 py-2.5 bg-stellar-orange text-white rounded-full hover:bg-orange-600 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg cursor-pointer"
               >
                 <CheckCircle size={18} />
                 Finish Inspection
@@ -347,7 +347,7 @@ export default function ContinueInspectionPage() {
             <div className="flex flex-col gap-3">
               <button
                 onClick={handleResumeInspection}
-                className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg"
+                className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg cursor-pointer"
               >
                 <Camera size={20} />
                 Resume Inspection
@@ -355,7 +355,7 @@ export default function ContinueInspectionPage() {
               </button>
               <button
                 onClick={handleGeneratePreliminaryReport}
-                className="px-6 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2 font-semibold"
+                className="px-6 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all flex items-center justify-center gap-2 font-semibold cursor-pointer"
               >
                 <FileText size={20} />
                 Preliminary Report
@@ -437,7 +437,7 @@ export default function ContinueInspectionPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
+                className={`flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-all cursor-pointer ${
                   activeTab === tab
                     ? 'bg-gray-900 text-white'
                     : 'text-gray-600 hover:bg-gray-100'
@@ -645,7 +645,7 @@ export default function ContinueInspectionPage() {
                       <div className="flex items-start gap-3">
                         <button
                           onClick={() => setPlayingAudio(playingAudio === note.id ? null : note.id)}
-                          className="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                          className="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors cursor-pointer"
                         >
                           {playingAudio === note.id ? (
                             <Pause size={20} />
@@ -795,7 +795,7 @@ export default function ContinueInspectionPage() {
                             </div>
                             <button
                               onClick={() => router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)}
-                              className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 group"
+                              className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 group cursor-pointer"
                             >
                               View Details
                               <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
@@ -832,7 +832,7 @@ export default function ContinueInspectionPage() {
                 <h2 className="text-xl font-bold text-gray-900">{selectedArea.name}</h2>
                 <button
                   onClick={() => setSelectedArea(null)}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
+                  className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
                 >
                   <X size={20} />
                 </button>
@@ -965,7 +965,7 @@ export default function ContinueInspectionPage() {
                 </div>
                 <button
                   onClick={() => setShowMediaModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg"
+                  className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
                 >
                   <X size={20} />
                 </button>
