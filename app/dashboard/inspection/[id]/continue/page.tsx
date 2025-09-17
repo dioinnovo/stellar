@@ -91,11 +91,10 @@ export default function ContinueInspectionPage() {
   }
 
   const handleResumeInspection = () => {
-    // Find the first incomplete area
-    const nextArea = inspectionMediaData.find(area => area.status === 'not_started')
-    if (nextArea) {
-      router.push(`/dashboard/inspection/${inspectionId}/area/${nextArea.areaId}`)
-    }
+    // Navigate to the areas tab to let user choose which area to inspect
+    setActiveTab('areas')
+    // Scroll to top to show the areas
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const handleGeneratePreliminaryReport = () => {
