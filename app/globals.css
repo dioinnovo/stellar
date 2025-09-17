@@ -141,9 +141,10 @@
   .inspection-carousel .swiper-slide-shadow-right,
   .inspection-carousel .swiper-slide-shadow-coverflow {
     border-radius: 0.75rem !important; /* Match the rounded-xl of cards */
+    opacity: 0.4; /* Enhance shadow visibility */
   }
 
-  /* Additional overlay for non-active slides with rounded corners */
+  /* Enhanced depth overlay for non-active slides */
   .inspection-carousel .swiper-slide:not(.swiper-slide-active) > div > div {
     position: relative;
   }
@@ -152,22 +153,37 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.15);
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0.25) 50%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
     border-radius: 0.75rem; /* Match the rounded-xl of cards */
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: all 0.3s ease;
   }
 
-  /* Scale active slide to appear closer */
+  /* Active slide elevation and emphasis */
   .inspection-carousel .swiper-slide-active {
-    transform: scale(1.05) !important;
     z-index: 10;
-    transition: transform 0.3s ease;
   }
 
-  /* Ensure smooth transition for non-active slides */
+  .inspection-carousel .swiper-slide-active > div > div {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* Smooth transitions for all slides */
   .inspection-carousel .swiper-slide {
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: all 0.3s ease;
+  }
+
+  /* Enhance depth perception with slight blur on far slides */
+  .inspection-carousel .swiper-slide-prev-prev,
+  .inspection-carousel .swiper-slide-next-next {
+    filter: blur(0.5px);
+    opacity: 0.8;
   }
 
   /* Sequential fade-in animations */

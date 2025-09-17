@@ -293,10 +293,11 @@ export function InspectionAreaCarousel({
           slidesPerView={"auto"}
           initialSlide={currentAreaIndex}
           coverflowEffect={{
-            rotate: 0,
-            stretch: 0,
-            depth: 80,
-            modifier: 1.2,
+            rotate: 35,
+            stretch: 20,
+            depth: 150,
+            modifier: 1,
+            slideShadows: true,
           }}
           navigation={{
             nextEl: ".swiper-button-next-custom",
@@ -316,9 +317,11 @@ export function InspectionAreaCarousel({
 
             return (
               <SwiperSlide key={area.id} className="!w-[250px] !h-[440px]">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="cursor-pointer"
+                <div
+                  className={cn(
+                    "h-full transition-all duration-200",
+                    index === activeIndex ? "cursor-pointer" : "cursor-grab"
+                  )}
                   onClick={() => {
                     // Only trigger onAreaSelect if this is the active card
                     if (index === activeIndex) {
@@ -332,11 +335,12 @@ export function InspectionAreaCarousel({
                   }}
                 >
                   <div className={cn(
-                    "bg-white rounded-xl shadow-lg border-2 overflow-hidden relative h-[420px] max-h-[420px] flex flex-col transition-all",
+                    "bg-white rounded-xl shadow-lg border-2 overflow-hidden relative h-[420px] max-h-[420px] flex flex-col transition-all duration-200",
                     area.status === 'completed' && 'border-green-400',
                     area.status === 'in_progress' && 'border-blue-400',
                     area.status === 'skipped' && 'border-yellow-400',
-                    !area.status && 'border-gray-200'
+                    !area.status && 'border-gray-200',
+                    index === activeIndex && 'shadow-xl hover:shadow-2xl'
                   )}>
                     {/* Status Badge - Top Right Corner */}
                     {area.status && (
@@ -475,7 +479,7 @@ export function InspectionAreaCarousel({
                       )}
                     </div>
                   </div>
-                </motion.div>
+                </div>
               </SwiperSlide>
             )
           })}
@@ -611,18 +615,25 @@ export function InspectionAreaCarousel({
         .inspection-carousel {
           width: 100%;
         }
-        
+
         .inspection-carousel .swiper-slide {
           background-position: center;
           background-size: cover;
         }
-        
-        .inspection-carousel .swiper-3d .swiper-slide-shadow-left {
-          background-image: none;
+
+        /* Enhanced shadow effects for coverflow */
+        .inspection-carousel .swiper-slide-shadow-left,
+        .inspection-carousel .swiper-slide-shadow-right {
+          border-radius: 0.75rem;
         }
-        
-        .inspection-carousel .swiper-3d .swiper-slide-shadow-right {
-          background: none;
+
+        /* Additional depth effect for non-active slides */
+        .inspection-carousel .swiper-slide:not(.swiper-slide-active) {
+          filter: brightness(0.9);
+        }
+
+        .inspection-carousel .swiper-slide {
+          transition: filter 0.3s ease;
         }
       `}</style>
     </div>

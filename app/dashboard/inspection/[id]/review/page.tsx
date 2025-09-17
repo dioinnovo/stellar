@@ -679,7 +679,7 @@ export default function InspectionReviewPage() {
               </div>
 
               {/* Action Buttons Row - Below Title */}
-              <div className="hidden md:flex items-center justify-between">
+              <div className="hidden md:flex items-center gap-3">
                 <Link
                   href={`/dashboard/inspection/${inspectionId}/areas`}
                   className="flex items-center gap-2 text-gray-700 hover:text-gray-900 cursor-pointer"
@@ -687,7 +687,7 @@ export default function InspectionReviewPage() {
                   <Edit3 size={18} />
                   Edit Areas
                 </Link>
-                
+
                 {/* AI Enrichment Button */}
                 <button
                   onClick={handleEnrichInspection}
@@ -792,12 +792,12 @@ export default function InspectionReviewPage() {
             </div>
           </div>
 
-          {/* Est. Repair Cost Card - Redesigned */}
+          {/* Est. Repair Cost Card - Compact */}
           <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-50 rounded-bl-full opacity-50" />
-            <div className="relative">
+            <div className="flex flex-col h-full">
               {/* Header with icon */}
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-2">
                 <div className="p-1.5 bg-emerald-100 rounded-lg">
                   <DollarSign className="text-emerald-600" size={16} />
                 </div>
@@ -805,23 +805,13 @@ export default function InspectionReviewPage() {
               </div>
 
               {/* Main Value */}
-              <p className="text-2xl md:text-3xl font-bold text-emerald-600 mb-2">
+              <p className="text-2xl md:text-3xl font-bold text-emerald-600">
                 ${(inspectionData?.overallInsights.estimatedRepairCost || 0).toLocaleString()}
               </p>
 
-              {/* Range - Subtle and Small */}
-              <div className="flex items-center gap-1">
-                <span className="text-[10px] text-gray-400">Range:</span>
-                <span className="text-[10px] text-gray-500 font-medium">
-                  ${((inspectionData?.overallInsights.similarReportsRange?.min || 0) / 1000).toFixed(0)}k - ${((inspectionData?.overallInsights.similarReportsRange?.max || 0) / 1000).toFixed(0)}k
-                </span>
-              </div>
-
-              {/* Based on reports - Very subtle at bottom */}
-              <div className="absolute bottom-2 left-4 right-4">
-                <div className="text-[9px] text-gray-400">
-                  Based on {inspectionData?.overallInsights.similarReportsCount || 27} similar reports
-                </div>
+              {/* Based on reports - Single line */}
+              <div className="text-xs text-gray-400 mt-2">
+                Based on historical similar events
               </div>
             </div>
           </div>
