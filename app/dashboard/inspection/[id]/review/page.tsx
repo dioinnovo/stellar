@@ -681,7 +681,7 @@ export default function InspectionReviewPage() {
               {/* Action Buttons Row - Below Title */}
               <div className="hidden md:flex items-center gap-3">
                 <Link
-                  href={`/dashboard/inspection/${inspectionId}/area/exterior-roof`}
+                  href={`/dashboard/inspection/${inspectionId}/continue`}
                   className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 cursor-pointer"
                 >
                   <Edit3 size={18} />
@@ -825,7 +825,7 @@ export default function InspectionReviewPage() {
           <div className="block md:hidden border-b border-gray-200 px-3 py-3 space-y-2">
             <div className="grid grid-cols-2 gap-2">
               <Link
-                href={`/dashboard/inspection/${inspectionId}/area/exterior-roof`}
+                href={`/dashboard/inspection/${inspectionId}/continue`}
                 className="flex items-center justify-center gap-2 py-2 px-4 bg-gray-100 text-gray-700 hover:text-gray-900 rounded-lg cursor-pointer text-sm"
               >
                 <Edit3 size={16} />
