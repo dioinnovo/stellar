@@ -1,125 +1,139 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { InspectionAreaCarousel } from '@/components/ui/inspection-area-carousel'
-import { inspectionMediaData, AreaInspectionData } from '@/lib/inspection-media'
-import { Home } from 'lucide-react'
+import { useInspectionData } from '@/lib/hooks/useInspectionData'
+import { Home, Building2, Wrench } from 'lucide-react'
 
-// Define all inspection areas
-const INSPECTION_AREAS = {
-  residential: [
-    // Exterior
-    { id: 'exterior-roof', name: 'Roof & Gutters', category: 'Exterior', icon: Home },
-    { id: 'exterior-siding', name: 'Siding & Walls', category: 'Exterior', icon: Home },
-    { id: 'exterior-windows', name: 'Windows & Doors', category: 'Exterior', icon: Home },
-    { id: 'exterior-foundation', name: 'Foundation', category: 'Exterior', icon: Home },
-    { id: 'exterior-landscape', name: 'Landscape & Drainage', category: 'Exterior', icon: Home },
-
-    // Interior Rooms
-    { id: 'interior-living', name: 'Living Room', category: 'Interior', icon: Home },
-    { id: 'interior-kitchen', name: 'Kitchen', category: 'Interior', icon: Home },
-    { id: 'interior-master-bed', name: 'Master Bedroom', category: 'Interior', icon: Home },
-    { id: 'interior-bedrooms', name: 'Other Bedrooms', category: 'Interior', icon: Home },
-    { id: 'interior-bathrooms', name: 'Bathrooms', category: 'Interior', icon: Home },
-    { id: 'interior-basement', name: 'Basement/Attic', category: 'Interior', icon: Home },
-
-    // Systems
-    { id: 'systems-electrical', name: 'Electrical System', category: 'Systems', icon: Home },
-    { id: 'systems-plumbing', name: 'Plumbing System', category: 'Systems', icon: Home },
-    { id: 'systems-hvac', name: 'HVAC System', category: 'Systems', icon: Home }
-  ]
+// Icon mapping for areas
+const AREA_ICONS: Record<string, any> = {
+  'exterior-roof': Home,
+  'exterior-siding': Home,
+  'exterior-windows': Home,
+  'exterior-foundation': Home,
+  'exterior-landscape': Home,
+  'interior-living': Home,
+  'interior-kitchen': Home,
+  'interior-master-bed': Home,
+  'interior-bedrooms': Home,
+  'interior-bathrooms': Home,
+  'interior-basement': Home,
+  'systems-electrical': Wrench,
+  'systems-plumbing': Wrench,
+  'systems-hvac': Wrench
 }
 
 export default function PropertyInspectionAreasPage() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const inspectionId = params.id as string
-  const [propertyType] = useState<'residential' | 'commercial'>('residential')
-  const [areasStatus, setAreasStatus] = useState<Record<string, any>>({})
   const [currentIndex, setCurrentIndex] = useState(0)
 
+  // Use the centralized inspection data hook
+  const {
+    inspectionData,
+    loading,
+    error,
+    markAreaCompleted,
+    markAreaSkipped,
+    markAreaInProgress
+  } = useInspectionData(inspectionId)
+
+  // Set initial index based on area query parameter
   useEffect(() => {
-    // Load saved areas status from sessionStorage
-    const savedStatus = sessionStorage.getItem(`inspection-${inspectionId}-areas`)
-    if (savedStatus) {
-      setAreasStatus(JSON.parse(savedStatus))
+    const areaParam = searchParams.get('area')
+    if (areaParam && inspectionData?.areas) {
+      const areaIndex = inspectionData.areas.findIndex(area => area.id === areaParam)
+      if (areaIndex !== -1) {
+        setCurrentIndex(areaIndex)
+      }
     }
+  }, [searchParams, inspectionData])
 
-    // Load inspection media data to get status
-    inspectionMediaData.forEach(area => {
-      setAreasStatus(prev => ({
-        ...prev,
-        [area.areaId]: {
-          status: area.status,
-          photoCount: area.photos?.length || 0,
-          voiceNotes: area.voiceNotes?.length || 0,
-          findings: area.findings,
-          damageDescription: area.damageDescription
-        }
-      }))
-    })
-  }, [inspectionId])
-
-  const allAreas = INSPECTION_AREAS[propertyType]
-
-  // Enhance areas with their status from inspection data
-  const enhancedAreas = allAreas.map(area => {
-    const areaData = inspectionMediaData.find(d => d.areaId === area.id)
-    return {
-      ...area,
-      status: areaData?.status || 'not_started',
-      photoCount: areaData?.photos?.length || 0,
-      notesCount: areaData?.voiceNotes?.length || 0,
-      findings: areaData?.findings || '',
-      damageDescription: areaData?.damageDescription || '',
-      recommendedActions: areaData?.recommendedActions || '',
-      priority: areaData?.priority || 'low'
+  const handleAreaSelect = (area: any, index: number) => {
+    if (area && area.id) {
+      // Only mark as in progress if it's not already completed or skipped
+      if (area.status === 'not_started') {
+        markAreaInProgress(area.id)
+      }
+      router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)
     }
-  })
-
-  const handleAreaSelect = (index: number) => {
-    const area = enhancedAreas[index]
-    router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)
   }
 
   const handleComplete = () => {
-    // Mark current area as completed and navigate to next
-    const currentArea = enhancedAreas[currentIndex]
-    const nextIndex = currentIndex + 1 < enhancedAreas.length ? currentIndex + 1 : currentIndex
+    if (!inspectionData) return
 
-    // Save status
-    const newStatus = {
-      ...areasStatus,
-      [currentArea.id]: {
-        ...areasStatus[currentArea.id],
-        status: 'completed'
-      }
-    }
-    setAreasStatus(newStatus)
-    sessionStorage.setItem(`inspection-${inspectionId}-areas`, JSON.stringify(newStatus))
+    const currentArea = inspectionData.areas[currentIndex]
+    markAreaCompleted(currentArea.id)
 
-    // Navigate to next area
-    if (nextIndex !== currentIndex) {
+    // Navigate to next area if available
+    const nextIndex = currentIndex + 1
+    if (nextIndex < inspectionData.areas.length) {
       setCurrentIndex(nextIndex)
-      const nextArea = enhancedAreas[nextIndex]
+      const nextArea = inspectionData.areas[nextIndex]
       router.push(`/dashboard/inspection/${inspectionId}/area/${nextArea.id}`)
+    } else {
+      // All areas done, go to review
+      router.push(`/dashboard/inspection/${inspectionId}/review`)
     }
   }
 
   const handleSkip = () => {
-    // Skip to next area
-    const nextIndex = currentIndex + 1 < enhancedAreas.length ? currentIndex + 1 : currentIndex
-    if (nextIndex !== currentIndex) {
+    if (!inspectionData) return
+
+    const currentArea = inspectionData.areas[currentIndex]
+    markAreaSkipped(currentArea.id)
+
+    // Navigate to next area if available
+    const nextIndex = currentIndex + 1
+    if (nextIndex < inspectionData.areas.length) {
       setCurrentIndex(nextIndex)
-      const nextArea = enhancedAreas[nextIndex]
+      const nextArea = inspectionData.areas[nextIndex]
       router.push(`/dashboard/inspection/${inspectionId}/area/${nextArea.id}`)
+    } else {
+      // All areas done, go to review
+      router.push(`/dashboard/inspection/${inspectionId}/review`)
     }
   }
 
   const handleConfirmInspection = () => {
     router.push(`/dashboard/inspection/${inspectionId}/review`)
   }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stellar-orange mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading inspection areas...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !inspectionData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error || 'Failed to load inspection data'}</p>
+          <button
+            onClick={() => router.push('/dashboard/inspection')}
+            className="px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-orange-600"
+          >
+            Back to Inspections
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // Add icon info to each area
+  const enhancedAreas = inspectionData.areas.map(area => ({
+    ...area,
+    icon: AREA_ICONS[area.id] || Home
+  }))
 
   return (
     <InspectionAreaCarousel
@@ -128,7 +142,8 @@ export default function PropertyInspectionAreasPage() {
       onAreaComplete={handleComplete}
       onAreaSkip={handleSkip}
       onAreaSelect={handleAreaSelect}
-      onConfirmInspection={handleConfirmInspection}
+      inspectionId={inspectionId}
+      propertyType="residential"
     />
   )
 }

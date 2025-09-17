@@ -679,10 +679,10 @@ export default function InspectionReviewPage() {
               </div>
 
               {/* Action Buttons Row - Below Title */}
-              <div className="hidden md:flex items-center gap-3">
+              <div className="hidden md:flex items-center justify-between">
                 <Link
                   href={`/dashboard/inspection/${inspectionId}/areas`}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                  className="flex items-center gap-2 text-gray-700 hover:text-gray-900 cursor-pointer"
                 >
                   <Edit3 size={18} />
                   Edit Areas
@@ -711,7 +711,7 @@ export default function InspectionReviewPage() {
                   ) : (
                     <>
                       <Sparkles size={18} />
-                      Enrich with AI
+                      Enrich
                     </>
                   )}
                 </button>
@@ -741,61 +741,89 @@ export default function InspectionReviewPage() {
         </div>
       </div>
 
-      {/* Summary Cards */}
+      {/* Summary Cards - Improved Design */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
-          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600">Total Photos</span>
-              <Camera className="text-gray-400" size={20} />
+          {/* Total Photos Card */}
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-bl-full opacity-50" />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-1.5 bg-blue-100 rounded-lg">
+                  <Camera className="text-blue-600" size={16} />
+                </div>
+                <span className="text-xs font-medium text-gray-600">Total Photos</span>
+              </div>
+              <p className="text-3xl font-bold text-gray-900">
+                {inspectionSummary.overallInsights.totalPhotos}
+              </p>
             </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {inspectionSummary.overallInsights.totalPhotos}
-            </p>
           </div>
 
-          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600">Areas Complete</span>
-              <CheckCircle className="text-gray-400" size={20} />
+          {/* Areas Complete Card */}
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-green-50 rounded-bl-full opacity-50" />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-1.5 bg-green-100 rounded-lg">
+                  <CheckCircle className="text-green-600" size={16} />
+                </div>
+                <span className="text-xs font-medium text-gray-600">Areas Complete</span>
+              </div>
+              <p className="text-3xl font-bold text-gray-900">
+                {inspectionSummary.overallInsights.completedAreas}
+              </p>
             </div>
-            <p className="text-3xl font-bold text-gray-900">
-              {inspectionSummary.overallInsights.completedAreas}
-            </p>
           </div>
 
-          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-gray-600">Critical Issues</span>
-              <AlertTriangle className="text-gray-400" size={20} />
+          {/* Critical Issues Card */}
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-red-50 rounded-bl-full opacity-50" />
+            <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-1.5 bg-red-100 rounded-lg">
+                  <AlertTriangle className="text-red-600" size={16} />
+                </div>
+                <span className="text-xs font-medium text-gray-600">Critical Issues</span>
+              </div>
+              <p className="text-3xl font-bold text-red-600">
+                {inspectionSummary.overallInsights.criticalIssues}
+              </p>
             </div>
-            <p className="text-3xl font-bold text-red-600">
-              {inspectionSummary.overallInsights.criticalIssues}
-            </p>
           </div>
 
-          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex-1">
-                <span className="text-sm text-gray-600">Est. Repair Cost</span>
-                <div className="text-xs text-gray-500 mt-0.5">
+          {/* Est. Repair Cost Card - Redesigned */}
+          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-50 rounded-bl-full opacity-50" />
+            <div className="relative">
+              {/* Header with icon */}
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-1.5 bg-emerald-100 rounded-lg">
+                  <DollarSign className="text-emerald-600" size={16} />
+                </div>
+                <span className="text-xs font-medium text-gray-600">Est. Repair Cost</span>
+              </div>
+
+              {/* Main Value */}
+              <p className="text-2xl md:text-3xl font-bold text-emerald-600 mb-2">
+                ${(inspectionData?.overallInsights.estimatedRepairCost || 0).toLocaleString()}
+              </p>
+
+              {/* Range - Subtle and Small */}
+              <div className="flex items-center gap-1">
+                <span className="text-[10px] text-gray-400">Range:</span>
+                <span className="text-[10px] text-gray-500 font-medium">
+                  ${((inspectionData?.overallInsights.similarReportsRange?.min || 0) / 1000).toFixed(0)}k - ${((inspectionData?.overallInsights.similarReportsRange?.max || 0) / 1000).toFixed(0)}k
+                </span>
+              </div>
+
+              {/* Based on reports - Very subtle at bottom */}
+              <div className="absolute bottom-2 left-4 right-4">
+                <div className="text-[9px] text-gray-400">
                   Based on {inspectionData?.overallInsights.similarReportsCount || 27} similar reports
                 </div>
               </div>
-              <DollarSign className="text-gray-400" size={20} />
             </div>
-            <p className="text-xl md:text-2xl lg:text-3xl font-bold text-green-600">
-              ${(inspectionData?.overallInsights.estimatedRepairCost || 0).toLocaleString()}
-            </p>
-            <div className="mt-2 text-xs text-gray-500">
-              Range: ${(inspectionData?.overallInsights.similarReportsRange?.min || 0).toLocaleString()} - ${(inspectionData?.overallInsights.similarReportsRange?.max || 0).toLocaleString()}
-            </div>
-            {autoSaveStatus === 'saved' && (
-              <div className="mt-2 text-xs text-green-600 flex items-center gap-1">
-                <CheckCircle size={12} />
-                Auto-saved
-              </div>
-            )}
           </div>
         </div>
 
@@ -826,7 +854,7 @@ export default function InspectionReviewPage() {
             <div className="grid grid-cols-2 gap-2">
               <Link
                 href={`/dashboard/inspection/${inspectionId}/areas`}
-                className="flex items-center justify-center gap-2 py-2 px-4 bg-gray-100 text-gray-700 hover:text-gray-900 rounded-lg cursor-pointer text-sm"
+                className="flex items-center justify-center gap-2 py-2 px-2 bg-gray-100 text-gray-700 hover:text-gray-900 rounded-lg cursor-pointer text-sm"
               >
                 <Edit3 size={16} />
                 Edit Areas
@@ -855,7 +883,7 @@ export default function InspectionReviewPage() {
                 ) : (
                   <>
                     <Sparkles size={16} />
-                    <span>Enrich AI</span>
+                    <span>Enrich</span>
                   </>
                 )}
               </button>
@@ -932,12 +960,13 @@ export default function InspectionReviewPage() {
                 <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-900">Intelligent Cost Estimation</h3>
-                    <span className="px-3 py-1 bg-stellar-orange text-white text-xs rounded-full font-medium">
-                      AI Generated
-                    </span>
+                    <div className="flex items-center gap-1">
+                      <TrendingUp className="text-stellar-orange" size={14} />
+                      <span className="text-xs text-gray-600">Market-based pricing</span>
+                    </div>
                   </div>
                   <p className="text-sm text-gray-600 mb-4">
-                    Generate accurate repair estimates with industry-standard pricing and local market data.
+                    Based on recent market prices for repair costs on similar cases in your area.
                   </p>
                   
                   <div className="bg-white rounded-lg p-4 mb-4">

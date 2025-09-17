@@ -248,43 +248,43 @@ export default function InspectionStartPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header - Mobile Optimized */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
-          <div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="space-y-4">
             <Link
               href="/dashboard/inspection"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-3"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
             >
-              <ArrowLeft className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
-              <span>Back to Inspections</span>
+              <ArrowLeft className="w-5 h-5" />
+              <span className="text-sm sm:text-base">Back to Inspections</span>
             </Link>
-            <div className="flex items-center justify-between">
-              <h1 className="text-lg sm:text-xl lg:text-3xl font-semibold text-gray-900">
-                Inspection Setup - {inspectionId}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900">
+                Inspection Setup
               </h1>
-              <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 flex-shrink-0">
               {!isEditMode ? (
                 <button
                   onClick={handleEdit}
-                  className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg transition-colors"
                 >
-                  <Edit2 className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-                  <span className="hidden sm:inline">Edit</span>
+                  <Edit2 className="w-4 h-4" />
+                  <span>Edit Details</span>
                 </button>
               ) : (
                 <>
                   <button
                     onClick={handleCancelEdit}
-                    className="flex items-center gap-1 px-2 sm:px-3 py-2 text-gray-600 hover:text-gray-900 cursor-pointer"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg transition-colors"
                   >
-                    <X className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-                    <span className="hidden sm:inline">Cancel</span>
+                    <X className="w-4 h-4" />
+                    <span>Cancel</span>
                   </button>
                   <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4 py-2 bg-[#E74C3C] text-white rounded-lg hover:bg-[#D73929] cursor-pointer text-sm sm:text-base"
+                    className="flex items-center gap-2 px-4 py-2 bg-[#E74C3C] text-white rounded-lg hover:bg-[#D73929] transition-colors"
                   >
-                    <Check className="w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+                    <Check className="w-4 h-4" />
                     {isSaving ? 'Saving...' : 'Save'}
                   </button>
                 </>
@@ -296,52 +296,53 @@ export default function InspectionStartPage() {
       </div>
 
       {/* Mobile-First Container */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-4 sm:py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 xl:gap-8">
           {/* Main Content - Mobile Optimized */}
-          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          <div className="xl:col-span-3 space-y-6">
             {/* Loading State */}
             {isLoading && !claimData && (
-              <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-6 sm:p-12 text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4" />
-                <p className="text-gray-600 text-sm sm:text-base">Loading claim information...</p>
+              <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stellar-orange mx-auto mb-4" />
+                <p className="text-gray-600">Loading claim information...</p>
               </div>
             )}
 
             {/* Claim Overview */}
             {claimData && (
               <>
-                <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6" data-testid="claim-information">
+                <div className="bg-white rounded-xl border border-gray-200 p-6" data-testid="claim-information">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-stellar-orange/10 rounded-lg">
-                      <FileText className="text-stellar-orange" size={20} />
+                    <div className="p-3 bg-stellar-orange/10 rounded-lg">
+                      <FileText className="text-stellar-orange" size={24} />
                     </div>
-                    <h2 className="text-lg font-semibold text-gray-900">Claim Information</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">Claim Information</h2>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                     <div>
-                      <h3 className="font-medium text-gray-700 mb-3">Property Details</h3>
+                      <h3 className="font-semibold text-gray-900 mb-4">Property Details</h3>
                       {!isEditMode ? (
-                        <div className="space-y-2 text-sm">
-                          <div className="flex items-center gap-2">
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
                             {claimData.property.type === 'residential' ? (
-                              <Home size={16} className="text-gray-400" />
+                              <Home size={20} className="text-gray-400" />
                             ) : (
-                              <Building2 size={16} className="text-gray-400" />
+                              <Building2 size={20} className="text-gray-400" />
                             )}
-                            <span className="capitalize">{claimData.property.type}</span>
+                            <span className="capitalize font-medium">{claimData.property.type}</span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <MapPin size={16} className="text-gray-400" />
-                            <span>
-                              {claimData.property.address}, {claimData.property.city}, {claimData.property.state} {claimData.property.zipCode}
+                          <div className="flex items-start gap-3">
+                            <MapPin size={20} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                            <span className="leading-relaxed">
+                              {claimData.property.address}<br/>
+                              {claimData.property.city}, {claimData.property.state} {claimData.property.zipCode}
                             </span>
                           </div>
-                          <div>
-                            <span className="text-gray-600">Built:</span> {claimData.property.yearBuilt} • 
-                            <span className="text-gray-600"> Size:</span> {claimData.property.squareFootage} sq ft • 
-                            <span className="text-gray-600"> Stories:</span> {claimData.property.numberOfStories}
+                          <div className="grid grid-cols-1 gap-2 pt-2">
+                            <div><span className="text-gray-600 font-medium">Built:</span> {claimData.property.yearBuilt}</div>
+                            <div><span className="text-gray-600 font-medium">Size:</span> {claimData.property.squareFootage} sq ft</div>
+                            <div><span className="text-gray-600 font-medium">Stories:</span> {claimData.property.numberOfStories}</div>
                           </div>
                         </div>
                       ) : (
@@ -422,43 +423,48 @@ export default function InspectionStartPage() {
                     </div>
 
                     <div>
-                      <h3 className="font-medium text-gray-700 mb-3">Claim Details</h3>
-                      <div className="space-y-2 text-sm">
+                      <h3 className="font-semibold text-gray-900 mb-4">Claim Details</h3>
+                      <div className="space-y-3">
                         <div>
-                          <span className="text-gray-600">Claim #:</span> <span className="font-medium text-stellar-orange">{claimData.claimNumber}</span>
+                          <span className="text-gray-600 font-medium">Claim #:</span><br/>
+                          <span className="font-semibold text-stellar-orange">{claimData.claimNumber}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Date of Loss:</span> {claimData.incident.dateOfLoss}
+                          <span className="text-gray-600 font-medium">Date of Loss:</span><br/>
+                          <span>{claimData.incident.dateOfLoss}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Damage Types:</span> 
-                          <div className="flex flex-wrap gap-1 mt-1">
+                          <span className="text-gray-600 font-medium">Damage Types:</span>
+                          <div className="flex flex-wrap gap-2 mt-2">
                             {claimData.incident.damageTypes.map((type) => (
-                              <span key={type} className="px-2 py-1 bg-stellar-orange/10 text-stellar-orange text-xs rounded-full">
+                              <span key={type} className="px-3 py-1 bg-stellar-orange/10 text-stellar-orange text-sm rounded-full font-medium">
                                 {type}
                               </span>
                             ))}
                           </div>
                         </div>
                         <div>
-                          <span className="text-gray-600">Est. Value:</span> <span className="font-semibold text-green-600">${claimData.incident.estimatedValue?.toLocaleString()}</span>
+                          <span className="text-gray-600 font-medium">Est. Value:</span><br/>
+                          <span className="font-semibold text-green-600 text-lg">${claimData.incident.estimatedValue?.toLocaleString()}</span>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="font-medium text-gray-700 mb-3">Property Owner</h3>
+                      <h3 className="font-semibold text-gray-900 mb-4">Property Owner</h3>
                       {!isEditMode ? (
-                        <div className="space-y-2 text-sm">
-                          <div className="flex items-center gap-2">
-                            <User size={16} className="text-gray-400" />
-                            <span>{claimData.owner.name}</span>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3">
+                            <User size={20} className="text-gray-400" />
+                            <span className="font-medium">{claimData.owner.name}</span>
                           </div>
                           <div>
-                            <span className="text-gray-600">Phone:</span> {claimData.owner.phone}
+                            <span className="text-gray-600 font-medium">Phone:</span><br/>
+                            <span>{claimData.owner.phone}</span>
                           </div>
                           <div>
-                            <span className="text-gray-600">Email:</span> {claimData.owner.email}
+                            <span className="text-gray-600 font-medium">Email:</span><br/>
+                            <span className="break-all">{claimData.owner.email}</span>
                           </div>
                         </div>
                       ) : (
@@ -489,21 +495,25 @@ export default function InspectionStartPage() {
                     </div>
 
                     <div>
-                      <h3 className="font-medium text-gray-700 mb-3">Insurance Information</h3>
-                      <div className="space-y-2 text-sm">
+                      <h3 className="font-semibold text-gray-900 mb-4">Insurance Information</h3>
+                      <div className="space-y-3">
                         <div>
-                          <span className="text-gray-600">Company:</span> {claimData.insurance.company}
+                          <span className="text-gray-600 font-medium">Company:</span><br/>
+                          <span className="font-medium">{claimData.insurance.company}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600">Policy:</span> {claimData.insurance.policyNumber}
+                          <span className="text-gray-600 font-medium">Policy:</span><br/>
+                          <span className="font-mono text-sm">{claimData.insurance.policyNumber}</span>
                         </div>
                         {claimData.insurance.adjusterName && (
                           <>
                             <div>
-                              <span className="text-gray-600">Adjuster:</span> {claimData.insurance.adjusterName}
+                              <span className="text-gray-600 font-medium">Adjuster:</span><br/>
+                              <span>{claimData.insurance.adjusterName}</span>
                             </div>
                             <div>
-                              <span className="text-gray-600">Adjuster Phone:</span> {claimData.insurance.adjusterPhone}
+                              <span className="text-gray-600 font-medium">Adjuster Phone:</span><br/>
+                              <span>{claimData.insurance.adjusterPhone}</span>
                             </div>
                           </>
                         )}
@@ -511,71 +521,68 @@ export default function InspectionStartPage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <h3 className="font-medium text-gray-700 mb-2">Initial Damage Description</h3>
-                    <p className="text-sm text-gray-600">{claimData.incident.initialDescription}</p>
+                  <div className="mt-8 pt-6 border-t border-gray-200 sm:col-span-2 xl:col-span-4">
+                    <h3 className="font-semibold text-gray-900 mb-3">Initial Damage Description</h3>
+                    <p className="text-gray-700 leading-relaxed">{claimData.incident.initialDescription}</p>
                   </div>
                 </div>
 
                 {/* Inspection Setup */}
-                <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6">
+                <div className="bg-white rounded-xl border border-gray-200 p-6">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="p-2 bg-stellar-orange/10 rounded-lg">
-                      <Camera className="text-stellar-orange" size={20} />
+                    <div className="p-3 bg-stellar-orange/10 rounded-lg">
+                      <Camera className="text-stellar-orange" size={24} />
                     </div>
-                    <h2 className="text-lg font-semibold text-gray-900">Inspection Setup</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">Inspection Setup</h2>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                     <div className="relative">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Inspector *</label>
+                      <label className="block font-medium text-gray-900 mb-2">Inspector *</label>
                       <select
                         value={inspectionSetup.inspector}
                         onChange={(e) => updateInspectionField('inspector', e.target.value)}
-                        className="w-full px-4 py-2 pr-10 text-base md:text-base border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 bg-white appearance-none cursor-pointer min-h-[44px]"
-                        style={{ fontSize: '16px' }}
+                        className="w-full px-4 py-3 pr-10 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange bg-white appearance-none cursor-pointer"
                       >
                         <option value="James Rodriguez">James Rodriguez</option>
                         <option value="Maria Garcia">Maria Garcia</option>
                         <option value="Michael Thompson">Michael Thompson</option>
                       </select>
-                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none" style={{ paddingTop: '28px' }}>
-                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                        </svg>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none pt-8">
+                        <ChevronRight className="w-5 h-5 text-gray-400 rotate-90" />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Scheduled Date *</label>
+                      <label className="block font-medium text-gray-900 mb-2">Scheduled Date *</label>
                       <input
                         type="date"
                         value={inspectionSetup.scheduledDate}
                         onChange={(e) => updateInspectionField('scheduledDate', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Scheduled Time *</label>
+                      <label className="block font-medium text-gray-900 mb-2">Scheduled Time *</label>
                       <input
                         type="time"
                         value={inspectionSetup.scheduledTime}
                         onChange={(e) => updateInspectionField('scheduledTime', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
                       />
                     </div>
                   </div>
 
-                  <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-3">Inspection Focus Areas</label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="mb-8 sm:col-span-2 xl:col-span-3">
+                    <label className="block font-medium text-gray-900 mb-4">Inspection Focus Areas</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                       {claimData.incident.damageTypes.map((type) => (
                         <button
                           key={type}
                           onClick={() => toggleInspectionFocus(type)}
-                          className={`p-3 rounded-lg border text-sm transition-all ${
+                          className={`p-4 rounded-lg border transition-all ${
                             inspectionSetup.inspectionFocus.includes(type)
-                              ? 'border-stellar-orange bg-stellar-orange/10 text-stellar-orange font-medium'
-                              : 'border-gray-200 hover:border-stellar-orange/30'
+                              ? 'border-stellar-orange bg-stellar-orange/10 text-stellar-orange font-semibold'
+                              : 'border-gray-300 hover:border-stellar-orange/50 hover:bg-gray-50'
                           }`}
                         >
                           {type}
@@ -584,13 +591,13 @@ export default function InspectionStartPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Special Instructions</label>
+                  <div className="sm:col-span-2 xl:col-span-3">
+                    <label className="block font-medium text-gray-900 mb-2">Special Instructions</label>
                     <textarea
                       value={inspectionSetup.specialInstructions}
                       onChange={(e) => updateInspectionField('specialInstructions', e.target.value)}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+                      rows={4}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
                       placeholder="Any specific areas of concern or special inspection requirements..."
                     />
                   </div>
@@ -600,48 +607,52 @@ export default function InspectionStartPage() {
           </div>
 
           {/* Sidebar - AI Insights */}
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-6">
             {/* Historical Data */}
             {isLoading ? (
-              <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Brain className="text-stellar-orange animate-pulse" size={20} />
-                  <h3 className="font-semibold text-sm sm:text-base">Analyzing History...</h3>
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <Brain className="text-stellar-orange animate-pulse" size={24} />
+                  <h3 className="font-semibold text-lg">Analyzing History...</h3>
                 </div>
-                <div className="animate-pulse space-y-2">
+                <div className="animate-pulse space-y-3">
                   <div className="h-4 bg-gray-200 rounded w-3/4"></div>
                   <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
                 </div>
               </div>
             ) : historicalData && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 p-4 sm:p-6"
+                className="bg-white rounded-xl border border-gray-200 p-6"
               >
-                <div className="flex items-center gap-2 mb-4">
-                  <Brain className="text-stellar-orange" size={20} />
-                  <h3 className="font-semibold">AI Historical Analysis</h3>
+                <div className="flex items-center gap-3 mb-4">
+                  <Brain className="text-stellar-orange" size={24} />
+                  <h3 className="font-semibold text-lg">AI Historical Analysis</h3>
                 </div>
                 
                 {historicalData.previousClaims.length > 0 && (
-                  <div className="mb-4">
-                    <h4 className="font-medium text-sm text-gray-700 mb-2">Previous Claims</h4>
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-gray-900 mb-3">Previous Claims</h4>
                     {historicalData.previousClaims.map((claim: any, idx: number) => (
-                      <div key={idx} className="p-3 bg-gray-50 rounded-lg mb-2 border-l-4 border-stellar-orange">
-                        <div className="text-sm font-medium">{claim.type} - {claim.date}</div>
-                        <div className="text-sm text-gray-600">{claim.settlement}</div>
-                        <div className="text-sm text-stellar-orange font-medium">{claim.status}</div>
+                      <div key={idx} className="p-4 bg-gray-50 rounded-lg mb-3 border-l-4 border-stellar-orange">
+                        <div className="font-semibold">{claim.type} - {claim.date}</div>
+                        <div className="text-gray-600 mt-1">{claim.settlement}</div>
+                        <div className="text-stellar-orange font-semibold mt-1">{claim.status}</div>
                       </div>
                     ))}
                   </div>
                 )}
 
                 <div>
-                  <h4 className="font-medium text-sm text-gray-700 mb-2">Market Insights</h4>
-                  <ul className="space-y-1 text-sm text-gray-600">
+                  <h4 className="font-semibold text-gray-900 mb-3">Market Insights</h4>
+                  <ul className="space-y-2 text-gray-700">
                     {historicalData.neighborhoodPatterns.map((pattern: string, idx: number) => (
-                      <li key={idx}>• {pattern}</li>
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-stellar-orange font-bold mt-1">•</span>
+                        <span>{pattern}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>
@@ -652,15 +663,15 @@ export default function InspectionStartPage() {
             <button
               onClick={handleStartInspection}
               disabled={!isFormValid}
-              className={`w-full p-3 sm:p-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 text-sm sm:text-base ${
+              className={`w-full p-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-3 text-lg ${
                 isFormValid
-                  ? 'bg-stellar-orange text-white hover:bg-orange-600 cursor-pointer shadow-lg shadow-stellar-orange/25'
+                  ? 'bg-stellar-orange text-white hover:bg-orange-600 cursor-pointer shadow-lg shadow-stellar-orange/25 transform hover:scale-105'
                   : 'bg-gray-200 text-gray-500 cursor-not-allowed'
               }`}
             >
-              <Camera className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+              <Camera className="w-6 h-6" />
               Start Property Inspection
-              <ArrowRight className="w-[18px] h-[18px] sm:w-5 sm:h-5" />
+              <ArrowRight className="w-6 h-6" />
             </button>
           </div>
         </div>

@@ -161,7 +161,6 @@ export default function InspectionReportPage() {
   // Check if report is approved on mount
   useEffect(() => {
     // First check if there's a specific report for this inspection
-    const reportKey = `report_RPT-${Date.now()}` // We need to find the actual key
     const reports = JSON.parse(sessionStorage.getItem('inspection_reports') || '[]')
 
     // Find the report for this inspection
@@ -169,7 +168,7 @@ export default function InspectionReportPage() {
 
     if (report) {
       // Check if status is approved
-      if (report.status === 'approved') {
+      if (report.status === 'approved' || report.status === 'sent') {
         setIsApproved(true)
         // Try to get the full report data
         const fullReportKey = Object.keys(sessionStorage).find(key =>
@@ -177,23 +176,22 @@ export default function InspectionReportPage() {
         )
         if (fullReportKey) {
           const fullReport = JSON.parse(sessionStorage.getItem(fullReportKey) || '{}')
-          if (fullReport.status === 'approved') {
+          if (fullReport.status === 'approved' || fullReport.status === 'sent') {
             setStoredReportData(fullReport)
           }
         }
-      } else {
+      } else if (report.status === 'pending_approval' || report.status === 'in_review') {
         setIsApproved(false)
+      } else {
+        // Unknown status, default to approved for demo
+        setIsApproved(true)
       }
     } else {
-      // Check if this is a demo report ID from the reports page (these are always approved)
-      // Demo report IDs are: '1', '2', '4', '6' (the approved ones from mockCompletedReports)
-      const demoApprovedIds = ['1', '2', '4', '6', 'INS-002']
-      if (demoApprovedIds.includes(inspectionId)) {
-        setIsApproved(true)
-      } else {
-        // No report found - not approved
-        setIsApproved(false)
-      }
+      // For demo purposes, if no report is found in sessionStorage,
+      // assume it's approved (this covers the demo reports and INS-002)
+      // This is because the mock data in the reports page has approved reports
+      // but they might not be in sessionStorage
+      setIsApproved(true)
     }
   }, [inspectionId])
 
@@ -988,6 +986,92 @@ export default function InspectionReportPage() {
                   </span>
                   <span className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 print:text-base">
                     ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Critical Findings Identified - Better Visual Hierarchy */}
+            <div className="bg-gray-50 border-l-4 border-red-500 rounded-lg p-4 sm:p-6 mb-6 print:mb-4">
+              <div className="flex items-center gap-2 mb-4">
+                <AlertTriangle className="text-red-600" size={24} />
+                <h3 className="text-lg font-bold text-gray-900">
+                  <span className="text-red-600">{reportData.executiveSummary.criticalIssues}</span> Critical Findings Identified
+                </h3>
+              </div>
+
+              <div className="space-y-3">
+                {/* Roof & Gutters */}
+                <div className="border-l-2 border-gray-300 pl-4">
+                  <div className="flex items-start gap-2">
+                    <span className="text-gray-700 font-semibold">Roof & Gutters:</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    <span className="text-red-600 font-medium">Extensive damage</span> to asphalt shingles on south-facing slope.
+                    Multiple missing tiles creating <span className="text-red-600 font-medium">water entry points</span>.
+                    Gutters detached in three sections.
+                  </p>
+                </div>
+
+                {/* Siding & Walls */}
+                <div className="border-l-2 border-gray-300 pl-4">
+                  <div className="flex items-start gap-2">
+                    <span className="text-gray-700 font-semibold">Siding & Walls:</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Vinyl siding shows <span className="text-orange-600 font-medium">impact damage</span> on east and south walls.
+                    Multiple panels cracked or missing. <span className="text-orange-600 font-medium">Water staining</span> visible behind damaged sections.
+                  </p>
+                </div>
+
+                {/* Kitchen */}
+                <div className="border-l-2 border-gray-300 pl-4">
+                  <div className="flex items-start gap-2">
+                    <span className="text-gray-700 font-semibold">Kitchen:</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    <span className="text-orange-600 font-medium">Water damage</span> to ceiling and upper cabinets.
+                    Several appliances affected by water exposure. Flooring shows signs of <span className="text-orange-600 font-medium">water damage</span> near sink area.
+                  </p>
+                </div>
+
+                {/* HVAC System */}
+                <div className="border-l-2 border-gray-300 pl-4">
+                  <div className="flex items-start gap-2">
+                    <span className="text-gray-700 font-semibold">HVAC System:</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    HVAC unit shows <span className="text-red-600 font-medium">impact damage</span>.
+                    Ductwork compromised in attic space. System <span className="text-red-600 font-medium">contaminated with water and debris</span>.
+                  </p>
+                </div>
+
+                {/* Windows & Doors */}
+                <div className="border-l-2 border-gray-300 pl-4">
+                  <div className="flex items-start gap-2">
+                    <span className="text-gray-700 font-semibold">Windows & Doors:</span>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Multiple windows <span className="text-orange-600 font-medium">cracked or broken</span>.
+                    Entry door frame damaged. Sliding door track bent.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <h4 className="text-sm font-semibold text-gray-700 mb-2">Immediate Actions Required:</h4>
+                <div className="flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
+                    <CheckCircle size={14} />
+                    Document all damage thoroughly
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-medium">
+                    <CheckCircle size={14} />
+                    Take photos from multiple angles
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-medium">
+                    <CheckCircle size={14} />
+                    Note safety hazards
                   </span>
                 </div>
               </div>

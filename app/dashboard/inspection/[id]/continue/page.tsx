@@ -3,24 +3,16 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
-import { 
+import {
   ArrowLeft, ArrowRight, Camera, Play, Pause, Download, FileText,
   CheckCircle, AlertTriangle, Clock, MapPin, User, Home, Mic,
   Image as ImageIcon, ChevronRight, Eye, Brain, TrendingUp,
-  BarChart3, AlertCircle, Save, Send, MoreVertical, X
+  BarChart3, AlertCircle, Save, Send, MoreVertical, X, Loader2,
+  CloudCheck, CloudOff
 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { 
-  inspectionMediaData, 
-  inspectionSummary, 
-  getInspectionProgress,
-  getAllPhotos,
-  getAllVoiceNotes,
-  getTotalEstimatedDamage,
-  AreaInspectionData,
-  MediaFile
-} from '@/lib/inspection-media'
+import { useInspectionData, InspectionArea, MediaFile } from '@/lib/hooks/useInspectionData'
 
 // Helper function for consistent date formatting
 const formatDate = (dateString: string) => {
@@ -41,11 +33,16 @@ export default function ContinueInspectionPage() {
   const router = useRouter()
   const inspectionId = params.id as string
 
-  const [selectedArea, setSelectedArea] = useState<AreaInspectionData | null>(null)
+  // Use the centralized inspection data hook
+  const { inspectionData, loading, error, getProgress } = useInspectionData(inspectionId)
+
+  const [selectedArea, setSelectedArea] = useState<InspectionArea | null>(null)
   const [selectedMedia, setSelectedMedia] = useState<MediaFile | null>(null)
   const [showMediaModal, setShowMediaModal] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'areas' | 'media' | 'insights'>('overview')
   const [playingAudio, setPlayingAudio] = useState<string | null>(null)
+  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'error'>('saved')
+  const [lastSaved, setLastSaved] = useState<Date>(new Date())
 
   // Check URL parameters to set initial tab
   useEffect(() => {
@@ -57,20 +54,60 @@ export default function ContinueInspectionPage() {
       }
     }
   }, [])
-  
-  const progress = getInspectionProgress()
-  const photos = getAllPhotos()
-  const voiceNotes = getAllVoiceNotes()
-  const totalDamage = getTotalEstimatedDamage()
-  
+
+  // Auto-save simulation effect
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSaveStatus('saving')
+      setTimeout(() => {
+        setSaveStatus('saved')
+        setLastSaved(new Date())
+      }, 1000)
+    }, 30000) // Auto-save every 30 seconds
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Format timestamp for display
+  const formatSaveTime = (date: Date) => {
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / 60000)
+
+    if (diffMins < 1) return 'Just now'
+    if (diffMins < 60) return `${diffMins}m ago`
+    if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`
+    return date.toLocaleDateString()
+  }
+
+  // Calculate progress and stats
+  const progress = inspectionData ? getProgress() : { percentage: 0, completed: 0, total: 0 }
+
+  // Get all photos from areas
+  const photos: MediaFile[] = []
+  const voiceNotes: MediaFile[] = []
+  let totalDamage = 0
+
+  if (inspectionData) {
+    inspectionData.areas.forEach(area => {
+      if (area.media) {
+        area.media.forEach(media => {
+          if (media.type === 'photo') photos.push(media)
+          if (media.type === 'audio') voiceNotes.push(media)
+        })
+      }
+      totalDamage += area.estimatedCost || 0
+    })
+  }
+
   // Group areas by category
-  const areasByCategory = inspectionMediaData.reduce((acc, area) => {
+  const areasByCategory = inspectionData ? inspectionData.areas.reduce((acc, area) => {
     if (!acc[area.category]) {
       acc[area.category] = []
     }
     acc[area.category].push(area)
     return acc
-  }, {} as Record<string, AreaInspectionData[]>)
+  }, {} as Record<string, InspectionArea[]>) : {}
   
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -99,6 +136,57 @@ export default function ContinueInspectionPage() {
     router.push(`/dashboard/inspection/${inspectionId}/report?preliminary=true`)
   }
 
+  // Create inspection summary from dynamic data
+  const inspectionSummary = inspectionData ? {
+    inspectionId,
+    claimNumber: `CLM-${inspectionId}`,
+    propertyAddress: inspectionData.property.address,
+    clientName: inspectionData.property.owner,
+    inspector: 'Inspector',
+    startTime: inspectionData.createdAt,
+    elapsedTime: '1h 30m',
+    weatherConditions: 'Clear, 75°F',
+    nextArea: inspectionData.areas.find(a => a.status === 'not_started')?.name || 'Review',
+    criticalFindings: inspectionData.areas.filter(a => a.priority === 'high').length,
+    safetyHazardsIdentified: inspectionData.areas
+      .filter(a => a.priority === 'high')
+      .map(a => `${a.name}: ${a.findings || 'Requires inspection'}`),
+    immediateActions: [
+      'Document all damage thoroughly',
+      'Take photos from multiple angles',
+      'Note safety hazards'
+    ]
+  } : null
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stellar-orange mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading inspection data...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error || !inspectionData) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error || 'Failed to load inspection data'}</p>
+          <button
+            onClick={() => router.push('/dashboard/inspection')}
+            className="px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-orange-600"
+          >
+            Back to Inspections
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -121,20 +209,36 @@ export default function ContinueInspectionPage() {
                   {inspectionSummary.propertyAddress}
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-              <button
-                onClick={() => {}}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
-              >
-                <Save size={20} />
-              </button>
-              <button
-                onClick={() => {}}
-                className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
-              >
-                <MoreVertical size={20} />
-              </button>
-            </div>
+              <div className="flex items-center gap-3">
+                {/* Save Status */}
+                <div className="flex items-center gap-2">
+                  {saveStatus === 'saving' ? (
+                    <>
+                      <Loader2 className="w-4 h-4 text-amber-500 animate-spin" />
+                      <span className="text-sm text-amber-600 font-medium">Saving...</span>
+                    </>
+                  ) : saveStatus === 'saved' ? (
+                    <>
+                      <CloudCheck className="w-4 h-4 text-green-500" />
+                      <div className="flex flex-col items-end">
+                        <span className="text-sm text-green-600 font-medium">Saved</span>
+                        <span className="text-[10px] text-gray-400">{formatSaveTime(lastSaved)}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <CloudOff className="w-4 h-4 text-red-500" />
+                      <span className="text-sm text-red-600 font-medium">Save failed</span>
+                    </>
+                  )}
+                </div>
+                <button
+                  onClick={() => {}}
+                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                >
+                  <MoreVertical size={20} />
+                </button>
+              </div>
             </div>
 
             {/* Finish Inspection Button - Moved to header */}
@@ -260,28 +364,67 @@ export default function ContinueInspectionPage() {
           </div>
         </div>
 
-        {/* Critical Findings Alert */}
+        {/* Critical Findings Alert - Better Visual Hierarchy */}
         {inspectionSummary.criticalFindings > 0 && (
-          <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6">
-            <div className="flex items-start gap-3">
-              <AlertTriangle className="text-red-600 mt-1" size={20} />
-              <div className="flex-1">
-                <h3 className="font-semibold text-red-900 mb-1">
-                  {inspectionSummary.criticalFindings} Critical Findings Identified
-                </h3>
-                <ul className="text-sm text-red-800 space-y-1">
-                  {inspectionSummary.safetyHazardsIdentified.map((hazard, idx) => (
-                    <li key={idx}>• {hazard}</li>
-                  ))}
-                </ul>
-                <div className="mt-3">
-                  <h4 className="font-semibold text-red-900 text-sm mb-1">Immediate Actions Required:</h4>
-                  <ul className="text-sm text-red-700 space-y-1">
-                    {inspectionSummary.immediateActions.map((action, idx) => (
-                      <li key={idx}>✓ {action}</li>
-                    ))}
-                  </ul>
-                </div>
+          <div className="bg-gray-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <AlertTriangle className="text-red-600" size={20} />
+              <h3 className="font-bold text-gray-900">
+                <span className="text-red-600">{inspectionSummary.criticalFindings}</span> Critical Findings Identified
+              </h3>
+            </div>
+
+            <div className="space-y-2">
+              {inspectionSummary.safetyHazardsIdentified.map((hazard, idx) => {
+                // Parse the hazard string to separate area name and finding
+                const [area, ...findingParts] = hazard.split(':');
+                const finding = findingParts.join(':').trim();
+
+                // Highlight critical keywords in the findings
+                const highlightedFinding = finding
+                  .replace(/extensive damage/gi, '<span class="text-red-600 font-medium">extensive damage</span>')
+                  .replace(/water entry points/gi, '<span class="text-red-600 font-medium">water entry points</span>')
+                  .replace(/impact damage/gi, '<span class="text-orange-600 font-medium">impact damage</span>')
+                  .replace(/water damage/gi, '<span class="text-orange-600 font-medium">water damage</span>')
+                  .replace(/water staining/gi, '<span class="text-orange-600 font-medium">water staining</span>')
+                  .replace(/cracked or broken/gi, '<span class="text-orange-600 font-medium">cracked or broken</span>')
+                  .replace(/contaminated/gi, '<span class="text-red-600 font-medium">contaminated</span>');
+
+                return (
+                  <div key={idx} className="border-l-2 border-gray-300 pl-3">
+                    <div className="flex items-start gap-2">
+                      <span className="text-gray-700 font-semibold text-sm">{area}:</span>
+                    </div>
+                    <p
+                      className="text-sm text-gray-600 mt-0.5"
+                      dangerouslySetInnerHTML={{ __html: highlightedFinding }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Immediate Actions Required:</h4>
+              <div className="flex flex-wrap gap-2">
+                {inspectionSummary.immediateActions.map((action, idx) => {
+                  // Assign different colors to different actions
+                  const colorClass = idx === 0
+                    ? 'bg-red-100 text-red-700'
+                    : idx === 1
+                    ? 'bg-orange-100 text-orange-700'
+                    : 'bg-yellow-100 text-yellow-700';
+
+                  return (
+                    <span
+                      key={idx}
+                      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full ${colorClass} text-xs font-medium`}
+                    >
+                      <CheckCircle size={12} />
+                      {action}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -396,9 +539,9 @@ export default function ContinueInspectionPage() {
                 <div key={category}>
                   <h3 className="font-semibold text-gray-900 mb-3">{category}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {areas.map((area) => (
+                    {areas.map((area, idx) => (
                       <div
-                        key={area.areaId}
+                        key={`${category}-${area.areaId}-${idx}`}
                         className={`border rounded-xl p-4 cursor-pointer transition-all hover:shadow-md ${
                           area.status === 'completed' ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
                         }`}

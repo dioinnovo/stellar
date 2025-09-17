@@ -165,12 +165,51 @@ export default function NewInspectionPage() {
       status: 'draft'
     }
     
-    // Save to localStorage
+    // Save basic inspection info
     localStorage.setItem(`inspection-${inspectionId}`, JSON.stringify(quickClaimData))
-    
+
+    // Initialize full inspection data structure with all areas
+    const DEFAULT_RESIDENTIAL_AREAS = [
+      // Exterior
+      { id: 'exterior-roof', name: 'Roof & Gutters', category: 'Exterior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'exterior-siding', name: 'Siding & Walls', category: 'Exterior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'exterior-windows', name: 'Windows & Doors', category: 'Exterior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'exterior-foundation', name: 'Foundation', category: 'Exterior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'exterior-landscape', name: 'Landscape & Drainage', category: 'Exterior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      // Interior
+      { id: 'interior-living', name: 'Living Room', category: 'Interior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'interior-kitchen', name: 'Kitchen', category: 'Interior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'interior-master-bed', name: 'Master Bedroom', category: 'Interior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'interior-bedrooms', name: 'Other Bedrooms', category: 'Interior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'interior-bathrooms', name: 'Bathrooms', category: 'Interior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'interior-basement', name: 'Basement/Attic', category: 'Interior', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      // Systems
+      { id: 'systems-electrical', name: 'Electrical System', category: 'Systems', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'systems-plumbing', name: 'Plumbing System', category: 'Systems', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] },
+      { id: 'systems-hvac', name: 'HVAC System', category: 'Systems', status: 'not_started', photoCount: 0, notesCount: 0, findings: '', damageDescription: '', recommendedActions: '', estimatedCost: 0, priority: 'low', media: [] }
+    ]
+
+    const inspectionData = {
+      id: inspectionId,
+      property: {
+        address: formData.property.address,
+        type: formData.property.type || 'residential',
+        owner: formData.property.ownerName || '',
+        yearBuilt: formData.property.yearBuilt,
+        policyNumber: ''
+      },
+      areas: DEFAULT_RESIDENTIAL_AREAS,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      completionPercentage: 0
+    }
+
+    // Save the full inspection data structure
+    localStorage.setItem(`inspection-${inspectionId}-data`, JSON.stringify(inspectionData))
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 1000))
-    
+
     // Navigate to the inspection start page with the new data
     router.push(`/dashboard/inspection/${inspectionId}/start?new=true`)
   }

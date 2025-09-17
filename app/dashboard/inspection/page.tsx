@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
@@ -12,6 +12,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { PageHeader } from '@/components/ui/page-header'
 import { useSidebar } from '@/contexts/SidebarContext'
+import { useInspectionData } from '@/lib/hooks/useInspectionData'
 
 interface Inspection {
   id: string
@@ -53,6 +54,40 @@ export default function InspectionListPage() {
   const [filterDamageType, setFilterDamageType] = useState('all')
   const { isCollapsed } = useSidebar()
 
+  // Get real data for INS-002 (active inspection)
+  const { inspectionData: activeInspectionData } = useInspectionData('INS-002')
+  const [realPhotoCount, setRealPhotoCount] = useState(0)
+  const [realAreasCompleted, setRealAreasCompleted] = useState<string[]>([])
+  const [currentAreaName, setCurrentAreaName] = useState('Windows & Doors')
+
+  // Calculate real stats from inspection data
+  useEffect(() => {
+    if (activeInspectionData) {
+      // Count total photos
+      let photoCount = 0
+      const completedAreas: string[] = []
+      let inProgressArea = ''
+
+      activeInspectionData.areas.forEach(area => {
+        if (area.media) {
+          photoCount += area.media.filter(m => m.type === 'photo').length
+        }
+        if (area.status === 'completed') {
+          completedAreas.push(area.name)
+        }
+        if (area.status === 'in_progress') {
+          inProgressArea = area.name
+        }
+      })
+
+      setRealPhotoCount(photoCount)
+      setRealAreasCompleted(completedAreas)
+      if (inProgressArea) {
+        setCurrentAreaName(inProgressArea)
+      }
+    }
+  }, [activeInspectionData])
+
   // Mock data for inspections with Unsplash images
   const inspections: Inspection[] = [
     // ONE Green - Active inspection
@@ -70,9 +105,9 @@ export default function InspectionListPage() {
       estimatedDuration: '3 hours',
       completionRate: 65,
       imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop&q=80',
-      photosCount: 41,
-      currentArea: 'HVAC System',
-      areasInspected: ['Roof & Gutters', 'Siding & Walls', 'Living Room', 'Kitchen', 'HVAC System'],
+      photosCount: realPhotoCount || 51, // Use real count if available
+      currentArea: currentAreaName,
+      areasInspected: realAreasCompleted.length > 0 ? realAreasCompleted : ['Roof & Gutters', 'Siding & Walls', 'Living Room', 'Kitchen', 'HVAC System', 'Bathrooms', 'Master Bedroom', 'Windows & Doors'],
       damageAssessment: {
         severity: 'Moderate',
         description: 'Water intrusion through roof causing ceiling damage and potential mold growth in kitchen area',

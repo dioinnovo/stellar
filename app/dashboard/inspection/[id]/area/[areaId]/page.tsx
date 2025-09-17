@@ -1,16 +1,17 @@
 'use client'
 
-import React, { useState, useRef, useCallback } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
-import { 
-  ArrowLeft, ArrowRight, Camera, Mic, MicOff, Upload, X, 
+import {
+  ArrowLeft, ArrowRight, Camera, Mic, MicOff, Upload, X,
   Play, Pause, Brain, Lightbulb, CheckCircle, AlertTriangle,
   FileText, Home, Building2, Droplets, Wind, Zap, Eye,
   Save, SkipForward, RotateCcw
 } from 'lucide-react'
 import Link from 'next/link'
 import { InspectionAreaCarousel } from '@/components/ui/inspection-area-carousel'
+import { useInspectionData } from '@/lib/hooks/useInspectionData'
 
 interface MediaFile {
   id: string
@@ -19,6 +20,8 @@ interface MediaFile {
   url: string
   timestamp: Date
   category?: string
+  transcript?: string
+  duration?: number
 }
 
 interface AIInsight {
@@ -34,7 +37,7 @@ interface AreaData {
   recommendedActions: string
   mediaFiles: MediaFile[]
   aiInsights: AIInsight[]
-  completionStatus: 'not_started' | 'in_progress' | 'completed'
+  completionStatus: 'not_started' | 'in_progress' | 'completed' | 'skipped'
 }
 
 interface InspectionArea {
@@ -103,6 +106,21 @@ export default function AreaInspectionPage() {
   const inspectionId = params.id as string
   const areaId = params.areaId as string
 
+  // Use the centralized inspection data hook
+  const { inspectionData, updateArea, markAreaCompleted, markAreaSkipped } = useInspectionData(inspectionId)
+
+  // Debug: Log inspection data loading
+  React.useEffect(() => {
+    console.log('🔄 useInspectionData hook state:')
+    console.log('  - inspectionId:', inspectionId)
+    console.log('  - hasInspectionData:', !!inspectionData)
+    console.log('  - areasCount:', inspectionData?.areas?.length || 0)
+    console.log('  - loadingComplete:', !!inspectionData)
+    if (inspectionData?.areas) {
+      console.log('  - areaIds:', inspectionData.areas.map(a => a.id))
+    }
+  }, [inspectionData, inspectionId])
+
   // Refs
   const fileInputRef = useRef<HTMLInputElement>(null)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
@@ -111,6 +129,11 @@ export default function AreaInspectionPage() {
   // State
   const [propertyType] = useState<'residential' | 'commercial'>('residential')
   const [currentArea, setCurrentArea] = useState(() => {
+    // Get area from inspection data if available
+    if (inspectionData) {
+      const area = inspectionData.areas.find(a => a.id === areaId)
+      if (area) return area
+    }
     const areas = INSPECTION_AREAS[propertyType]
     return areas.find(area => area.id === areaId) || areas[0]
   })
@@ -123,6 +146,18 @@ export default function AreaInspectionPage() {
     aiInsights: [],
     completionStatus: 'not_started'
   })
+
+  // Debug: Log areaData changes
+  React.useEffect(() => {
+    console.log('📊 AreaData updated:')
+    console.log('  - areaId:', areaId)
+    console.log('  - mediaFilesCount:', areaData.mediaFiles.length)
+    console.log('  - photos:', areaData.mediaFiles.filter(f => f.type === 'photo').length)
+    console.log('  - audio:', areaData.mediaFiles.filter(f => f.type === 'audio').length)
+    console.log('  - findings length:', areaData.findings.length)
+    console.log('  - completionStatus:', areaData.completionStatus)
+    console.log('  - firstPhotoUrl:', areaData.mediaFiles.find(f => f.type === 'photo')?.url || 'NO PHOTOS')
+  }, [areaData, areaId])
   
   // Navigation states - Start in form mode to show the inspection form
   const [navigationMode, setNavigationMode] = useState<'cards' | 'form'>('form')
@@ -149,38 +184,149 @@ export default function AreaInspectionPage() {
       setNavigationMode('form')
       setExpandedAreaId(areaId)
 
-      // Load saved data for the new area if it exists
-      const savedStatus = areasStatus[areaId]
-      if (savedStatus) {
-        setAreaData({
-          findings: savedStatus.findings || '',
-          damageDescription: savedStatus.damageDescription || '',
-          recommendedActions: savedStatus.recommendedActions || '',
-          mediaFiles: savedStatus.mediaFiles || [],
-          aiInsights: savedStatus.aiInsights || [],
-          completionStatus: savedStatus.status || 'not_started'
-        })
-      } else {
-        // Reset to empty state for new area
-        setAreaData({
-          findings: '',
-          damageDescription: '',
-          recommendedActions: '',
-          mediaFiles: [],
-          aiInsights: [],
-          completionStatus: 'not_started'
-        })
+      // For demo inspection INS-002, the demo data loading is handled by a separate useEffect
+      // Here we only handle non-demo inspections
+      if (inspectionId !== 'INS-002') {
+        // Not demo inspection, use localStorage data
+        const savedStatus = areasStatus[areaId]
+        if (savedStatus) {
+          setAreaData({
+            findings: savedStatus.findings || '',
+            damageDescription: savedStatus.damageDescription || '',
+            recommendedActions: savedStatus.recommendedActions || '',
+            mediaFiles: savedStatus.mediaFiles || [],
+            aiInsights: savedStatus.aiInsights || [],
+            completionStatus: savedStatus.status || 'not_started'
+          })
+        } else {
+          // Reset to empty state for new area
+          setAreaData({
+            findings: '',
+            damageDescription: '',
+            recommendedActions: '',
+            mediaFiles: [],
+            aiInsights: [],
+            completionStatus: 'not_started'
+          })
+        }
       }
     }
-  }, [areaId, propertyType, areasStatus, currentArea.id])
+  }, [areaId, propertyType, areasStatus, currentArea.id, inspectionId, inspectionData])
+
+  // Separate effect to handle demo data loading when inspectionData becomes available
+  React.useEffect(() => {
+    console.log('💫 Demo data availability check:', {
+      inspectionId,
+      areaId,
+      hasInspectionData: !!inspectionData,
+      isDemo: inspectionId === 'INS-002'
+    })
+
+    if (inspectionId === 'INS-002' && inspectionData && areaId) {
+      console.log('🔥 Loading demo data for area:', areaId)
+      const demoArea = inspectionData.areas.find(area => area.id === areaId)
+
+      if (demoArea) {
+        console.log('✅ Found demo area with status:', demoArea.status)
+
+        // Load data for both completed and skipped areas
+        if (demoArea.status === 'completed' || demoArea.status === 'skipped') {
+          console.log('🔍 Demo area media:', demoArea.media)
+          console.log('🔍 Total media items:', demoArea.media?.length || 0)
+          console.log('🔍 Photo items:', demoArea.media?.filter(m => m.type === 'photo')?.length || 0)
+          console.log('🔍 Audio items:', demoArea.media?.filter(m => m.type === 'audio')?.length || 0)
+
+          // Convert demo data to component format
+          const mediaFiles: MediaFile[] = [
+            // Convert photos
+            ...demoArea.media.filter(m => m.type === 'photo').map(photo => ({
+              id: photo.id,
+              file: new File([], photo.title || 'photo.jpg'),
+              type: 'photo' as const,
+              url: photo.url,
+              timestamp: new Date(photo.timestamp),
+              category: photo.category || 'Documentation'
+            })),
+            // Convert audio notes
+            ...demoArea.media.filter(m => m.type === 'audio').map(audio => ({
+              id: audio.id,
+              file: new File([], 'audio.wav'),
+              type: 'audio' as const,
+              url: '#',
+              timestamp: new Date(audio.timestamp),
+              category: 'Voice Notes',
+              transcript: audio.transcript,
+              duration: audio.duration
+            }))
+          ]
+
+          console.log('📊 Setting demo area data:')
+          console.log('  - mediaFilesCount:', mediaFiles.length)
+          console.log('  - photos:', mediaFiles.filter(m => m.type === 'photo').length)
+          console.log('  - audio:', mediaFiles.filter(m => m.type === 'audio').length)
+          console.log('  - findingsLength:', demoArea.findings?.length || 0)
+          console.log('  - firstPhotoUrl:', mediaFiles.find(m => m.type === 'photo')?.url || 'NO PHOTOS')
+
+          setAreaData({
+            findings: demoArea.findings || '',
+            damageDescription: demoArea.damageDescription || '',
+            recommendedActions: demoArea.recommendedActions || '',
+            mediaFiles: mediaFiles,
+            aiInsights: [],
+            completionStatus: demoArea.status as any // Use the actual status from demo data
+          })
+
+          console.log('🚀 setAreaData called with status:', demoArea.status)
+        } else if (demoArea.status === 'not_started' || demoArea.status === 'in_progress') {
+          // For not started or in progress areas, set empty data
+          setAreaData({
+            findings: '',
+            damageDescription: '',
+            recommendedActions: '',
+            mediaFiles: [],
+            aiInsights: [],
+            completionStatus: demoArea.status as any
+          })
+        }
+      } else {
+        console.log('❌ Demo area not found:', { areaId })
+      }
+    }
+  }, [inspectionData, inspectionId, areaId])
+
+  // Auto-resize textareas when content changes or component mounts
+  React.useEffect(() => {
+    const autoResizeTextarea = (textarea: HTMLTextAreaElement | null) => {
+      if (textarea) {
+        textarea.style.height = 'auto'
+        textarea.style.height = textarea.scrollHeight + 'px'
+      }
+    }
+
+    // Resize all textareas
+    autoResizeTextarea(findingsRef.current)
+    autoResizeTextarea(damageRef.current)
+    autoResizeTextarea(actionsRef.current)
+  }, [areaData.findings, areaData.damageDescription, areaData.recommendedActions])
 
   const [isRecording, setIsRecording] = useState(false)
   const [recordingDuration, setRecordingDuration] = useState(0)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [selectedPhotoCategory, setSelectedPhotoCategory] = useState('Overview')
+  const [selectedVoiceNote, setSelectedVoiceNote] = useState<MediaFile | null>(null)
+  const [showTranscriptModal, setShowTranscriptModal] = useState(false)
+
+  // Refs for textareas
+  const findingsRef = useRef<HTMLTextAreaElement>(null)
+  const damageRef = useRef<HTMLTextAreaElement>(null)
+  const actionsRef = useRef<HTMLTextAreaElement>(null)
 
   // Get current area position and navigation
-  const allAreas = INSPECTION_AREAS[propertyType]
+  // For demo inspection, use data from inspectionData; otherwise use static areas
+  const allAreas = (inspectionId === 'INS-002' && inspectionData?.areas)
+    ? inspectionData.areas
+    : INSPECTION_AREAS[propertyType]
+
   const currentIndex = allAreas.findIndex(area => area.id === areaId)
   const isFirstArea = currentIndex === 0
   const isLastArea = currentIndex === allAreas.length - 1
@@ -189,6 +335,18 @@ export default function AreaInspectionPage() {
 
   // Enhance areas with their status
   const enhancedAreas = React.useMemo(() => {
+    // For demo inspection, use the data directly from inspectionData
+    if (inspectionId === 'INS-002' && inspectionData?.areas) {
+      return inspectionData.areas.map(area => ({
+        ...area,
+        photoCount: area.id === areaId ? areaData.mediaFiles.filter(f => f.type === 'photo').length : (area.photoCount || 0),
+        notesCount: area.id === areaId ? areaData.mediaFiles.filter(f => f.type === 'audio').length : (area.notesCount || 0),
+        findings: area.id === areaId ? areaData.findings : (area.findings || ''),
+        previewImage: area.id === areaId ? areaData.mediaFiles.find(f => f.type === 'photo')?.url : area.previewImage
+      }))
+    }
+
+    // For non-demo inspections, use localStorage approach
     return allAreas.map(area => ({
       ...area,
       ...(areasStatus[area.id] || {}),
@@ -198,7 +356,7 @@ export default function AreaInspectionPage() {
       findings: area.id === areaId ? areaData.findings : (areasStatus[area.id]?.findings || ''),
       previewImage: area.id === areaId ? areaData.mediaFiles.find(f => f.type === 'photo')?.url : areasStatus[area.id]?.previewImage
     }))
-  }, [allAreas, areasStatus, areaId, areaData])
+  }, [allAreas, areasStatus, areaId, areaData, inspectionData, inspectionId])
 
   // File upload handler
   const handleFileUpload = useCallback((files: FileList) => {
@@ -340,26 +498,27 @@ export default function AreaInspectionPage() {
   const handleComplete = () => {
     // Update current area status
     setAreaData(prev => ({ ...prev, completionStatus: 'completed' }))
-    const updatedStatus = {
-      status: 'completed',
-      photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
-      notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
-      findings: areaData.findings,
-      completionPercentage: 100,
-      previewImage: areaData.mediaFiles.find(f => f.type === 'photo')?.url
+
+    // Update using the centralized hook
+    if (updateArea) {
+      updateArea(areaId, {
+        status: 'completed',
+        photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
+        notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
+        findings: areaData.findings,
+        damageDescription: areaData.damageDescription,
+        recommendedActions: areaData.recommendedActions,
+        media: areaData.mediaFiles.map(f => ({
+          id: f.id,
+          type: f.type,
+          url: f.url,
+          title: `${f.type === 'photo' ? 'Photo' : 'Audio'} captured`,
+          timestamp: f.timestamp.toISOString(),
+          category: f.category || 'Documentation'
+        }))
+      })
     }
-    
-    setAreasStatus(prev => ({
-      ...prev,
-      [areaId]: updatedStatus
-    }))
-    
-    // Save to localStorage
-    localStorage.setItem(`inspection-${inspectionId}-areas`, JSON.stringify({
-      ...areasStatus,
-      [areaId]: updatedStatus
-    }))
-    
+
     if (nextArea) {
       router.push(`/dashboard/inspection/${inspectionId}/area/${nextArea.id}`)
     } else {
@@ -369,24 +528,17 @@ export default function AreaInspectionPage() {
 
   const handleSkip = () => {
     // Update current area status as skipped
-    const updatedStatus = {
-      status: 'skipped',
-      photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
-      notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
-      findings: areaData.findings,
-      completionPercentage: 0
+    setAreaData(prev => ({ ...prev, completionStatus: 'skipped' }))
+
+    // Update using the centralized hook
+    if (updateArea) {
+      updateArea(areaId, {
+        status: 'skipped',
+        photoCount: areaData.mediaFiles.filter(f => f.type === 'photo').length,
+        notesCount: areaData.mediaFiles.filter(f => f.type === 'audio').length,
+        findings: areaData.findings
+      })
     }
-    
-    setAreasStatus(prev => ({
-      ...prev,
-      [areaId]: updatedStatus
-    }))
-    
-    // Save to localStorage
-    localStorage.setItem(`inspection-${inspectionId}-areas`, JSON.stringify({
-      ...areasStatus,
-      [areaId]: updatedStatus
-    }))
     
     if (nextArea) {
       router.push(`/dashboard/inspection/${inspectionId}/area/${nextArea.id}`)
@@ -416,12 +568,13 @@ export default function AreaInspectionPage() {
 
   // Handle navigate back to cards
   const handleNavigateBack = () => {
-    setNavigationMode('cards')
-    setExpandedAreaId(null)
+    // Navigate to the areas overview page with current area as query parameter
+    router.push(`/dashboard/inspection/${inspectionId}/areas?area=${areaId}`)
   }
 
   return (
-    <InspectionAreaCarousel
+    <>
+      <InspectionAreaCarousel
       areas={enhancedAreas}
       currentAreaIndex={currentIndex}
       onAreaComplete={handleComplete}
@@ -479,7 +632,11 @@ export default function AreaInspectionPage() {
               />
 
               {/* Photo Grid */}
-              {areaData.mediaFiles.filter(f => f.type === 'photo').length > 0 && (
+              {(() => {
+                const photoCount = areaData.mediaFiles.filter(f => f.type === 'photo').length;
+                console.log('🖼️ RENDER CHECK - Photo count:', photoCount, 'Total files:', areaData.mediaFiles.length);
+                return photoCount > 0;
+              })() && (
                 <div className="mt-6">
                   <h3 className="font-medium text-gray-900 mb-3">
                     Uploaded Photos ({areaData.mediaFiles.filter(f => f.type === 'photo').length})
@@ -551,13 +708,29 @@ export default function AreaInspectionPage() {
                 <div className="space-y-2">
                   <h3 className="font-medium text-gray-900">Recorded Notes</h3>
                   {areaData.mediaFiles.filter(f => f.type === 'audio').map((file) => (
-                    <div key={file.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">Voice Note</div>
-                        <div className="text-xs text-gray-600">
-                          {file.timestamp.toLocaleTimeString()}
+                    <div key={file.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <button
+                        onClick={() => {
+                          setSelectedVoiceNote(file)
+                          setShowTranscriptModal(true)
+                        }}
+                        className="flex-1 flex items-center gap-3 text-left"
+                      >
+                        <div className="p-2 bg-purple-100 rounded-lg">
+                          <Mic className="w-4 h-4 text-purple-600" />
                         </div>
-                      </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-medium">Voice Note</div>
+                          <div className="text-xs text-gray-600">
+                            {file.timestamp.toLocaleTimeString()} {file.duration ? `• ${file.duration}s` : ''}
+                          </div>
+                          {file.transcript && (
+                            <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                              "{file.transcript}"
+                            </div>
+                          )}
+                        </div>
+                      </button>
                       <button
                         onClick={() => removeMediaFile(file.id)}
                         className="p-1 text-gray-400 hover:text-red-500"
@@ -580,10 +753,16 @@ export default function AreaInspectionPage() {
                     Key Findings
                   </label>
                   <textarea
+                    ref={findingsRef}
                     value={areaData.findings}
-                    onChange={(e) => setAreaData(prev => ({ ...prev, findings: e.target.value }))}
+                    onChange={(e) => {
+                      setAreaData(prev => ({ ...prev, findings: e.target.value }))
+                      // Auto-resize textarea
+                      e.target.style.height = 'auto'
+                      e.target.style.height = e.target.scrollHeight + 'px'
+                    }}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
-                    rows={3}
+                    style={{ minHeight: '72px', overflow: 'hidden' }}
                     placeholder="Document visible damage, conditions, and observations..."
                   />
                 </div>
@@ -593,10 +772,16 @@ export default function AreaInspectionPage() {
                     Damage Description
                   </label>
                   <textarea
+                    ref={damageRef}
                     value={areaData.damageDescription}
-                    onChange={(e) => setAreaData(prev => ({ ...prev, damageDescription: e.target.value }))}
+                    onChange={(e) => {
+                      setAreaData(prev => ({ ...prev, damageDescription: e.target.value }))
+                      // Auto-resize textarea
+                      e.target.style.height = 'auto'
+                      e.target.style.height = e.target.scrollHeight + 'px'
+                    }}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
-                    rows={3}
+                    style={{ minHeight: '72px', overflow: 'hidden' }}
                     placeholder="Describe the extent and nature of damage..."
                   />
                 </div>
@@ -606,10 +791,16 @@ export default function AreaInspectionPage() {
                     Recommended Actions
                   </label>
                   <textarea
+                    ref={actionsRef}
                     value={areaData.recommendedActions}
-                    onChange={(e) => setAreaData(prev => ({ ...prev, recommendedActions: e.target.value }))}
+                    onChange={(e) => {
+                      setAreaData(prev => ({ ...prev, recommendedActions: e.target.value }))
+                      // Auto-resize textarea
+                      e.target.style.height = 'auto'
+                      e.target.style.height = e.target.scrollHeight + 'px'
+                    }}
                     className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
-                    rows={2}
+                    style={{ minHeight: '48px', overflow: 'hidden' }}
                     placeholder="Immediate repairs needed, safety concerns..."
                   />
                 </div>
@@ -642,25 +833,100 @@ export default function AreaInspectionPage() {
                 </div>
               </div>
             )}
-
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={handleSkip}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-yellow-50 text-yellow-700 border border-yellow-200 rounded-lg text-sm font-medium hover:bg-yellow-100 transition-colors"
-              >
-                <SkipForward size={16} />
-                <span>Skip Area</span>
-              </button>
-              <button
-                onClick={handleComplete}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors"
-              >
-                <CheckCircle size={16} />
-                <span>Complete Area</span>
-              </button>
-            </div>
           </div>
       </InspectionAreaCarousel>
+
+      {/* Voice Note Transcript Modal */}
+      <AnimatePresence key="transcript-modal">
+        {showTranscriptModal && selectedVoiceNote && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => setShowTranscriptModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Mic className="w-5 h-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-semibold text-gray-900">Voice Note Transcript</h2>
+                    <p className="text-sm text-gray-600">
+                      {selectedVoiceNote.timestamp.toLocaleTimeString()}
+                      {selectedVoiceNote.duration && ` • ${selectedVoiceNote.duration} seconds`}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowTranscriptModal(false)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="p-6">
+                {selectedVoiceNote.transcript ? (
+                  <div className="space-y-4">
+                    <div className="bg-gray-50 rounded-xl p-4">
+                      <h3 className="font-medium text-gray-700 mb-2">Transcript</h3>
+                      <p className="text-gray-900 leading-relaxed whitespace-pre-wrap">
+                        {selectedVoiceNote.transcript}
+                      </p>
+                    </div>
+
+                    {/* Audio Player (if URL is available) */}
+                    {selectedVoiceNote.url && selectedVoiceNote.url !== '#' && (
+                      <div className="bg-purple-50 rounded-xl p-4">
+                        <h3 className="font-medium text-gray-700 mb-2">Audio Recording</h3>
+                        <audio controls className="w-full">
+                          <source src={selectedVoiceNote.url} type="audio/wav" />
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    )}
+
+                    {/* Actions */}
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => {
+                          // Copy transcript to clipboard
+                          if (selectedVoiceNote.transcript) {
+                            navigator.clipboard.writeText(selectedVoiceNote.transcript)
+                          }
+                        }}
+                        className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                      >
+                        Copy Transcript
+                      </button>
+                      <button
+                        onClick={() => setShowTranscriptModal(false)}
+                        className="flex-1 px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <Mic className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-600">No transcript available for this voice note</p>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
