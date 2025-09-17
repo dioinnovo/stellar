@@ -46,6 +46,17 @@ export default function ContinueInspectionPage() {
   const [showMediaModal, setShowMediaModal] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'areas' | 'media' | 'insights'>('overview')
   const [playingAudio, setPlayingAudio] = useState<string | null>(null)
+
+  // Check URL parameters to set initial tab
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const tab = urlParams.get('tab')
+      if (tab === 'areas' || tab === 'media' || tab === 'insights') {
+        setActiveTab(tab as any)
+      }
+    }
+  }, [])
   
   const progress = getInspectionProgress()
   const photos = getAllPhotos()
