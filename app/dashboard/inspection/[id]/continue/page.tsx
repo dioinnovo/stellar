@@ -91,10 +91,12 @@ export default function ContinueInspectionPage() {
   }
 
   const handleResumeInspection = () => {
-    // Navigate to the areas tab to let user choose which area to inspect
-    setActiveTab('areas')
-    // Scroll to top to show the areas
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    // Navigate to the property inspection areas page with the carousel
+    // Start with the first area but user can navigate to any area using the carousel
+    const firstArea = inspectionMediaData[0]
+    if (firstArea) {
+      router.push(`/dashboard/inspection/${inspectionId}/area/${firstArea.areaId}`)
+    }
   }
 
   const handleGeneratePreliminaryReport = () => {
