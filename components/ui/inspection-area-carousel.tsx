@@ -145,24 +145,23 @@ export function InspectionAreaCarousel({
       >
         {/* Expanded Header */}
         <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-          <div>
-            {/* Back button and Status on same line */}
-            <div className="flex items-center justify-between mb-3">
-              <button
-                onClick={onNavigateBack}
-                className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition"
-              >
-                <ArrowLeft size={20} />
-                <span className="text-sm">Back to Area Selection</span>
-              </button>
-              <Badge variant={statusInfo.badgeVariant} className="flex items-center gap-1">
-                <statusInfo.icon className="w-3 h-3" />
-                {getStatusText(expandedArea.status)}
-              </Badge>
-            </div>
+          {/* Back button and Status on same line */}
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={onNavigateBack}
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition"
+            >
+              <ArrowLeft size={20} />
+              <span className="text-sm">Back to Area Selection</span>
+            </button>
+            <Badge variant={statusInfo.badgeVariant} className="flex items-center gap-1">
+              <statusInfo.icon className="w-3 h-3" />
+              {getStatusText(expandedArea.status)}
+            </Badge>
+          </div>
 
-            {/* Area Info */}
-            <div className="flex items-center gap-3 mb-3">
+          {/* Area Info */}
+          <div className="flex items-center gap-3 mb-4">
               <div className={`p-2 rounded-lg ${categoryColors.bgColor}`}>
                 {areaWithIcon.iconInfo ? (
                   <areaWithIcon.iconInfo.icon className={`w-6 h-6 ${categoryColors.color}`} />
@@ -176,33 +175,33 @@ export function InspectionAreaCarousel({
               </div>
             </div>
 
-            {/* Area Progress Bar */}
-            <div className="mb-3">
-              <div className="flex justify-between text-xs text-gray-600 mb-1">
-                <span>{expandedArea.name} Inspection Progress</span>
-                <span>
-                  {expandedArea.status === 'skipped' ? '0' : (expandedArea.completionPercentage || 0)}%
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className={cn(
-                    "h-2 rounded-full transition-all",
-                    expandedArea.status === 'completed' && "bg-green-500",
-                    expandedArea.status === 'skipped' && "bg-yellow-500",
-                    expandedArea.status === 'in_progress' && "bg-blue-500",
-                    !expandedArea.status && "bg-stellar-orange"
-                  )}
-                  style={{
-                    width: expandedArea.status === 'skipped' ? '0%' : `${expandedArea.completionPercentage || 0}%`
-                  }}
-                />
-              </div>
+          {/* Area Progress Bar */}
+          <div className="mb-4">
+            <div className="flex justify-between text-xs text-gray-600 mb-1">
+              <span>{expandedArea.name} Inspection Progress</span>
+              <span>
+                {expandedArea.status === 'skipped' ? '0' : (expandedArea.completionPercentage || 0)}%
+              </span>
             </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={cn(
+                  "h-2 rounded-full transition-all",
+                  expandedArea.status === 'completed' && "bg-green-500",
+                  expandedArea.status === 'skipped' && "bg-yellow-500",
+                  expandedArea.status === 'in_progress' && "bg-blue-500",
+                  !expandedArea.status && "bg-stellar-orange"
+                )}
+                style={{
+                  width: expandedArea.status === 'skipped' ? '0%' : `${expandedArea.completionPercentage || 0}%`
+                }}
+              />
+            </div>
+          </div>
 
-            {/* Action Buttons - Skip and Complete */}
-            {!expandedArea.status && (
-              <div className="flex gap-2">
+          {/* Action Buttons - Skip and Complete */}
+          {!expandedArea.status && (
+            <div className="flex gap-2">
                 <button
                   onClick={() => onAreaSkip(expandedArea)}
                   className="flex-1 bg-yellow-100 text-yellow-700 px-4 py-2 rounded-lg font-medium hover:bg-yellow-200 transition-colors flex items-center justify-center gap-2"
@@ -217,9 +216,8 @@ export function InspectionAreaCarousel({
                   <CheckCircle size={16} />
                   Complete Area
                 </button>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Expanded Content */}

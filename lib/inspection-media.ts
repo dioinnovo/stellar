@@ -46,6 +46,7 @@ export const inspectionMediaData: AreaInspectionData[] = [
     estimatedCost: 18500,
     priority: 'high',
     media: [
+      // Photos (8 total)
       {
         id: 'roof-1',
         type: 'photo',
@@ -77,14 +78,75 @@ export const inspectionMediaData: AreaInspectionData[] = [
         tags: ['gutters', 'drainage', 'structural']
       },
       {
+        id: 'roof-4',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1609767500458-d2a133f61cab?w=800&h=600&fit=crop&q=80',
+        title: 'Ridge Cap Damage',
+        description: 'Ridge cap tiles displaced exposing roof peak',
+        timestamp: '2024-03-19 14:24:00',
+        category: 'Damage Documentation',
+        tags: ['ridge', 'critical', 'water-entry']
+      },
+      {
+        id: 'roof-5',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1621873495884-845a939892c5?w=800&h=600&fit=crop&q=80',
+        title: 'Soffit and Fascia Damage',
+        description: 'Wind damage to soffit panels and fascia boards',
+        timestamp: '2024-03-19 14:26:00',
+        category: 'Damage Documentation',
+        tags: ['soffit', 'fascia', 'wind-damage']
+      },
+      {
+        id: 'roof-6',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=800&h=600&fit=crop&q=80',
+        title: 'Valley Flashing Failure',
+        description: 'Valley flashing torn and lifted',
+        timestamp: '2024-03-19 14:28:00',
+        category: 'Damage Documentation',
+        tags: ['valley', 'flashing', 'critical']
+      },
+      {
+        id: 'roof-7',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1604079628040-94301bb21b91?w=800&h=600&fit=crop&q=80',
+        title: 'Roof Deck Exposure',
+        description: 'Large section of roof deck exposed after shingle loss',
+        timestamp: '2024-03-19 14:30:00',
+        category: 'Damage Documentation',
+        tags: ['deck', 'exposure', 'urgent']
+      },
+      {
+        id: 'roof-8',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1516455590571-18256e5bb9ff?w=800&h=600&fit=crop&q=80',
+        title: 'Downspout Separation',
+        description: 'Multiple downspouts disconnected from gutter system',
+        timestamp: '2024-03-19 14:32:00',
+        category: 'Damage Documentation',
+        tags: ['downspout', 'drainage', 'repair']
+      },
+      // Audio Notes (2 total)
+      {
         id: 'roof-audio-1',
         type: 'audio',
         url: '#',
-        title: 'Roof Inspection Summary',
+        title: 'Initial Roof Assessment',
         transcript: 'Initial roof inspection reveals approximately 30% of shingles are either missing or severely damaged. The underlayment is exposed in multiple areas, particularly on the south and west-facing slopes. There is clear evidence of water intrusion through the decking. I recommend immediate temporary repairs followed by full replacement. The flashing around all penetrations needs replacement, and the entire gutter system requires reinstallation.',
         timestamp: '2024-03-19 14:25:00',
         category: 'Inspector Notes',
         duration: 45
+      },
+      {
+        id: 'roof-audio-2',
+        type: 'audio',
+        url: '#',
+        title: 'Structural Concerns',
+        transcript: 'Upon closer inspection of the roof structure, I\'ve identified several areas of concern beyond the visible shingle damage. The roof decking shows signs of water saturation in at least three locations. The ridge beam appears to have shifted slightly, likely due to the extreme wind forces. Additionally, several rafters may need sistering or replacement. The attic inspection reveals daylight visible through multiple points, confirming the extent of the damage. Priority should be given to waterproofing immediately.',
+        timestamp: '2024-03-19 14:35:00',
+        category: 'Inspector Notes',
+        duration: 52
       }
     ],
     aiInsights: {
@@ -105,6 +167,7 @@ export const inspectionMediaData: AreaInspectionData[] = [
     estimatedCost: 8750,
     priority: 'high',
     media: [
+      // Photos (6 total)
       {
         id: 'siding-1',
         type: 'photo',
@@ -124,6 +187,57 @@ export const inspectionMediaData: AreaInspectionData[] = [
         timestamp: '2024-03-19 14:38:00',
         category: 'Damage Documentation',
         tags: ['water-damage', 'structural', 'hidden-damage']
+      },
+      {
+        id: 'siding-3',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=800&h=600&fit=crop&q=80',
+        title: 'Cracked Vinyl Panels',
+        description: 'Multiple cracked and broken vinyl siding panels',
+        timestamp: '2024-03-19 14:40:00',
+        category: 'Damage Documentation',
+        tags: ['vinyl', 'cracks', 'replacement']
+      },
+      {
+        id: 'siding-4',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1609767500458-d2a133f61cab?w=800&h=600&fit=crop&q=80',
+        title: 'Corner Trim Separation',
+        description: 'Corner trim pieces pulled away from structure',
+        timestamp: '2024-03-19 14:42:00',
+        category: 'Damage Documentation',
+        tags: ['trim', 'separation', 'wind-damage']
+      },
+      {
+        id: 'siding-5',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1516156008625-3a9d6067fab5?w=800&h=600&fit=crop&q=80',
+        title: 'South Wall Missing Panels',
+        description: 'Large section of siding missing on south wall',
+        timestamp: '2024-03-19 14:44:00',
+        category: 'Damage Documentation',
+        tags: ['missing', 'exposed', 'urgent']
+      },
+      {
+        id: 'siding-6',
+        type: 'photo',
+        url: 'https://images.unsplash.com/photo-1604079628040-94301bb21b91?w=800&h=600&fit=crop&q=80',
+        title: 'Window Frame Damage',
+        description: 'Siding damage around window frames with gaps',
+        timestamp: '2024-03-19 14:46:00',
+        category: 'Damage Documentation',
+        tags: ['window', 'frame', 'sealing']
+      },
+      // Audio Note (1 total)
+      {
+        id: 'siding-audio-1',
+        type: 'audio',
+        url: '#',
+        title: 'Exterior Wall Assessment',
+        transcript: 'The exterior siding has sustained significant damage from the storm. Approximately 40% of the vinyl siding panels show either impact damage, cracks, or complete failure. The east and south walls bore the brunt of the wind damage. I can see exposed sheathing in several areas where panels have been completely torn off. There\'s evidence of water infiltration behind the remaining siding, particularly around windows and doors. The home wrap is torn in multiple locations. All damaged sections will need removal and replacement, including proper moisture barrier installation.',
+        timestamp: '2024-03-19 14:48:00',
+        category: 'Inspector Notes',
+        duration: 38
       }
     ]
   },

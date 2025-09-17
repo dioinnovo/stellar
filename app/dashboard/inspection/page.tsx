@@ -70,9 +70,9 @@ export default function InspectionListPage() {
       estimatedDuration: '3 hours',
       completionRate: 65,
       imageUrl: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&h=600&fit=crop&q=80',
-      photosCount: 16,
-      currentArea: 'Kitchen & Dining',
-      areasInspected: ['Exterior Roof', 'Exterior Siding', 'Living Room', 'Kitchen & Dining'],
+      photosCount: 41,
+      currentArea: 'HVAC System',
+      areasInspected: ['Roof & Gutters', 'Siding & Walls', 'Living Room', 'Kitchen', 'HVAC System'],
       damageAssessment: {
         severity: 'Moderate',
         description: 'Water intrusion through roof causing ceiling damage and potential mold growth in kitchen area',
