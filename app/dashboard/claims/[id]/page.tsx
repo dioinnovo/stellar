@@ -244,7 +244,7 @@ export default function ClaimDetailPage() {
       <div className="bg-white rounded-xl shadow-sm">
         <div className="border-b border-gray-200">
           {/* Mobile/Tablet: Show first 3 tabs + More dropdown */}
-          <div className="sm:hidden">
+          <div className="lg:hidden">
             <div className="flex items-center justify-between">
               {/* First 3 tabs */}
               <div className="flex flex-1">
@@ -314,7 +314,7 @@ export default function ClaimDetailPage() {
           </div>
 
           {/* Desktop: Full width tabs */}
-          <div className="hidden sm:flex">
+          <div className="hidden lg:flex">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
