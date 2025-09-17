@@ -206,7 +206,7 @@ export default function ContinueInspectionPage() {
                   Continue Inspection
                 </h1>
                 <p className="text-sm text-gray-600 mt-1">
-                  {inspectionSummary.propertyAddress}
+                  {inspectionSummary?.propertyAddress || 'Loading...'}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -267,7 +267,7 @@ export default function ContinueInspectionPage() {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900">Inspection in Progress</h2>
-                  <p className="text-sm text-gray-600">Started {inspectionSummary.elapsedTime} ago</p>
+                  <p className="text-sm text-gray-600">Started {inspectionSummary?.elapsedTime || '0m'} ago</p>
                 </div>
               </div>
               
@@ -287,7 +287,7 @@ export default function ContinueInspectionPage() {
                 </div>
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-xs text-gray-500">{progress.completed} areas completed</span>
-                  <span className="text-xs text-gray-500">{progress.remaining} areas remaining</span>
+                  <span className="text-xs text-gray-500">{progress.total - progress.completed} areas remaining</span>
                 </div>
               </div>
 
@@ -302,7 +302,7 @@ export default function ContinueInspectionPage() {
                           Incomplete Inspection
                         </p>
                         <p className="text-xs text-yellow-700 mt-1">
-                          {progress.remaining} areas still need inspection. You can finish now with partial data or continue inspecting.
+                          {progress.total - progress.completed} areas still need inspection. You can finish now with partial data or continue inspecting.
                         </p>
                       </div>
                     </div>
@@ -365,7 +365,7 @@ export default function ContinueInspectionPage() {
         </div>
 
         {/* Critical Findings Alert - Better Visual Hierarchy */}
-        {inspectionSummary.criticalFindings > 0 && (
+        {inspectionSummary && inspectionSummary.criticalFindings > 0 && (
           <div className="bg-gray-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="text-red-600" size={20} />
@@ -375,7 +375,7 @@ export default function ContinueInspectionPage() {
             </div>
 
             <div className="space-y-2">
-              {inspectionSummary.safetyHazardsIdentified.map((hazard, idx) => {
+              {inspectionSummary?.safetyHazardsIdentified?.map((hazard, idx) => {
                 // Parse the hazard string to separate area name and finding
                 const [area, ...findingParts] = hazard.split(':');
                 const finding = findingParts.join(':').trim();
@@ -407,7 +407,7 @@ export default function ContinueInspectionPage() {
             <div className="mt-3 pt-3 border-t border-gray-200">
               <h4 className="text-sm font-semibold text-gray-700 mb-2">Immediate Actions Required:</h4>
               <div className="flex flex-wrap gap-2">
-                {inspectionSummary.immediateActions.map((action, idx) => {
+                {inspectionSummary?.immediateActions?.map((action, idx) => {
                   // Assign different colors to different actions
                   const colorClass = idx === 0
                     ? 'bg-red-100 text-red-700'
@@ -464,21 +464,21 @@ export default function ContinueInspectionPage() {
                       <Home size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5">Address</p>
-                        <p className="font-medium text-gray-900 text-sm break-words">{inspectionSummary.propertyAddress}</p>
+                        <p className="font-medium text-gray-900 text-sm break-words">{inspectionSummary?.propertyAddress || '-'}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <User size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5">Client</p>
-                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary.clientName}</p>
+                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary?.clientName || '-'}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <User size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5">Inspector</p>
-                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary.inspector}</p>
+                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary?.inspector || '-'}</p>
                       </div>
                     </div>
                   </div>
@@ -492,7 +492,7 @@ export default function ContinueInspectionPage() {
                       <Clock size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5">Start Time</p>
-                        <p className="font-medium text-gray-900 text-sm">{formatDate(inspectionSummary.startTime)}</p>
+                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary ? formatDate(inspectionSummary.startTime) : '-'}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
@@ -506,7 +506,7 @@ export default function ContinueInspectionPage() {
                       <MapPin size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-xs text-gray-500 mb-0.5">Weather</p>
-                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary.weatherConditions}</p>
+                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary?.weatherConditions || '-'}</p>
                       </div>
                     </div>
                   </div>
@@ -520,11 +520,11 @@ export default function ContinueInspectionPage() {
                   <div className="flex-1">
                     <h3 className="font-semibold text-blue-900 mb-2 text-base">Next Steps</h3>
                     <p className="text-sm text-blue-800 mb-3">
-                      Continue with inspection of remaining {progress.remaining} areas to complete the assessment.
+                      Continue with inspection of remaining {progress.total - progress.completed} areas to complete the assessment.
                     </p>
                     <div className="bg-white/60 rounded-lg px-3 py-2 inline-block">
                       <span className="text-xs text-blue-700">Next Area:</span>
-                      <span className="font-semibold text-blue-900 ml-2 text-sm">{inspectionSummary.nextArea}</span>
+                      <span className="font-semibold text-blue-900 ml-2 text-sm">{inspectionSummary?.nextArea || 'Loading...'}</span>
                     </div>
                   </div>
                 </div>
@@ -541,15 +541,15 @@ export default function ContinueInspectionPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {areas.map((area, idx) => (
                       <div
-                        key={`${category}-${area.areaId}-${idx}`}
+                        key={`${category}-${area.id}-${idx}`}
                         className={`border rounded-xl p-4 cursor-pointer transition-all hover:shadow-md ${
                           area.status === 'completed' ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
                         }`}
-                        onClick={() => router.push(`/dashboard/inspection/${inspectionId}/area/${area.areaId}`)}
+                        onClick={() => router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)}
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h4 className="font-semibold text-gray-900">{area.areaName}</h4>
+                            <h4 className="font-semibold text-gray-900">{area.name}</h4>
                             <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(area.status)}`}>
                               {area.status.replace('_', ' ').toUpperCase()}
                             </span>
@@ -726,7 +726,7 @@ export default function ContinueInspectionPage() {
               <div>
                 <h3 className="font-semibold text-gray-900 mb-4">Key Findings So Far</h3>
                 <div className="space-y-3">
-                  {inspectionMediaData
+                  {inspectionData?.areas
                     .filter(area => area.status === 'completed' && area.priority === 'high')
                     .map((area, index) => {
                       // Determine severity based on cost or other factors
@@ -735,7 +735,7 @@ export default function ContinueInspectionPage() {
 
                       return (
                         <div
-                          key={area.areaId}
+                          key={area.id}
                           className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"
                         >
                           <div className="flex items-start justify-between mb-3">
@@ -748,7 +748,7 @@ export default function ContinueInspectionPage() {
                               `} />
 
                               <div>
-                                <h4 className="font-semibold text-gray-900 text-base">{area.areaName}</h4>
+                                <h4 className="font-semibold text-gray-900 text-base">{area.name}</h4>
                                 <span className={`
                                   inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium mt-1
                                   ${severity === 'critical'
@@ -790,16 +790,11 @@ export default function ContinueInspectionPage() {
                           <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                             <div className="flex items-center gap-4">
                               <span className="text-xs text-gray-500">
-                                Area #{index + 1} of {inspectionMediaData.filter(a => a.status === 'completed' && a.priority === 'high').length}
+                                Area #{index + 1} of {inspectionData?.areas?.filter(a => a.status === 'completed' && a.priority === 'high').length || 0}
                               </span>
-                              {area.aiInsights && (
-                                <span className="text-xs text-purple-600 font-medium">
-                                  AI Confidence: {area.aiInsights.costConfidence}%
-                                </span>
-                              )}
                             </div>
                             <button
-                              onClick={() => router.push(`/dashboard/inspection/${inspectionId}/area/${area.areaId}`)}
+                              onClick={() => router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)}
                               className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 group"
                             >
                               View Details
@@ -834,7 +829,7 @@ export default function ContinueInspectionPage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">{selectedArea.areaName}</h2>
+                <h2 className="text-xl font-bold text-gray-900">{selectedArea.name}</h2>
                 <button
                   onClick={() => setSelectedArea(null)}
                   className="p-2 hover:bg-gray-100 rounded-lg"
@@ -880,27 +875,6 @@ export default function ContinueInspectionPage() {
                   <div>
                     <h3 className="font-semibold text-gray-900 mb-2">Recommended Actions</h3>
                     <p className="text-gray-700">{selectedArea.recommendedActions}</p>
-                  </div>
-                )}
-
-                {/* AI Insights */}
-                {selectedArea.aiInsights && (
-                  <div className="bg-purple-50 rounded-xl p-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Brain className="text-purple-600" size={20} />
-                      <h3 className="font-semibold text-gray-900">AI Insights</h3>
-                    </div>
-                    <div className="space-y-2 text-sm">
-                      <p className="text-gray-700">
-                        <span className="font-medium">Hidden Damage Risk:</span> {selectedArea.aiInsights.hiddenDamageRisk}
-                      </p>
-                      <p className="text-gray-700">
-                        <span className="font-medium">Confidence:</span> {selectedArea.aiInsights.costConfidence}%
-                      </p>
-                      <p className="text-gray-700">
-                        <span className="font-medium">Urgency:</span> {selectedArea.aiInsights.urgencyLevel}
-                      </p>
-                    </div>
                   </div>
                 )}
 

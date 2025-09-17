@@ -194,8 +194,8 @@ export default function NewInspectionPage() {
       property: {
         address: formData.property.address,
         type: formData.property.type || 'residential',
-        owner: formData.property.ownerName || '',
-        yearBuilt: formData.property.yearBuilt,
+        owner: '',
+        yearBuilt: new Date().getFullYear(),
         policyNumber: ''
       },
       areas: DEFAULT_RESIDENTIAL_AREAS,
