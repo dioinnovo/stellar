@@ -1101,22 +1101,25 @@ export default function ClaimDetailPage() {
                   <h3 className="text-lg font-semibold text-gray-900">Settlement Success Indicators</h3>
                   <span className="text-sm font-medium text-gray-700">High Probability</span>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">94%</p>
-                    <p className="text-sm text-gray-600">Win Probability</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                  <div className="text-center p-3 bg-white rounded-lg">
+                    <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">94%</p>
+                    <p className="text-xs md:text-sm text-gray-600 mt-1">Win Probability</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl sm:text-3xl font-bold text-stellar-orange">$385K</p>
-                    <p className="text-sm text-gray-600">Optimal Demand</p>
+                  <div className="text-center p-3 bg-white rounded-lg">
+                    <p className="text-xl md:text-2xl lg:text-3xl font-bold text-stellar-orange">$385K</p>
+                    <p className="text-xs md:text-sm text-gray-600 mt-1">Optimal Demand</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">$340K-365K</p>
-                    <p className="text-sm text-gray-600">Expected Range</p>
+                  <div className="text-center p-3 bg-white rounded-lg">
+                    <div className="flex flex-col">
+                      <span className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900">$340K-</span>
+                      <span className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 -mt-1">$365K</span>
+                    </div>
+                    <p className="text-xs md:text-sm text-gray-600 mt-1">Expected Range</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900">+$170K</p>
-                    <p className="text-sm text-gray-600">Above Initial Offer</p>
+                  <div className="text-center p-3 bg-white rounded-lg">
+                    <p className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">+$170K</p>
+                    <p className="text-xs md:text-sm text-gray-600 mt-1">Above Initial Offer</p>
                   </div>
                 </div>
               </div>
