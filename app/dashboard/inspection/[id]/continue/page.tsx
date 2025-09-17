@@ -91,12 +91,8 @@ export default function ContinueInspectionPage() {
   }
 
   const handleResumeInspection = () => {
-    // Navigate to the property inspection areas page with the carousel
-    // Start with the first area but user can navigate to any area using the carousel
-    const firstArea = inspectionMediaData[0]
-    if (firstArea) {
-      router.push(`/dashboard/inspection/${inspectionId}/area/${firstArea.areaId}`)
-    }
+    // Navigate to the Property Inspection Areas overview page
+    router.push(`/dashboard/inspection/${inspectionId}/areas`)
   }
 
   const handleGeneratePreliminaryReport = () => {

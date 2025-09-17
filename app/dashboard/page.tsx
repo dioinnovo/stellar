@@ -81,10 +81,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-4 sm:space-y-6 w-full">
       {/* Header */}
-      <PageHeader 
+      <PageHeader
         title="Dashboard Overview"
         description="Welcome back! Here's your claims processing summary."
-        className="border border-slate-200"
       />
 
       {/* KPI Cards */}

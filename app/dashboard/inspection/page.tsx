@@ -262,7 +262,6 @@ export default function InspectionListPage() {
       <PageHeader
         title="Schedule Inspections"
         description="AI-powered comprehensive property assessments"
-        className="border border-slate-200"
         action={
           <Link
             href="/dashboard/inspection/new"

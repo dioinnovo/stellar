@@ -8,10 +8,12 @@ import {
   AlertCircle, Clock, MapPin, User, Building2, DollarSign,
   TrendingUp, Star, Home, Shield, Award, Send, Edit
 } from 'lucide-react'
+import { PageHeader } from '@/components/ui/page-header'
 
 interface CompletedReport {
   id: string
   claimNumber: string
+  inspectionId?: string // Link to inspection for review
   property: {
     address: string
     type: 'residential' | 'commercial'
@@ -139,6 +141,7 @@ const mockCompletedReports: CompletedReport[] = [
   {
     id: '5',
     claimNumber: 'CLM-2024-983',
+    inspectionId: 'INS-005', // Inspection ID for review page
     property: {
       address: '456 Retail Plaza, Aventura, FL 33180',
       type: 'commercial',
@@ -285,18 +288,10 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="bg-white rounded-xl shadow-sm p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-stellar-dark">
-              Completed Reports
-            </h1>
-            <p className="text-gray-600 mt-1">
-              AI-generated inspection reports with settlement optimization
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Completed Reports"
+        description="AI-generated inspection reports with settlement optimization"
+      />
 
       {/* Stats Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -384,13 +379,16 @@ export default function ReportsPage() {
           >
             <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer"
                  onClick={() => {
-                   // For approved/sent reports, go to the comprehensive report view
                    if (report.status === 'approved' || report.status === 'sent') {
-                     // Extract inspection ID from report if available, otherwise use a demo ID
-                     const inspectionId = report.id.startsWith('RPT-') ? 'INS-002' : report.id;
+                     // For approved/sent reports, go to the comprehensive report view
+                     const inspectionId = report.inspectionId || 'INS-002';
                      router.push(`/dashboard/inspection/${inspectionId}/report`);
+                   } else if (report.status === 'in_review') {
+                     // For in_review reports, use the inspection review page
+                     const inspectionId = report.inspectionId || 'INS-002';
+                     router.push(`/dashboard/inspection/${inspectionId}/review`);
                    } else {
-                     // For pending/in_review, go to the review page
+                     // For pending_approval, go to a review page
                      router.push(`/dashboard/reports/${report.id}/review`);
                    }
                  }}>
@@ -525,8 +523,8 @@ export default function ReportsPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Use the inspection review page for all reviews
-                          const inspectionId = report.id.startsWith('RPT-') ? 'INS-002' : report.id;
+                          // Use the inspection review page for pending approval reports
+                          const inspectionId = report.inspectionId || 'INS-002';
                           router.push(`/dashboard/inspection/${inspectionId}/review`);
                         }}
                         className="col-span-2 flex items-center justify-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition"
@@ -540,8 +538,8 @@ export default function ReportsPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          // Use the inspection review page for all reviews
-                          const inspectionId = report.id.startsWith('RPT-') ? 'INS-002' : report.id;
+                          // Use the inspection review page for in-review reports
+                          const inspectionId = report.inspectionId || 'INS-005';
                           router.push(`/dashboard/inspection/${inspectionId}/review`);
                         }}
                         className="col-span-2 flex items-center justify-center gap-2 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition"
@@ -556,7 +554,7 @@ export default function ReportsPage() {
                         onClick={(e) => {
                           e.stopPropagation();
                           // View the comprehensive report
-                          const inspectionId = report.id.startsWith('RPT-') ? 'INS-002' : report.id;
+                          const inspectionId = report.inspectionId || 'INS-002';
                           router.push(`/dashboard/inspection/${inspectionId}/report`);
                         }}
                         className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
