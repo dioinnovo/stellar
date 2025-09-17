@@ -124,9 +124,9 @@ export default function AreaInspectionPage() {
     completionStatus: 'not_started'
   })
   
-  // Navigation states
-  const [navigationMode, setNavigationMode] = useState<'cards' | 'form'>('cards')
-  const [expandedAreaId, setExpandedAreaId] = useState<string | null>(null)
+  // Navigation states - Start in form mode to show the inspection form
+  const [navigationMode, setNavigationMode] = useState<'cards' | 'form'>('form')
+  const [expandedAreaId, setExpandedAreaId] = useState<string | null>(areaId)
   
   // Track completion status for all areas
   const [areasStatus, setAreasStatus] = useState<Record<string, any>>({})
@@ -138,6 +138,41 @@ export default function AreaInspectionPage() {
       setAreasStatus(JSON.parse(savedStatus))
     }
   }, [inspectionId])
+
+  // Update current area when URL parameter changes
+  React.useEffect(() => {
+    const areas = INSPECTION_AREAS[propertyType]
+    const newArea = areas.find(area => area.id === areaId)
+    if (newArea && newArea.id !== currentArea.id) {
+      setCurrentArea(newArea)
+      // Automatically expand the form view when navigating to a new area
+      setNavigationMode('form')
+      setExpandedAreaId(areaId)
+
+      // Load saved data for the new area if it exists
+      const savedStatus = areasStatus[areaId]
+      if (savedStatus) {
+        setAreaData({
+          findings: savedStatus.findings || '',
+          damageDescription: savedStatus.damageDescription || '',
+          recommendedActions: savedStatus.recommendedActions || '',
+          mediaFiles: savedStatus.mediaFiles || [],
+          aiInsights: savedStatus.aiInsights || [],
+          completionStatus: savedStatus.status || 'not_started'
+        })
+      } else {
+        // Reset to empty state for new area
+        setAreaData({
+          findings: '',
+          damageDescription: '',
+          recommendedActions: '',
+          mediaFiles: [],
+          aiInsights: [],
+          completionStatus: 'not_started'
+        })
+      }
+    }
+  }, [areaId, propertyType, areasStatus, currentArea.id])
 
   const [isRecording, setIsRecording] = useState(false)
   const [recordingDuration, setRecordingDuration] = useState(0)
@@ -368,8 +403,15 @@ export default function AreaInspectionPage() {
 
   // Handle area selection from cards
   const handleAreaSelect = (area: InspectionArea, index: number) => {
-    // Navigate to the inspection details page when a card is clicked
-    router.push(`/dashboard/inspection/${inspectionId}/continue`)
+    // If clicking on the same area that's already in the URL, expand it
+    if (area.id === areaId) {
+      setNavigationMode('form')
+      setExpandedAreaId(area.id)
+    } else {
+      // Navigate to the specific area inspection page when a different card is clicked
+      router.push(`/dashboard/inspection/${inspectionId}/area/${area.id}`)
+      // The navigation will be handled by the useEffect when the URL changes
+    }
   }
 
   // Handle navigate back to cards
@@ -379,22 +421,20 @@ export default function AreaInspectionPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-120px)] md:h-[calc(100vh-64px)] bg-gray-50 overflow-auto">
-      <InspectionAreaCarousel
-        areas={enhancedAreas}
-        currentAreaIndex={currentIndex}
-        onAreaComplete={handleComplete}
-        onAreaSkip={handleSkip}
-        onAreaSelect={handleAreaSelect}
-        onNavigateBack={handleNavigateBack}
-        expandedAreaId={navigationMode === 'form' ? expandedAreaId : null}
-        propertyType={propertyType}
-        className=""
-        inspectionId={inspectionId}
-      >
-        {/* Form Content - This is rendered inside the enhanced component when expanded */}
-        <div className="px-4 py-4 pb-16">
-          <div className="space-y-4">
+    <InspectionAreaCarousel
+      areas={enhancedAreas}
+      currentAreaIndex={currentIndex}
+      onAreaComplete={handleComplete}
+      onAreaSkip={handleSkip}
+      onAreaSelect={handleAreaSelect}
+      onNavigateBack={handleNavigateBack}
+      expandedAreaId={navigationMode === 'form' ? expandedAreaId : null}
+      propertyType={propertyType}
+      className=""
+      inspectionId={inspectionId}
+    >
+      {/* Form Content - This is rendered inside the enhanced component when expanded */}
+      <div className="space-y-4">
             {/* Photo Upload Section */}
             <div className="bg-white rounded-xl border border-gray-200 p-4">
               <div className="flex items-center justify-between mb-3">
@@ -621,8 +661,6 @@ export default function AreaInspectionPage() {
               </button>
             </div>
           </div>
-        </div>
       </InspectionAreaCarousel>
-    </div>
   )
 }

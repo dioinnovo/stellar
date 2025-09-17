@@ -60,7 +60,11 @@ export default function CompleteInspectionPage() {
       property: reportData.property,
       completedDate: new Date().toISOString(),
       damageType: 'Hurricane',
-      status: 'pending_review',  // Set as pending review for proper workflow
+      status: 'in_review',  // Use consistent status value
+      adjuster: {
+        name: 'John Smith',
+        rating: 4.8
+      },
       settlement: {
         estimated: reportData.totalDamage,
         approved: 0,  // Not approved yet

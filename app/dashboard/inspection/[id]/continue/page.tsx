@@ -104,7 +104,7 @@ export default function ContinueInspectionPage() {
               <ArrowLeft size={20} />
               <span>Back to Inspections</span>
             </Link>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-3">
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
                   Continue Inspection
@@ -128,6 +128,17 @@ export default function ContinueInspectionPage() {
               </button>
             </div>
             </div>
+
+            {/* Finish Inspection Button - Moved to header */}
+            {progress.percentage >= 50 && (
+              <button
+                onClick={() => router.push(`/dashboard/inspection/${inspectionId}/complete`)}
+                className="w-full px-6 py-2.5 bg-stellar-orange text-white rounded-full hover:bg-orange-600 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg"
+              >
+                <CheckCircle size={18} />
+                Finish Inspection
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -168,18 +179,10 @@ export default function ContinueInspectionPage() {
                 </div>
               </div>
 
-              {/* Finish Inspection Button - Show when progress is 100% */}
-              {progress.percentage === 100 ? (
-                <button
-                  onClick={() => router.push(`/dashboard/inspection/${inspectionId}/complete`)}
-                  className="w-full px-6 py-3 bg-stellar-orange text-white rounded-xl hover:bg-orange-600 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg mb-4"
-                >
-                  <CheckCircle size={20} />
-                  Finish Inspection
-                </button>
-              ) : progress.percentage >= 50 ? (
+              {/* Incomplete Inspection Warning - Show when progress is between 50% and 100% */}
+              {progress.percentage >= 50 && progress.percentage < 100 && (
                 <div className="mb-4">
-                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-3">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                     <div className="flex items-start gap-2">
                       <AlertTriangle className="text-yellow-600 mt-0.5" size={16} />
                       <div className="flex-1">
@@ -192,16 +195,9 @@ export default function ContinueInspectionPage() {
                       </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => router.push(`/dashboard/inspection/${inspectionId}/complete`)}
-                    className="w-full px-6 py-3 bg-stellar-orange text-white rounded-xl hover:bg-orange-600 transition-all flex items-center justify-center gap-2 font-semibold shadow-lg"
-                  >
-                    <CheckCircle size={20} />
-                    Finish Inspection
-                  </button>
                 </div>
-              ) : null}
-              
+              )}
+
               {/* Quick Stats */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="bg-gray-50 rounded-lg p-3">
@@ -398,7 +394,7 @@ export default function ContinueInspectionPage() {
                         className={`border rounded-xl p-4 cursor-pointer transition-all hover:shadow-md ${
                           area.status === 'completed' ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
                         }`}
-                        onClick={() => setSelectedArea(area)}
+                        onClick={() => router.push(`/dashboard/inspection/${inspectionId}/area/${area.areaId}`)}
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div>
@@ -652,7 +648,7 @@ export default function ContinueInspectionPage() {
                               )}
                             </div>
                             <button
-                              onClick={() => setSelectedArea(area)}
+                              onClick={() => router.push(`/dashboard/inspection/${inspectionId}/area/${area.areaId}`)}
                               className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 group"
                             >
                               View Details

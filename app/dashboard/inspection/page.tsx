@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   Camera, Plus, Calendar, Clock, MapPin, User, CheckCircle,
@@ -46,6 +47,7 @@ interface Inspection {
 }
 
 export default function InspectionListPage() {
+  const router = useRouter()
   const [filterStatus, setFilterStatus] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [filterDamageType, setFilterDamageType] = useState('all')
@@ -381,6 +383,15 @@ export default function InspectionListPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group border border-gray-200"
+                onClick={() => {
+                  if (inspection.status === 'in_progress') {
+                    // For in-progress inspections, continue the inspection
+                    router.push(`/dashboard/inspection/${inspection.id}/continue`)
+                  } else {
+                    // For scheduled inspections, go to start page
+                    router.push(`/dashboard/inspection/${inspection.id}/start`)
+                  }
+                }}
               >
                 {/* Image Section */}
                 <div className="relative h-48 bg-gradient-to-br from-gray-200 to-gray-300 overflow-hidden">
@@ -545,6 +556,7 @@ export default function InspectionListPage() {
                     {inspection.status === 'scheduled' && (
                       <Link
                         href={`/dashboard/inspection/${inspection.id}/start`}
+                        onClick={(e) => e.stopPropagation()}
                         className="w-full px-4 py-2.5 bg-[#E74C3C] text-white rounded-xl hover:bg-[#D73929] transition-all duration-200 flex items-center justify-center gap-2 text-sm font-semibold shadow-sm"
                       >
                         <Camera size={16} />
@@ -554,6 +566,7 @@ export default function InspectionListPage() {
                     {inspection.status === 'in_progress' && (
                       <Link
                         href={`/dashboard/inspection/${inspection.id}/continue`}
+                        onClick={(e) => e.stopPropagation()}
                         className="w-full px-4 py-2.5 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-200 flex items-center justify-center gap-2 text-sm font-semibold shadow-sm"
                       >
                         <ChevronRight size={16} />

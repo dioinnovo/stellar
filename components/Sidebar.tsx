@@ -143,7 +143,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
           </div>
         ) : (
           <div className="text-center text-xs text-gray-500">
-            <p>© '24</p>
+            <p>© '25</p>
           </div>
         )}
       </div>

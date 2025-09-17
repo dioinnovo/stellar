@@ -199,8 +199,16 @@ export default function ReportsPage() {
     const storedReports = sessionStorage.getItem('inspection_reports')
     if (storedReports) {
       const parsed = JSON.parse(storedReports)
+      // Ensure all reports have assigned inspectors
+      const reportsWithInspectors = parsed.map((report: any) => ({
+        ...report,
+        adjuster: report.adjuster || {
+          name: 'John Smith',
+          rating: 4.8
+        }
+      }))
       // Merge with mock data, new reports first
-      setReports([...parsed, ...mockCompletedReports])
+      setReports([...reportsWithInspectors, ...mockCompletedReports])
     }
   }, [])
 
@@ -411,9 +419,10 @@ export default function ReportsPage() {
                   <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
                     {getStatusIcon(report.status)}
                     {report.status === 'approved' ? 'Approved' :
-                     report.status === 'pending_approval' ? 'Pending' :
+                     report.status === 'pending_approval' ? 'Pending Approval' :
                      report.status === 'in_review' ? 'In Review' :
-                     report.status === 'sent' ? 'Sent' : 'Revision'}
+                     report.status === 'sent' ? 'Sent' :
+                     report.status === 'requires_revision' ? 'Requires Revision' : 'Unknown'}
                   </span>
                 </div>
 
@@ -491,14 +500,14 @@ export default function ReportsPage() {
                   </div>
                 </div>
 
-                {/* Adjuster Info */}
+                {/* Inspector Info */}
                 <div className="flex items-center gap-2 py-3 border-t border-gray-100">
                   <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-gray-600" />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900">
-                      {report.adjuster?.name || 'Pending Assignment'}
+                      {report.adjuster?.name || 'Inspector Assigned'}
                     </p>
                     {report.adjuster && (
                       <div className="flex items-center gap-1">
