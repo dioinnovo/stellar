@@ -243,8 +243,8 @@ export default function ClaimDetailPage() {
       {/* Tabs - Mobile Optimized */}
       <div className="bg-white rounded-xl shadow-sm">
         <div className="border-b border-gray-200">
-          {/* Mobile/Tablet: Show first 3 tabs + More dropdown */}
-          <div className="lg:hidden">
+          {/* Mobile: Show first 3 tabs + More dropdown */}
+          <div className="sm:hidden">
             <div className="flex items-center justify-between">
               {/* First 3 tabs */}
               <div className="flex flex-1">
@@ -311,6 +311,27 @@ export default function ClaimDetailPage() {
                 )}
               </div>
             </div>
+          </div>
+
+          {/* Tablet: Show all 5 tabs with smaller sizing */}
+          <div className="hidden sm:flex lg:hidden">
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 flex flex-col items-center gap-1 py-2.5 px-1 border-b-2 transition-all min-w-0 ${
+                    activeTab === tab.id
+                      ? 'border-stellar-orange text-stellar-orange bg-orange-50'
+                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  <Icon size={18} />
+                  <span className="text-[11px] font-medium truncate max-w-full">{tab.label}</span>
+                </button>
+              )
+            })}
           </div>
 
           {/* Desktop: Full width tabs */}
