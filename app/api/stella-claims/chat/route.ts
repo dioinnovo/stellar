@@ -48,6 +48,10 @@ export async function POST(request: NextRequest) {
     const userMessage = messages[messages.length - 1]?.content || ''
     const context = await gatherPolicyContext(userMessage, biService, webSearch, policyDocument)
 
+    // Check if this is the first message and no policy is uploaded
+    const isFirstMessage = messages.length === 1
+    const hasNoPolicyDocument = !policyDocument && !context.policyData?.documentProvided
+
     // Build enhanced system prompt with policy analysis focus
     const systemPrompt = buildStellaClaimsPrompt(await buildPolicyContextString(context))
 
@@ -336,6 +340,18 @@ async function identifySettlementOpportunities(
 async function buildPolicyContextString(context: PolicyContext): Promise<string> {
   let contextString = '\n## CURRENT ANALYSIS CONTEXT\n'
 
+  // CRITICAL: Check if no policy document is provided
+  if (!context.policyData || !context.policyData.documentProvided) {
+    contextString += `
+**IMPORTANT**: No policy document has been uploaded.
+- You MUST request the user to upload their policy document
+- DO NOT ask them to manually provide policy details
+- DO NOT list out the 13-point checklist for them to fill
+- Simply ask them to upload the policy so you can analyze it
+`
+    return contextString
+  }
+
   if (context.policyData) {
     contextString += `
 **Policy Information**:
@@ -415,6 +431,16 @@ function generatePolicyAnalysisSuggestions(
   const suggestions: string[] = []
   const messageLower = userMessage.toLowerCase()
   const responseLower = aiResponse.toLowerCase()
+
+  // If no policy document is provided, suggest upload-related actions
+  if (!context.policyData || !context.policyData.documentProvided) {
+    return [
+      'Upload my insurance policy',
+      'Share a link to my policy',
+      'Take a photo of my policy',
+      'Help me find my policy'
+    ]
+  }
 
   // Policy analysis suggestions
   if (messageLower.includes('policy') || responseLower.includes('coverage')) {

@@ -653,9 +653,16 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                     onChange={(e) => {
                       const file = e.target.files?.[0]
                       if (file) {
-                        // In a real implementation, you would upload the file to a server
-                        // For now, we'll just send a message indicating the file was uploaded
-                        handleSend(`[Uploaded policy document: ${file.name}]`)
+                        // Convert file to base64 for demo purposes
+                        // In production, you would upload to a server
+                        const reader = new FileReader()
+                        reader.onload = (event) => {
+                          const base64 = event.target?.result
+                          // Store the policy document in state (you'll need to add this state)
+                          // For now, we'll just send a message indicating the file was uploaded
+                          handleSend(`I've uploaded my policy document: ${file.name}`)
+                        }
+                        reader.readAsDataURL(file)
                       }
                       e.target.value = '' // Reset input
                     }}
@@ -669,10 +676,10 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                     onChange={(e) => {
                       const files = e.target.files
                       if (files && files.length > 0) {
-                        // In a real implementation, you would upload the files to a server
-                        // For now, we'll just send a message indicating the photos were uploaded
+                        // Convert files to base64 for demo purposes
+                        // In production, you would upload to a server
                         const fileNames = Array.from(files).map(f => f.name).join(', ')
-                        handleSend(`[Uploaded ${files.length} photo${files.length > 1 ? 's' : ''}: ${fileNames}]`)
+                        handleSend(`I've uploaded ${files.length} photo${files.length > 1 ? 's' : ''} of my policy: ${fileNames}`)
                       }
                       e.target.value = '' // Reset input
                     }}
