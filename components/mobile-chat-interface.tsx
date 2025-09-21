@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  MessageSquare, 
-  Plus, 
+import {
+  MessageSquare,
+  Plus,
   X,
   Menu,
   Clock,
@@ -12,7 +12,14 @@ import {
   Send,
   ChevronDown,
   Paperclip,
-  ArrowUp
+  ArrowUp,
+  Star,
+  FileText,
+  Image,
+  Camera,
+  File,
+  Link,
+  MapPin
 } from 'lucide-react'
 import SiriOrb from '@/components/ui/siri-orb'
 import { cn } from '@/lib/utils'
@@ -45,6 +52,8 @@ interface Chat {
   timestamp: Date
   titleGenerated?: boolean
   description?: string
+  isSaved?: boolean
+  savedAt?: Date
 }
 
 interface MobileChatInterfaceProps {
@@ -54,12 +63,14 @@ interface MobileChatInterfaceProps {
 export default function MobileChatInterface({ className }: MobileChatInterfaceProps) {
   const [currentChatId, setCurrentChatId] = useState<string>('1')
   const [showHistoryModal, setShowHistoryModal] = useState(false)
+  const [activeTab, setActiveTab] = useState<'recent' | 'saved'>('recent')
   const [chats, setChats] = useState<Chat[]>([
     {
       id: '1',
       title: 'New Chat',
       timestamp: new Date(),
-      messages: []
+      messages: [],
+      isSaved: false
     }
   ])
   
@@ -72,8 +83,12 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
   const [selectedModel, setSelectedModel] = useState('quick')
   const [showModelDropdown, setShowModelDropdown] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
+  const [showAttachMenu, setShowAttachMenu] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const attachMenuRef = useRef<HTMLDivElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const photoInputRef = useRef<HTMLInputElement>(null)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -86,6 +101,22 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
     }
   }
+
+  // Handle click outside to close attach menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (attachMenuRef.current && !attachMenuRef.current.contains(event.target as Node)) {
+        setShowAttachMenu(false)
+      }
+    }
+
+    if (showAttachMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+      }
+    }
+  }, [showAttachMenu])
 
   // Model options
   const modelOptions = [
@@ -138,7 +169,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
         (chat.title !== 'New Chat' && !chat.title.endsWith('...'))) return
 
     try {
-      const response = await fetch('/api/assistant/chat', {
+      const response = await fetch('/api/stella-claims/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -194,8 +225,8 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
     
     // Only update chat title if it's the first message AND the chat still has "New Chat" as title
     if (messages.length === 0 && currentChat.title === 'New Chat') {
-      const truncatedTitle = messageText.length > 30 
-        ? messageText.substring(0, 30) + '...' 
+      const truncatedTitle = messageText.length > 50
+        ? messageText.substring(0, 50) + '...'
         : messageText
       setChats(prev => prev.map(chat => 
         chat.id === currentChatId 
@@ -214,7 +245,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
 
     // Call the specialized Stella AI API
     try {
-      const response = await fetch('/api/assistant/chat', {
+      const response = await fetch('/api/stella-claims/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -300,7 +331,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
   const formatTimeAgo = (date: Date) => {
     const now = new Date()
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
-    
+
     if (diffInSeconds < 60) return 'Just now'
     if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
@@ -308,10 +339,26 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }
 
+  const toggleSaveChat = (chatId: string) => {
+    setChats(prev => prev.map(chat =>
+      chat.id === chatId
+        ? {
+            ...chat,
+            isSaved: !chat.isSaved,
+            savedAt: !chat.isSaved ? new Date() : undefined
+          }
+        : chat
+    ))
+  }
+
+  const filteredChats = activeTab === 'saved'
+    ? chats.filter(chat => chat.isSaved)
+    : chats.filter(chat => !chat.isSaved)
+
   return (
-    <div className={cn("h-[100dvh] w-full flex flex-col bg-gradient-to-br from-gray-50 to-white overflow-hidden md:h-full", className)} style={{ height: 'calc(100dvh - 100px)' }}>
+    <div className={cn("h-full w-full flex flex-col bg-gradient-to-br from-gray-50 to-white overflow-hidden relative rounded-2xl", className)}>
       {/* Top Header */}
-      <div className="flex-shrink-0 flex items-center justify-between p-4 bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+      <div className="flex-shrink-0 flex items-center justify-between p-4 min-h-[4rem] bg-white/80 backdrop-blur-md border-b border-gray-200/50">
         {/* Chat History Button */}
         <button
           onClick={() => setShowHistoryModal(true)}
@@ -322,8 +369,8 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
         </button>
 
         {/* Current Chat Title */}
-        <div className="flex-1 text-center">
-          <h2 className="text-sm font-medium text-gray-900 truncate px-4 flex items-center justify-center">
+        <div className="flex-1 text-center px-2">
+          <h2 className="text-sm font-medium text-gray-900 line-clamp-2 flex items-center justify-center">
             <span>{animatedTitle}</span>
             {titleIsAnimating && (
               <motion.span
@@ -340,7 +387,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
       </div>
 
       {/* Messages Area - Now properly constrained */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 pb-[180px]">
+      <div className="flex-1 overflow-y-auto px-4 py-6 pb-36 sm:pb-24">
           {messages.length === 0 ? (
             /* Welcome Screen with Centered Virtual Assistant */
             <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
@@ -353,16 +400,16 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                   Hi! I'm Stella
                 </h1>
                 <p className="text-gray-600 max-w-sm">
-                  I help people fight back against insurance companies who lowball, delay, or deny legitimate claims
+                  I analyze policies comprehensively to uncover every coverage opportunity and maximize settlements for your clients
                 </p>
               </div>
 
               <div className="flex flex-wrap gap-2 justify-center max-w-sm">
                 {[
-                  "My claim was denied",
-                  "I'm being lowballed", 
-                  "They're delaying my claim",
-                  "I need help fighting back"
+                  "Perform comprehensive policy review",
+                  "Find hidden coverage opportunities",
+                  "Review deductibles and exclusions",
+                  "Check state PA requirements"
                 ].map((suggestion, idx) => (
                   <button
                     key={idx}
@@ -376,7 +423,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
             </div>
           ) : (
             /* Messages View */
-            <div className="space-y-4 max-w-2xl mx-auto">
+            <div className="space-y-4 max-w-2xl mx-auto pb-8">
               <AnimatePresence>
                 {messages.map((message) => (
                   <motion.div
@@ -446,44 +493,38 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
           )}
       </div>
 
+      {/* Spacer to prevent messages from going behind input */}
+      <div className="flex-shrink-0 h-6" />
+
       {/* Input Area - Microsoft Copilot Style */}
-      <div className="fixed bottom-0 left-0 right-0 pb-[88px] z-40">
-        {/* Gradient overlay for smooth transition from chat to input - positioned above the input */}
-        <div className="absolute inset-x-0 -top-8 h-8 bg-gradient-to-b from-transparent to-white pointer-events-none" />
-        
-        <div>
-        <div className="max-w-2xl mx-auto px-4 py-2">
-          {/* Outer container with thick border effect */}
-          <div className="bg-gray-200 rounded-3xl p-[2px]">
-            {/* Inner container */}
-            <div className="bg-white rounded-3xl p-3">
-              {/* Text Input Area */}
-              <div>
-                <textarea
-                  ref={textareaRef}
-                  value={inputValue}
-                  onChange={(e) => {
-                    setInputValue(e.target.value)
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault()
-                      handleSend()
-                    }
-                  }}
-                  placeholder="Message Stella"
-                  disabled={isTyping}
-                  className="w-full px-3 py-2 bg-white text-sm text-gray-900 placeholder-gray-500 focus:outline-none resize-none transition-all disabled:opacity-50"
-                  style={{ 
-                    minHeight: '40px',
-                    maxHeight: '200px',
-                    overflowY: inputValue.split('\n').length > 5 ? 'auto' : 'hidden'
-                  }}
-                />
-              </div>
-              
-              {/* Bottom Controls */}
-              <div className="flex items-center justify-between">
+      <div className="absolute bottom-20 sm:bottom-0 left-0 right-0 z-40 p-4">
+        {/* Glassmorphism container with border */}
+        <div className="bg-white/70 backdrop-blur-xl backdrop-saturate-150 border-2 border-white/30 rounded-xl p-3 shadow-lg shadow-black/10 ring-2 ring-white">
+            {/* Text Input Area */}
+            <textarea
+              ref={textareaRef}
+              value={inputValue}
+              onChange={(e) => {
+                setInputValue(e.target.value)
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSend()
+                }
+              }}
+              placeholder="Message Stella"
+              disabled={isTyping}
+              className="w-full px-3 py-2 bg-transparent text-sm text-gray-900 placeholder-gray-500 focus:outline-none resize-none transition-all disabled:opacity-50"
+              style={{
+                minHeight: '40px',
+                maxHeight: '200px',
+                overflowY: inputValue.split('\n').length > 5 ? 'auto' : 'hidden'
+              }}
+            />
+
+            {/* Bottom Controls */}
+            <div className="flex items-center justify-between mt-1">
                 {/* Model Selector Dropdown */}
                 <div className="relative">
                   <button
@@ -516,13 +557,126 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-1">
-                  {/* Attachment Button */}
-                  <button
-                    className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-full transition-colors"
-                    aria-label="Attach file"
-                  >
-                    <Plus className="w-6 h-6" />
-                  </button>
+                  {/* Attachment Button with Floating Menu */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowAttachMenu(!showAttachMenu)}
+                      className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-full transition-colors"
+                      aria-label="Attach file"
+                    >
+                      <Plus className={cn("w-6 h-6 transition-transform", showAttachMenu && "rotate-45")} />
+                    </button>
+
+                    {/* Floating Attachment Menu */}
+                    <AnimatePresence>
+                      {showAttachMenu && (
+                        <motion.div
+                          ref={attachMenuRef}
+                          initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute bottom-full right-0 mb-2 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 min-w-[200px] z-50"
+                        >
+                          <div className="space-y-1">
+                            <button
+                              onClick={() => {
+                                fileInputRef.current?.click()
+                                setShowAttachMenu(false)
+                              }}
+                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                            >
+                              <FileText className="w-5 h-5 text-blue-500" />
+                              <span>Upload Policy</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                photoInputRef.current?.click()
+                                setShowAttachMenu(false)
+                              }}
+                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                            >
+                              <Image className="w-5 h-5 text-green-500" />
+                              <span>Upload Photos</span>
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                // Handle camera capture
+                                const input = document.createElement('input')
+                                input.type = 'file'
+                                input.accept = 'image/*'
+                                input.setAttribute('capture', 'environment')
+                                input.onchange = (e) => {
+                                  const file = (e.target as HTMLInputElement).files?.[0]
+                                  if (file) {
+                                    handleSend(`[Captured photo: ${file.name}]`)
+                                  }
+                                }
+                                input.click()
+                                setShowAttachMenu(false)
+                              }}
+                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                            >
+                              <Camera className="w-5 h-5 text-purple-500" />
+                              <span>Take Photo</span>
+                            </button>
+
+                            <div className="border-t border-gray-100 my-1" />
+
+                            <button
+                              onClick={() => {
+                                const claimId = prompt('Enter Claim ID to link from database:')
+                                if (claimId) {
+                                  handleSend(`Link existing claim: ${claimId}`)
+                                }
+                                setShowAttachMenu(false)
+                              }}
+                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                            >
+                              <Link className="w-5 h-5 text-indigo-500" />
+                              <span>Link Claim ID</span>
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Hidden file inputs */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".pdf,.doc,.docx,.txt"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        // In a real implementation, you would upload the file to a server
+                        // For now, we'll just send a message indicating the file was uploaded
+                        handleSend(`[Uploaded policy document: ${file.name}]`)
+                      }
+                      e.target.value = '' // Reset input
+                    }}
+                  />
+                  <input
+                    ref={photoInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = e.target.files
+                      if (files && files.length > 0) {
+                        // In a real implementation, you would upload the files to a server
+                        // For now, we'll just send a message indicating the photos were uploaded
+                        const fileNames = Array.from(files).map(f => f.name).join(', ')
+                        handleSend(`[Uploaded ${files.length} photo${files.length > 1 ? 's' : ''}: ${fileNames}]`)
+                      }
+                      e.target.value = '' // Reset input
+                    }}
+                  />
                   
                   {/* Mic/Send Button */}
                   <button
@@ -551,10 +705,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                     )}
                   </button>
                 </div>
-              </div>
             </div>
-          </div>
-        </div>
         </div>
       </div>
 
@@ -568,18 +719,18 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 z-30 md:hidden"
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/20 z-30 sm:absolute sm:rounded-2xl"
               onClick={() => setShowHistoryModal(false)}
             />
-            
-            {/* Sliding Panel from Left */}
+
+            {/* Sliding Panel from Left - matches sidebar width */}
             <motion.div
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-4 left-4 bottom-[100px] w-80 bg-white z-40 rounded-3xl flex flex-col overflow-hidden"
-              style={{ boxShadow: '10px 0 40px -10px rgba(0, 0, 0, 0.3), 20px 0 50px -20px rgba(0, 0, 0, 0.2)' }}
+              transition={{ type: "tween", duration: 0.2, ease: "easeInOut" }}
+              className="absolute top-2 left-2 bottom-24 sm:bottom-2 w-72 sm:w-80 bg-slate-50 z-40 rounded-2xl flex flex-col overflow-hidden shadow-[8px_8px_24px_rgba(0,0,0,0.15)] ring-2 ring-white"
             >
               {/* Modal Header */}
               <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-gray-200">
@@ -590,6 +741,32 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                 >
                   <X className="w-5 h-5 text-gray-500" />
                 </button>
+              </div>
+
+              {/* Tab Navigation */}
+              <div className="flex-shrink-0 px-4 pt-4">
+                <div className="flex p-1 bg-gray-100 rounded-xl">
+                  <button
+                    onClick={() => setActiveTab('recent')}
+                    className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      activeTab === 'recent'
+                        ? 'bg-white text-stellar-orange shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Recent
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('saved')}
+                    className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                      activeTab === 'saved'
+                        ? 'bg-white text-stellar-orange shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Saved
+                  </button>
+                </div>
               </div>
 
               {/* New Chat Button */}
@@ -604,41 +781,62 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               </div>
 
               {/* Chat List - Scrollable */}
-              <div className="flex-1 overflow-y-auto p-4">
-                <div className="space-y-3">
-                  {chats.map((chat) => (
-                    <button
-                      key={chat.id}
-                      onClick={() => selectChat(chat.id)}
-                      className={`w-full text-left p-4 rounded-2xl transition-all ${
-                        currentChatId === chat.id 
-                          ? 'bg-stellar-orange/10 border-2 border-stellar-orange/30' 
-                          : 'hover:bg-gray-50 border-2 border-transparent'
-                      }`}
-                    >
-                      <div className="flex items-start gap-3">
-                        <MessageSquare 
-                          size={18} 
-                          className={`mt-0.5 flex-shrink-0 ${
-                            currentChatId === chat.id ? 'text-stellar-orange' : 'text-gray-400'
-                          }`} 
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-medium truncate ${
-                            currentChatId === chat.id ? 'text-stellar-orange' : 'text-gray-900'
-                          }`}>
-                            {chat.title}
-                          </p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Clock size={12} className="text-gray-400 flex-shrink-0" />
-                            <p className="text-xs text-gray-500">
-                              {formatTimeAgo(chat.timestamp)}
-                            </p>
-                          </div>
+              <div className="flex-1 overflow-y-auto p-2">
+                <div className="space-y-2">
+                  {filteredChats.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500 text-sm">
+                      {activeTab === 'saved' ? 'No saved chats yet' : 'No recent chats'}
+                    </div>
+                  ) : (
+                    filteredChats.map((chat) => (
+                      <div
+                        key={chat.id}
+                        className={`relative group ${
+                          chat.isSaved ? 'bg-amber-50/30 rounded-2xl' : ''
+                        }`}
+                      >
+                        <div
+                          className={`flex items-start gap-2 p-3 rounded-xl transition-all ${
+                            currentChatId === chat.id
+                              ? 'bg-stellar-orange/10 border border-stellar-orange/30'
+                              : 'hover:bg-gray-50 border border-transparent'
+                          }`}
+                        >
+                          <button
+                            onClick={() => selectChat(chat.id)}
+                            className="flex-1 text-left"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium line-clamp-2 break-words text-gray-900">
+                                {chat.title}
+                              </p>
+                              <div className="flex items-center gap-1.5 mt-1">
+                                <Clock size={10} className="text-gray-400 flex-shrink-0" />
+                                <p className="text-xs text-gray-500 truncate">
+                                  {chat.savedAt && chat.isSaved
+                                    ? `Saved ${formatTimeAgo(chat.savedAt)}`
+                                    : formatTimeAgo(chat.timestamp)}
+                                </p>
+                              </div>
+                            </div>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              toggleSaveChat(chat.id)
+                            }}
+                            className="p-1 hover:bg-gray-200 rounded-lg transition-colors flex-shrink-0"
+                            aria-label={chat.isSaved ? "Unsave chat" : "Save chat"}
+                          >
+                            <Star
+                              size={16}
+                              className={chat.isSaved ? 'fill-amber-400 text-amber-400' : 'text-gray-400'}
+                            />
+                          </button>
                         </div>
                       </div>
-                    </button>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
             </motion.div>

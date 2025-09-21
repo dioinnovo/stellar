@@ -45,6 +45,12 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
       description: 'All claims & details'
     },
     {
+      title: 'Stella',
+      icon: Brain,
+      href: '/dashboard/assistant',
+      description: 'AI-powered claim assistant'
+    },
+    {
       title: 'Schedule',
       icon: CalendarDays,
       href: '/dashboard/inspection',
@@ -61,7 +67,7 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
   return (
     <aside
       className={`
-        bg-slate-50 text-gray-800 h-[calc(100vh-1rem)] fixed top-2 left-2 z-40 transition-all duration-300 flex flex-col rounded-2xl border border-gray-200 shadow-lg shadow-gray-400/30
+        bg-slate-50 text-gray-800 h-full transition-all duration-300 flex flex-col rounded-2xl shadow-lg shadow-gray-400/30 ring-2 ring-white
         ${isCollapsed ? 'w-20' : 'w-64'}
       `}
     >
@@ -77,9 +83,9 @@ export default function Sidebar({ isCollapsed = false, onToggle }: SidebarProps)
               <Image
                 src="/images/stellar_logo.png"
                 alt="Stellar Adjusting"
-                width={180}
-                height={50}
-                className="object-contain"
+                width={360}
+                height={100}
+                className="w-auto h-auto max-w-[180px]"
                 priority
               />
             )}

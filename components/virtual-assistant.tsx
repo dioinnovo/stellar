@@ -22,9 +22,9 @@ interface VirtualAssistantConfig {
 }
 
 const VirtualAssistant: React.FC<VirtualAssistantConfig> = ({
-  apiEndpoint = process.env.NEXT_PUBLIC_AI_API_ENDPOINT || "/api/chat",
+  apiEndpoint = process.env.NEXT_PUBLIC_AI_API_ENDPOINT || "/api/stella-leads/chat",
   apiKey = process.env.NEXT_PUBLIC_AI_API_KEY,
-  model = process.env.NEXT_PUBLIC_AI_MODEL || "gpt-3.5-turbo",
+  model = process.env.NEXT_PUBLIC_AI_MODEL || "gpt-4o-mini",
   systemPrompt = "You are Stella, the elite Lead Generation Specialist for Stellar Adjusting. Your PRIMARY mission is to identify property owners who have been lowballed, denied, or delayed by their insurance company and convert them into clients. You work for a company that fights insurance companies to get people every dollar they deserve. Always focus on: 1) Identifying if they have an active claim, 2) Uncovering how their insurance company is screwing them, 3) Creating urgency around getting professional help, 4) Scheduling a free claim review. You only get paid when clients get more money - NO WIN, NO FEE. Be empathetic but results-focused, and always position Stellar as the solution to insurance company abuse.",
   useCallbackAgent = false
 }) => {

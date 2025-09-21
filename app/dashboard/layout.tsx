@@ -14,18 +14,41 @@ function DashboardLayoutContent({
   const { isCollapsed, setIsCollapsed } = useSidebar()
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      {/* Sidebar - Hidden only on phones, visible on tablets and desktop */}
-      <div className="hidden sm:block">
+    <div className="flex h-screen bg-white md:bg-slate-100 md:p-2 sm:gap-2 lg:gap-4">
+      {/* Semantic aside for sidebar navigation - Hidden only on phones, visible on tablets and desktop */}
+      <aside
+        className={`
+          hidden sm:block
+          ${isCollapsed ? 'w-20' : 'w-64'}
+          flex-shrink-0
+          transition-all duration-300
+        `}
+        aria-label="Main navigation"
+      >
         <Sidebar
           isCollapsed={isCollapsed}
           onToggle={() => setIsCollapsed(!isCollapsed)}
         />
-      </div>
+      </aside>
 
-      {/* Main Content with margin for sidebar */}
-      <main className={`${isCollapsed ? 'sm:ml-[5.5rem]' : 'sm:ml-[17rem]'} transition-all duration-300 overflow-hidden pb-24 sm:pb-0`}>
-        <div className="p-4 sm:p-6 max-w-[100vw] bg-white sm:rounded-2xl sm:border sm:border-gray-200 sm:shadow-sm">
+      {/* Semantic main for primary content */}
+      <main
+        className="
+          flex-1
+          sm:pb-0
+          transition-all duration-300
+          min-w-0
+        "
+        id="main-content"
+        tabIndex={-1}
+      >
+        <div className={`
+          h-full
+          ${pathname === '/dashboard/assistant' ? 'p-0 sm:p-2' : 'p-4 lg:p-6'}
+          bg-white
+          md:rounded-2xl md:border md:border-gray-200 md:shadow-sm
+          ${pathname === '/dashboard/assistant' ? 'overflow-hidden' : 'overflow-y-auto overlay-scroll'}
+        `}>
           {children}
         </div>
       </main>

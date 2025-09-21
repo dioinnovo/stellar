@@ -1,13 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { HandshakeIcon, ChevronRight, Plus } from 'lucide-react'
+import { HandshakeIcon, ChevronRight, Plus, Search, Filter } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/ui/page-header'
 
 export default function ClaimsAnalysisPage() {
   const [selectedClaim, setSelectedClaim] = useState<any>(null)
   const [showNewClaimForm, setShowNewClaimForm] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [activeFilters, setActiveFilters] = useState({
+    status: 'all',
+    type: 'all',
+    valueRange: 'all'
+  })
 
   const recentClaims = [
     {
@@ -45,6 +51,33 @@ export default function ClaimsAnalysisPage() {
     }
   ]
 
+  const filteredClaims = recentClaims.filter(claim => {
+    const matchesSearch = searchQuery === '' ||
+      claim.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.client.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.property.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.type.toLowerCase().includes(searchQuery.toLowerCase())
+
+    const matchesStatus = activeFilters.status === 'all' || claim.status === activeFilters.status
+    const matchesType = activeFilters.type === 'all' || claim.type === activeFilters.type
+
+    let matchesValue = true
+    if (activeFilters.valueRange !== 'all') {
+      switch (activeFilters.valueRange) {
+        case 'under100k':
+          matchesValue = claim.value < 100000
+          break
+        case '100k-250k':
+          matchesValue = claim.value >= 100000 && claim.value <= 250000
+          break
+        case 'over250k':
+          matchesValue = claim.value > 250000
+          break
+      }
+    }
+
+    return matchesSearch && matchesStatus && matchesType && matchesValue
+  })
 
   return (
     <div className="space-y-4">
@@ -63,11 +96,84 @@ export default function ClaimsAnalysisPage() {
         }
       />
 
+      {/* Search and Filters */}
+      <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
+        <div className="space-y-4">
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="text"
+              placeholder="Search by claim ID, client, property, or type..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange/20 focus:border-stellar-orange"
+            />
+          </div>
+
+          {/* Filter Options */}
+          <div className="flex flex-wrap gap-3">
+            {/* Status Filter */}
+            <select
+              value={activeFilters.status}
+              onChange={(e) => setActiveFilters({...activeFilters, status: e.target.value})}
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange/20 focus:border-stellar-orange text-sm"
+            >
+              <option value="all">All Status</option>
+              <option value="Under Review">Under Review</option>
+              <option value="Negotiating">Negotiating</option>
+              <option value="Inspecting">Inspecting</option>
+            </select>
+
+            {/* Type Filter */}
+            <select
+              value={activeFilters.type}
+              onChange={(e) => setActiveFilters({...activeFilters, type: e.target.value})}
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange/20 focus:border-stellar-orange text-sm"
+            >
+              <option value="all">All Types</option>
+              <option value="Hurricane Damage">Hurricane Damage</option>
+              <option value="Water Damage">Water Damage</option>
+              <option value="Wind Damage">Wind Damage</option>
+            </select>
+
+            {/* Value Range Filter */}
+            <select
+              value={activeFilters.valueRange}
+              onChange={(e) => setActiveFilters({...activeFilters, valueRange: e.target.value})}
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange/20 focus:border-stellar-orange text-sm"
+            >
+              <option value="all">All Values</option>
+              <option value="under100k">Under $100k</option>
+              <option value="100k-250k">$100k - $250k</option>
+              <option value="over250k">Over $250k</option>
+            </select>
+
+            {/* Clear Filters Button */}
+            {(searchQuery || activeFilters.status !== 'all' || activeFilters.type !== 'all' || activeFilters.valueRange !== 'all') && (
+              <button
+                onClick={() => {
+                  setSearchQuery('')
+                  setActiveFilters({ status: 'all', type: 'all', valueRange: 'all' })
+                }}
+                className="px-4 py-2 text-sm text-stellar-orange hover:bg-stellar-orange/10 rounded-lg transition-colors flex items-center gap-2"
+              >
+                <Filter size={16} />
+                Clear Filters
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Recent Claims */}
       <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
-        <h2 className="text-xl font-bold text-stellar-dark mb-4">Active Claims</h2>
-        <div className="space-y-3">
-          {recentClaims.map((claim) => (
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-stellar-dark">Active Claims</h2>
+          <span className="text-sm text-gray-500">{filteredClaims.length} results</span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {filteredClaims.map((claim) => (
             <Link
               key={claim.id}
               href={`/dashboard/claims/${claim.id}`}

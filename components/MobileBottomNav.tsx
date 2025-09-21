@@ -27,6 +27,11 @@ export default function MobileBottomNav() {
       href: '/dashboard/claims',
     },
     {
+      title: 'Stella',
+      icon: Brain,
+      href: '/dashboard/assistant',
+    },
+    {
       title: 'Schedule',
       icon: CalendarDays,
       href: '/dashboard/inspection',
@@ -47,16 +52,13 @@ export default function MobileBottomNav() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden pb-safe">
-      {/* Gradient overlay for smooth content fade */}
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
-      
       <div className="relative p-4">
         <nav className="
           relative
-          bg-white/60 backdrop-blur-2xl backdrop-saturate-200
-          border border-white/30 
-          rounded-full 
-          shadow-[0_10px_25px_rgba(0,0,0,0.1),0_6px_10px_rgba(0,0,0,0.08)]
+          bg-white/80 backdrop-blur-xl backdrop-saturate-150
+          border border-gray-200/50
+          rounded-full
+          shadow-[0_4px_20px_rgba(0,0,0,0.06)]
           px-1 py-1
         ">
           <ul className="flex items-center justify-around relative">

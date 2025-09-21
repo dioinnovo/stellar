@@ -54,6 +54,34 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar that uses existing padding as gutter */
+  .overlay-scroll {
+    /* Firefox - thin scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+    scrollbar-gutter: stable;
+  }
+
+  /* Webkit - thin scrollbar positioned in padding area */
+  .overlay-scroll::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .overlay-scroll::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 3px;
+  }
+
+  .overlay-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+  }
+
+  .overlay-scroll::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
@@ -90,7 +118,7 @@
     color: rgb(231 76 60);
   }
   
-  /* Hide scrollbar but keep functionality */
+  /* Hide scrollbar but keep functionality - only utility we keep */
   .scrollbar-hide {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
@@ -98,42 +126,6 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
-  }
-
-  /* Custom scrollbar styles for ChatGPT prompt */
-  .custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
-  
-  .dark .custom-scrollbar {
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
-  }
-  
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.3);
   }
   
   /* Swiper Carousel Custom Styles for Inspection Areas */
@@ -197,7 +189,7 @@
       transform: translateY(0);
     }
   }
-  
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -206,11 +198,11 @@
       opacity: 1;
     }
   }
-  
+
   .animate-fadeInSlide {
     animation: fadeInSlide 0.6s ease-out;
   }
-  
+
   .animate-fadeIn {
     animation: fadeIn 0.4s ease-out;
   }

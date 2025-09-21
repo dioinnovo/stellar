@@ -66,8 +66,7 @@ app/
 ├── demo/page.tsx           # Interactive demo
 ├── admin/page.tsx          # Admin dashboard
 ├── claims/[id]/page.tsx    # Claim details
-├── inspection/page.tsx     # Home inspection (planned)
-└── api-demo/page.tsx       # API documentation
+└── inspection/page.tsx     # Home inspection (planned)
 ```
 
 ### 2. Backend Architecture
