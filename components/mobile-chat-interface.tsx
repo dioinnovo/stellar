@@ -19,7 +19,8 @@ import {
   Camera,
   File,
   Link,
-  MapPin
+  MapPin,
+  Search
 } from 'lucide-react'
 import SiriOrb from '@/components/ui/siri-orb'
 import { cn } from '@/lib/utils'
@@ -84,6 +85,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
   const [showModelDropdown, setShowModelDropdown] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [showAttachMenu, setShowAttachMenu] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const attachMenuRef = useRef<HTMLDivElement>(null)
@@ -121,8 +123,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
   // Model options
   const modelOptions = [
     { value: 'quick', label: 'Quick', description: 'Fast responses' },
-    { value: 'gpt4', label: 'GPT-4', description: 'Advanced reasoning' },
-    { value: 'claude', label: 'Claude', description: 'Detailed analysis' }
+    { value: 'stella-pro', label: 'Stella Pro', description: 'Expert policy analysis' }
   ]
 
   useEffect(() => {
@@ -351,9 +352,14 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
     ))
   }
 
-  const filteredChats = activeTab === 'saved'
+  const filteredChats = (activeTab === 'saved'
     ? chats.filter(chat => chat.isSaved)
     : chats.filter(chat => !chat.isSaved)
+  ).filter(chat =>
+    searchQuery === '' ||
+    chat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    chat.messages.some(msg => msg.content.toLowerCase().includes(searchQuery.toLowerCase()))
+  )
 
   return (
     <div className={cn("h-full w-full flex flex-col bg-gradient-to-br from-gray-50 to-white overflow-hidden relative rounded-2xl", className)}>
@@ -773,6 +779,20 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                   >
                     Saved
                   </button>
+                </div>
+              </div>
+
+              {/* Search Input */}
+              <div className="flex-shrink-0 px-4 pt-3">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search chats..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:border-stellar-orange/50 placeholder-gray-400"
+                  />
                 </div>
               </div>
 

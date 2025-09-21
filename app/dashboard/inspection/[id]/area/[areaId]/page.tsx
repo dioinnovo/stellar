@@ -4,7 +4,7 @@ import React, { useState, useRef, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
 import {
-  ArrowLeft, ArrowRight, Camera, Mic, MicOff, Upload, X,
+  ArrowLeft, ArrowRight, Camera, MicOff, Upload, X,
   Play, Pause, Brain, Lightbulb, CheckCircle, AlertTriangle,
   FileText, Home, Building2, Droplets, Wind, Zap, Eye,
   Save, SkipForward, RotateCcw
@@ -12,6 +12,19 @@ import {
 import Link from 'next/link'
 import { InspectionAreaCarousel } from '@/components/ui/inspection-area-carousel'
 import { useInspectionData } from '@/lib/hooks/useInspectionData'
+
+// Custom Microphone SVG Component
+const MicrophoneIcon = ({ className }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path fillRule="evenodd" clipRule="evenodd" d="M16.7673 6.54284C16.7673 3.91128 14.634 1.77799 12.0024 1.77799C9.37089 1.77799 7.2376 3.91129 7.2376 6.54284L7.2376 13.5647C7.2376 16.1963 9.37089 18.3296 12.0024 18.3296C14.634 18.3296 16.7673 16.1963 16.7673 13.5647L16.7673 6.54284ZM12.0024 3.28268C13.803 3.28268 15.2626 4.7423 15.2626 6.54284L15.2626 13.5647C15.2626 15.3652 13.803 16.8249 12.0024 16.8249C10.2019 16.8249 8.74229 15.3652 8.74229 13.5647L8.74229 6.54284C8.74229 4.7423 10.2019 3.28268 12.0024 3.28268Z"/>
+    <path fillRule="evenodd" clipRule="evenodd" d="M20.0274 8.79987C19.6119 8.79987 19.2751 9.1367 19.2751 9.55221V13.5647C19.2751 17.5813 16.019 20.8374 12.0024 20.8374C7.98587 20.8374 4.72979 17.5813 4.72979 13.5647L4.72979 9.55221C4.72979 9.1367 4.39295 8.79987 3.97744 8.79987C3.56193 8.79987 3.2251 9.1367 3.2251 9.55221L3.2251 13.5647C3.2251 18.4123 7.15485 22.3421 12.0024 22.3421C16.85 22.3421 20.7798 18.4123 20.7798 13.5647V9.55221C20.7798 9.1367 20.443 8.79987 20.0274 8.79987Z"/>
+  </svg>
+)
 
 interface MediaFile {
   id: string
@@ -689,7 +702,7 @@ export default function AreaInspectionPage() {
                     </>
                   ) : (
                     <>
-                      <Mic size={18} />
+                      <MicrophoneIcon className="w-6 h-6" />
                       <span>Start Recording</span>
                     </>
                   )}
@@ -717,7 +730,7 @@ export default function AreaInspectionPage() {
                         className="flex-1 flex items-center gap-3 text-left"
                       >
                         <div className="p-2 bg-purple-100 rounded-lg">
-                          <Mic className="w-4 h-4 text-purple-600" />
+                          <MicrophoneIcon className="w-4 h-4 text-purple-600" />
                         </div>
                         <div className="flex-1">
                           <div className="text-sm font-medium">Voice Note</div>
@@ -856,7 +869,7 @@ export default function AreaInspectionPage() {
               <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-100 rounded-lg">
-                    <Mic className="w-5 h-5 text-purple-600" />
+                    <MicrophoneIcon className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
                     <h2 className="text-xl font-semibold text-gray-900">Voice Note Transcript</h2>
@@ -918,7 +931,7 @@ export default function AreaInspectionPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <Mic className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                    <MicrophoneIcon className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                     <p className="text-gray-600">No transcript available for this voice note</p>
                   </div>
                 )}
