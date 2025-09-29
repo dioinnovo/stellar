@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  productionBrowserSourceMaps: false,
   images: {
     domains: ['stellaradjusting.com', 'amazonaws.com', 'images.unsplash.com'],
     formats: ['image/avif', 'image/webp'],

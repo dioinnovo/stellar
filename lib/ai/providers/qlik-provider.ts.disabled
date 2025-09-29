@@ -1,0 +1,294 @@
+/**
+ * Qlik Answers Assistant Provider
+ * Custom implementation of AI SDK v5 LanguageModelV2 interface
+ */
+
+import {
+  LanguageModelV2,
+  LanguageModelV2CallOptions,
+  LanguageModelV2CallWarning,
+  LanguageModelV2FinishReason,
+  LanguageModelV2StreamPart,
+  NoSuchModelError,
+} from '@ai-sdk/provider';
+import {
+  ParseResult,
+  createEventSourceResponseHandler,
+  createJsonResponseHandler,
+  postJsonToApi,
+} from '@ai-sdk/provider-utils';
+import { z } from 'zod';
+import { QlikConfig } from './types';
+
+// Response schemas
+const QlikThreadSchema = z.object({
+  id: z.string(),
+  createdAt: z.string(),
+  assistantId: z.string(),
+});
+
+const QlikMessageSchema = z.object({
+  answer: z.string(),
+  sources: z.array(z.object({
+    title: z.string(),
+    url: z.string().optional(),
+    excerpt: z.string().optional(),
+  })).optional(),
+  followups: z.array(z.string()).optional(),
+});
+
+export class QlikProvider implements LanguageModelV2 {
+  readonly specificationVersion = 'v2' as const;
+  readonly defaultObjectGenerationMode = 'json' as const;
+  readonly supportsImageUrls = false;
+
+  readonly modelId: string;
+  readonly provider = 'qlik';
+
+  private readonly config: QlikConfig;
+  private currentThreadId?: string;
+
+  constructor(modelId: string, config: QlikConfig) {
+    this.modelId = modelId;
+    this.config = config;
+  }
+
+  get providerMetadata() {
+    return {
+      id: 'qlik',
+      name: 'Qlik Answers',
+    };
+  }
+
+  private get baseUrl(): string {
+    return `${this.config.tenantUrl}/api/v1`;
+  }
+
+  private get headers() {
+    return {
+      'Authorization': `Bearer ${this.config.apiKey}`,
+      'Content-Type': 'application/json',
+    };
+  }
+
+  private async createThread(): Promise<string> {
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/assistants/${this.config.assistantId}/threads`,
+        {
+          method: 'POST',
+          headers: this.headers,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to create thread: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const thread = QlikThreadSchema.parse(data);
+      this.currentThreadId = thread.id;
+      return thread.id;
+    } catch (error) {
+      console.error('Error creating Qlik thread:', error);
+      throw error;
+    }
+  }
+
+  private async ensureThread(): Promise<string> {
+    if (!this.currentThreadId) {
+      this.currentThreadId = await this.createThread();
+    }
+    return this.currentThreadId;
+  }
+
+  async doGenerate(
+    options: LanguageModelV2CallOptions
+  ): Promise<{
+    text: string;
+    usage: {
+      promptTokens: number;
+      completionTokens: number;
+    };
+    finishReason: LanguageModelV2FinishReason;
+    rawCall: { rawPrompt: unknown; rawSettings: Record<string, unknown> };
+    rawResponse?: { headers?: Record<string, string> };
+    warnings?: LanguageModelV2CallWarning[];
+  }> {
+    const threadId = await this.ensureThread();
+
+    // Convert messages to Qlik format
+    const prompt = this.messagesToPrompt(options.messages);
+
+    const { responseBody, response } = await postJsonToApi({
+      url: `${this.baseUrl}/assistants/${this.config.assistantId}/threads/${threadId}/actions/invoke`,
+      headers: this.headers,
+      body: {
+        query: prompt,
+        temperature: options.temperature,
+        maxTokens: options.maxTokens,
+      },
+      failedResponseHandler: createJsonResponseHandler({
+        errorSchema: z.object({
+          error: z.string(),
+          message: z.string().optional(),
+        }),
+        errorToMessage: (error) => error.message || error.error,
+      }),
+      successfulResponseHandler: createJsonResponseHandler({
+        schema: QlikMessageSchema,
+      }),
+      abortSignal: options.abortSignal,
+      fetch: this.config.fetch,
+    });
+
+    const qlikResponse = responseBody as z.infer<typeof QlikMessageSchema>;
+
+    return {
+      text: qlikResponse.answer,
+      usage: {
+        promptTokens: 0, // Qlik doesn't provide token counts
+        completionTokens: 0,
+      },
+      finishReason: 'stop',
+      rawCall: {
+        rawPrompt: prompt,
+        rawSettings: {
+          temperature: options.temperature,
+          maxTokens: options.maxTokens,
+        },
+      },
+      rawResponse: {
+        headers: Object.fromEntries(response.headers.entries()),
+      },
+    };
+  }
+
+  async *doStream(
+    options: LanguageModelV2CallOptions
+  ): AsyncGenerator<LanguageModelV2StreamPart> {
+    const threadId = await this.ensureThread();
+    const prompt = this.messagesToPrompt(options.messages);
+
+    const response = await fetch(
+      `${this.baseUrl}/assistants/${this.config.assistantId}/threads/${threadId}/actions/stream`,
+      {
+        method: 'POST',
+        headers: this.headers,
+        body: JSON.stringify({
+          query: prompt,
+          temperature: options.temperature,
+          maxTokens: options.maxTokens,
+        }),
+        signal: options.abortSignal,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Qlik streaming failed: ${response.statusText}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('No response body available for streaming');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
+          break;
+        }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6);
+
+            if (data === '[DONE]') {
+              yield {
+                type: 'finish',
+                finishReason: 'stop',
+                usage: {
+                  promptTokens: 0,
+                  completionTokens: 0,
+                },
+              };
+              return;
+            }
+
+            try {
+              const chunk = JSON.parse(data);
+              if (chunk.delta) {
+                yield {
+                  type: 'text-delta',
+                  textDelta: chunk.delta,
+                };
+              }
+            } catch (e) {
+              console.error('Error parsing SSE chunk:', e);
+            }
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  }
+
+  private messagesToPrompt(messages: LanguageModelV2CallOptions['messages']): string {
+    // Convert AI SDK messages to a single prompt for Qlik
+    return messages
+      .map((msg) => {
+        if (msg.role === 'system') {
+          return `Context: ${msg.content}`;
+        }
+        if (msg.role === 'user') {
+          return `User: ${msg.content}`;
+        }
+        if (msg.role === 'assistant') {
+          return `Assistant: ${msg.content}`;
+        }
+        return '';
+      })
+      .filter(Boolean)
+      .join('\n\n');
+  }
+
+  // Reset thread for new conversations
+  resetThread(): void {
+    this.currentThreadId = undefined;
+  }
+
+  // Health check
+  async health(): Promise<{ status: 'healthy' | 'unhealthy'; latency?: number }> {
+    const startTime = Date.now();
+
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/assistants/${this.config.assistantId}`,
+        {
+          method: 'GET',
+          headers: this.headers,
+        }
+      );
+
+      const latency = Date.now() - startTime;
+
+      if (response.ok) {
+        return { status: 'healthy', latency };
+      }
+
+      return { status: 'unhealthy', latency };
+    } catch (error) {
+      return { status: 'unhealthy' };
+    }
+  }
+}

@@ -95,8 +95,8 @@ export default function ReportReviewPage() {
     return (
       <div className="text-center py-12">
         <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Report Not Found</h2>
-        <p className="text-gray-600 mb-6">The requested report could not be found.</p>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Report Not Found</h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">The requested report could not be found.</p>
         <button
           onClick={() => router.push('/dashboard/reports')}
           className="px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-red-600 transition"
@@ -113,13 +113,13 @@ export default function ReportReviewPage() {
       <div className="flex items-center gap-4">
         <button
           onClick={() => router.push('/dashboard/reports')}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-stellar-dark">Report Review</h1>
-          <p className="text-gray-600">Review and approve inspection report</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Report Review</h1>
+          <p className="text-gray-600 dark:text-gray-400">Review and approve inspection report</p>
         </div>
       </div>
 
@@ -127,18 +127,18 @@ export default function ReportReviewPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl shadow-sm p-6"
+        className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6"
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Property Info */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Information</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Property Information</h3>
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
                 <div>
-                  <p className="font-medium text-gray-900">{report.property.address}</p>
-                  <p className="text-sm text-gray-600">{report.property.owner}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{report.property.address}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{report.property.owner}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -146,11 +146,11 @@ export default function ReportReviewPage() {
                   <Home className="w-5 h-5 text-gray-400" /> :
                   <Building2 className="w-5 h-5 text-gray-400" />
                 }
-                <span className="text-gray-900 capitalize">{report.property.type} Property</span>
+                <span className="text-gray-900 dark:text-gray-100 capitalize">{report.property.type} Property</span>
               </div>
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-gray-400" />
-                <span className="text-gray-900">
+                <span className="text-gray-900 dark:text-gray-100">
                   Completed: {new Date(report.completedDate).toLocaleDateString()}
                 </span>
               </div>
@@ -159,32 +159,32 @@ export default function ReportReviewPage() {
 
           {/* Report Details */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Report Details</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Report Details</h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Claim Number:</span>
+                <span className="text-gray-600 dark:text-gray-400">Claim Number:</span>
                 <span className="font-medium">{report.claimNumber}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Damage Type:</span>
+                <span className="text-gray-600 dark:text-gray-400">Damage Type:</span>
                 <span className="font-medium">{report.damageType}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">AI Confidence:</span>
+                <span className="text-gray-600 dark:text-gray-400">AI Confidence:</span>
                 <span className="font-medium">{report.confidenceScore}%</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Time to Complete:</span>
+                <span className="text-gray-600 dark:text-gray-400">Time to Complete:</span>
                 <span className="font-medium">{report.timeToComplete}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-600">Inspector:</span>
+                <span className="text-gray-600 dark:text-gray-400">Inspector:</span>
                 <div className="flex items-center gap-2">
                   <span className="font-medium">{report.adjuster?.name || 'John Smith'}</span>
                   {report.adjuster && (
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                      <span className="text-xs text-gray-500">{report.adjuster.rating}</span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">{report.adjuster.rating}</span>
                     </div>
                   )}
                 </div>
@@ -194,12 +194,12 @@ export default function ReportReviewPage() {
         </div>
 
         {/* Settlement Information */}
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Settlement Estimate</h3>
-          <div className="bg-gray-50 rounded-lg p-4">
+        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Settlement Estimate</h3>
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
             <div className="flex items-center justify-between">
-              <span className="text-gray-600">Estimated Damage Value:</span>
-              <span className="text-2xl font-bold text-stellar-dark">
+              <span className="text-gray-600 dark:text-gray-400">Estimated Damage Value:</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 ${report.settlement.estimated.toLocaleString()}
               </span>
             </div>
@@ -212,20 +212,20 @@ export default function ReportReviewPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white rounded-xl shadow-sm p-6"
+        className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Review & Approval</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Review & Approval</h3>
 
         {/* Comments Section */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Review Comments (Optional)
           </label>
           <textarea
             value={comments}
             onChange={(e) => setComments(e.target.value)}
             placeholder="Add any comments or notes about this report..."
-            className="w-full h-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange/20 focus:border-stellar-orange resize-none"
+            className="w-full h-24 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange/20 focus:border-stellar-orange resize-none"
           />
         </div>
 
@@ -262,15 +262,15 @@ export default function ReportReviewPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-white rounded-xl shadow-sm p-6"
+        className="bg-white dark:bg-gray-900 rounded-xl shadow-sm p-6"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-lg hover:bg-gray-200 transition">
             <Download className="w-4 h-4" />
             Download PDF
           </button>
-          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
+          <button className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-lg hover:bg-gray-200 transition">
             <Send className="w-4 h-4" />
             Send to Client
           </button>

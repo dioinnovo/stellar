@@ -83,7 +83,7 @@ export default function InternalPricingOnePagerPrint() {
         }
       ` }} />
 
-      <div className="min-h-screen bg-white p-8">
+      <div className="min-h-screen bg-white dark:bg-gray-900 p-8">
         {/* Hero */}
         <section className="mb-8">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-3 py-1 text-emerald-700 text-xs mb-4">
@@ -92,7 +92,7 @@ export default function InternalPricingOnePagerPrint() {
           <h1 className="text-2xl font-bold mb-4">
             Property Inspection Intelligence for Maximum Claim Outcomes
           </h1>
-          <p className="text-gray-700 mb-4">
+          <p className="text-gray-700 dark:text-gray-300 mb-4">
             Reduce report prep from <strong>hours</strong> to <strong>≈15 minutes</strong> while improving settlement outcomes.
           </p>
         </section>
@@ -102,7 +102,7 @@ export default function InternalPricingOnePagerPrint() {
           <h2 className="text-lg font-semibold mb-4">Cost Comparison</h2>
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="bg-gray-50">
+              <tr className="bg-gray-50 dark:bg-gray-900">
                 <th className="border p-2 text-left">Component</th>
                 <th className="border p-2 text-left">Provider</th>
                 <th className="border p-2 text-left">Cost/Unit</th>
@@ -120,7 +120,7 @@ export default function InternalPricingOnePagerPrint() {
                   <td className="border p-2 font-semibold">{r.est}</td>
                 </tr>
               ))}
-              <tr className="bg-gray-50">
+              <tr className="bg-gray-50 dark:bg-gray-900">
                 <td className="border p-2 font-semibold" colSpan={4}>Total (incl. 30% buffer)</td>
                 <td className="border p-2 font-bold text-emerald-700">~$1–$3</td>
               </tr>
@@ -134,7 +134,7 @@ export default function InternalPricingOnePagerPrint() {
           <div className="grid grid-cols-3 gap-4">
             {tiers.map((t) => (
               <div key={t.name} className={`border rounded-lg p-4 ${t.highlight ? 'border-cyan-500 bg-cyan-50' : 'border-gray-200'}`}>
-                <div className="text-sm text-gray-600">{t.name}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">{t.name}</div>
                 <div className="text-xl font-bold mb-4">{t.price}</div>
                 <ul className="space-y-2 text-sm">
                   {t.bullets.map((b, idx) => (

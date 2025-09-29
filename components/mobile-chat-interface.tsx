@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   MessageSquare,
@@ -20,9 +20,14 @@ import {
   File,
   Link,
   MapPin,
-  Search
+  Search,
+  Download
 } from 'lucide-react'
 import SiriOrb from '@/components/ui/siri-orb'
+import SourcesSection from '@/components/ui/sources-section'
+import TypewriterMessage from '@/components/ui/typewriter-message'
+import { generatePolicyAnalysisPDF } from '@/lib/utils/pdf-generator'
+import { mockPolicies } from '@/lib/ai/mock-policy-data'
 import { cn } from '@/lib/utils'
 
 // Custom Microphone SVG Component
@@ -38,12 +43,30 @@ const MicrophoneIcon = ({ className }: { className?: string }) => (
   </svg>
 )
 
+interface Source {
+  id?: string
+  name: string
+  snippet?: string
+  chunkId?: string
+  metadata?: {
+    page?: number
+    section?: string
+    confidence?: number
+  }
+}
+
 interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
   timestamp: Date
   suggestions?: string[]
+  sources?: Source[]
+  downloadable?: boolean
+  downloadContent?: string
+  downloadFilename?: string
+  isPolicyAnalysis?: boolean
+  isStreaming?: boolean
 }
 
 interface Chat {
@@ -78,6 +101,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
   const currentChat = chats.find(chat => chat.id === currentChatId) || chats[0]
   const [messages, setMessages] = useState<Message[]>(currentChat.messages)
   const [isTyping, setIsTyping] = useState(false)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [animatedTitle, setAnimatedTitle] = useState(currentChat.title)
   const [titleIsAnimating, setTitleIsAnimating] = useState(false)
@@ -86,6 +110,10 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
   const [isRecording, setIsRecording] = useState(false)
   const [showAttachMenu, setShowAttachMenu] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [needsContext, setNeedsContext] = useState(false)
+  const [pendingQuestion, setPendingQuestion] = useState<string | null>(null)
+  const [showContextModal, setShowContextModal] = useState(false)
+  const [contextInput, setContextInput] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const attachMenuRef = useRef<HTMLDivElement>(null)
@@ -120,10 +148,10 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
     }
   }, [showAttachMenu])
 
-  // Model options
+  // Model options with provider indicators
   const modelOptions = [
-    { value: 'quick', label: 'Quick', description: 'Fast responses' },
-    { value: 'stella-pro', label: 'Stella Pro', description: 'Expert policy analysis' }
+    { value: 'quick', label: 'Quick', description: 'Qlik Answers - Fast responses' },
+    { value: 'stella-pro', label: 'Stella Pro', description: 'Azure AI - Expert policy analysis' }
   ]
 
   useEffect(() => {
@@ -208,7 +236,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
   const handleSend = async (text?: string) => {
     const messageText = text || inputValue.trim()
     if (!messageText) return
-    
+
     // Clear input if using form input
     if (!text) {
       setInputValue('')
@@ -223,30 +251,42 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
 
     const newMessages = [...messages, userMessage]
     setMessages(newMessages)
-    
+
     // Only update chat title if it's the first message AND the chat still has "New Chat" as title
     if (messages.length === 0 && currentChat.title === 'New Chat') {
       const truncatedTitle = messageText.length > 50
         ? messageText.substring(0, 50) + '...'
         : messageText
-      setChats(prev => prev.map(chat => 
-        chat.id === currentChatId 
+      setChats(prev => prev.map(chat =>
+        chat.id === currentChatId
           ? { ...chat, title: truncatedTitle, messages: newMessages }
           : chat
       ))
     } else {
-      setChats(prev => prev.map(chat => 
-        chat.id === currentChatId 
+      setChats(prev => prev.map(chat =>
+        chat.id === currentChatId
           ? { ...chat, messages: newMessages }
           : chat
       ))
     }
-    
-    setIsTyping(true)
 
-    // Call the specialized Stella AI API
+    // Check if this is a name submission for policy analysis (not the initial request)
+    const previousMessage = messages.length > 0 ? messages[messages.length - 1]?.content?.toLowerCase() : ''
+    const isNameSubmission = previousMessage.includes('perform comprehensive policy review') ||
+                            previousMessage.includes('comprehensive policy review') ||
+                            previousMessage.includes('please provide the policyholder')
+
+    if (isNameSubmission && !messageText.toLowerCase().includes('comprehensive policy review')) {
+      setIsAnalyzing(true)
+      // Add a 3-second delay to simulate policy analysis
+      await new Promise(resolve => setTimeout(resolve, 3000))
+    } else {
+      setIsTyping(true)
+    }
+
+    // Call the unified API with selected model
     try {
-      const response = await fetch('/api/stella-claims/chat', {
+      const response = await fetch('/api/assistant/unified', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -255,7 +295,12 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
           messages: newMessages.map(msg => ({
             role: msg.role,
             content: msg.content
-          }))
+          })),
+          model: selectedModel, // 'quick' for Qlik, 'stella-pro' for Azure
+          stream: false, // Start with non-streaming for simplicity
+          generateTitle: messages.length === 0, // Generate title for first message
+          resetThread: messages.length === 0, // Reset thread for new conversations
+          conversationId: currentChatId, // Pass conversation ID for context tracking
         })
       })
 
@@ -264,26 +309,51 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
       }
 
       const data = await response.json()
-      
+
+      // Check if context is needed (for Qlik)
+      if (data.needsContext) {
+        setNeedsContext(true)
+        if (data.pendingQuestion) {
+          setPendingQuestion(data.pendingQuestion)
+        }
+        setShowContextModal(true)
+      }
+
+      // Update chat title if generated
+      if (data.title && messages.length === 0) {
+        setChats(prev => prev.map(chat =>
+          chat.id === currentChatId
+            ? { ...chat, title: data.title, titleGenerated: true }
+            : chat
+        ))
+      }
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
         content: data.response,
         timestamp: new Date(),
-        suggestions: data.suggestions || []
+        suggestions: data.suggestions || [],
+        sources: data.sources || [],
+        downloadable: data.downloadable,
+        downloadContent: data.downloadContent,
+        downloadFilename: data.downloadFilename,
+        isPolicyAnalysis: data.downloadable || false,
+        isStreaming: true
       }
-      
+
       const updatedMessages = [...newMessages, assistantMessage]
       setMessages(updatedMessages)
-      setChats(prev => prev.map(chat => 
-        chat.id === currentChatId 
+      setChats(prev => prev.map(chat =>
+        chat.id === currentChatId
           ? { ...chat, messages: updatedMessages }
           : chat
       ))
       setIsTyping(false)
+      setIsAnalyzing(false)
     } catch (error) {
-      console.error('Error calling Stella AI:', error)
-      
+      console.error('Error calling unified API:', error)
+
       // Fallback error message
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -292,15 +362,16 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
         timestamp: new Date(),
         suggestions: ['Check system status', 'Try again', 'Contact support']
       }
-      
+
       const updatedMessages = [...newMessages, errorMessage]
       setMessages(updatedMessages)
-      setChats(prev => prev.map(chat => 
-        chat.id === currentChatId 
+      setChats(prev => prev.map(chat =>
+        chat.id === currentChatId
           ? { ...chat, messages: updatedMessages }
           : chat
       ))
       setIsTyping(false)
+      setIsAnalyzing(false)
     }
   }
 
@@ -340,6 +411,18 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }
 
+  // Memoized callback for completing typewriter animation
+  const handleTypewriterComplete = useCallback((messageId: string) => {
+    setMessages(prev => prev.map(m =>
+      m.id === messageId ? { ...m, isStreaming: false } : m
+    ))
+  }, [])
+
+  // Create memoized callback for each message
+  const createOnCompleteCallback = useCallback((messageId: string) => {
+    return () => handleTypewriterComplete(messageId)
+  }, [handleTypewriterComplete])
+
   const toggleSaveChat = (chatId: string) => {
     setChats(prev => prev.map(chat =>
       chat.id === chatId
@@ -362,25 +445,25 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
   )
 
   return (
-    <div className={cn("h-full w-full flex flex-col bg-gradient-to-br from-gray-50 to-white overflow-hidden relative rounded-2xl", className)}>
+    <div className={cn("h-full w-full flex flex-col bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800 overflow-hidden relative rounded-2xl", className)}>
       {/* Top Header */}
-      <div className="flex-shrink-0 flex items-center justify-between p-4 min-h-[4rem] bg-white/80 backdrop-blur-md border-b border-gray-200/50">
+      <div className="flex-shrink-0 flex items-center justify-between p-4 min-h-[4rem] bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-700/50">
         {/* Chat History Button */}
         <button
           onClick={() => setShowHistoryModal(true)}
-          className="p-2 rounded-xl bg-white shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 group cursor-pointer"
+          className="p-2 rounded-xl bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-200 group cursor-pointer"
           aria-label="Show chat history"
         >
-          <Menu className="w-5 h-5 text-gray-600 group-hover:text-stellar-orange transition-colors" />
+          <Menu className="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-stellar-orange transition-colors" />
         </button>
 
         {/* Current Chat Title */}
         <div className="flex-1 text-center px-2">
-          <h2 className="text-sm font-medium text-gray-900 line-clamp-2 flex items-center justify-center">
+          <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 flex items-center justify-center">
             <span>{animatedTitle}</span>
             {titleIsAnimating && (
               <motion.span
-                className="inline-block w-0.5 h-4 bg-gray-900 ml-0.5"
+                className="inline-block w-0.5 h-4 bg-gray-900 dark:bg-gray-100 ml-0.5"
                 animate={{ opacity: [1, 0] }}
                 transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
               />
@@ -402,11 +485,11 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               </div>
               
               <div className="space-y-2">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                   Hi! I'm Stella
                 </h1>
-                <p className="text-gray-600 max-w-sm">
-                  I analyze policies comprehensively to uncover every coverage opportunity and maximize settlements for your clients
+                <p className="text-gray-600 dark:text-gray-400 max-w-sm">
+                  I analyze insurance policies comprehensively to uncover every coverage opportunity and maximize settlements for your clients. Upload a policy or select from recently added clients.
                 </p>
               </div>
 
@@ -420,7 +503,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                   <button
                     key={idx}
                     onClick={() => handleSend(suggestion)}
-                    className="px-3 py-1.5 bg-white border border-gray-200 rounded-full text-sm text-gray-700 hover:border-stellar-orange hover:text-stellar-orange transition-all"
+                    className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm text-gray-700 dark:text-gray-300 hover:border-stellar-orange hover:text-stellar-orange transition-all"
                   >
                     {suggestion}
                   </button>
@@ -443,30 +526,82 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                       <div className={`rounded-2xl px-4 py-3 ${
                         message.role === 'user' 
                           ? 'bg-stellar-orange text-white' 
-                          : 'bg-white border border-gray-200 text-gray-800 shadow-sm'
+                          : 'bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 shadow-sm'
                       }`}>
-                        <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+                        {message.isPolicyAnalysis ? (
+                          <TypewriterMessage
+                            content={message.content}
+                            speed={3}
+                            isPolicy={true}
+                            onComplete={createOnCompleteCallback(message.id)}
+                          />
+                        ) : (
+                          <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+                        )}
                       </div>
                       
+                      {message.downloadable && (
+                        <button
+                          onClick={() => {
+                            // Extract the insured name from the message content to find the policy data
+                            const content = message.content.toLowerCase()
+                            let policyData = null
+
+                            // Check which policy this is for
+                            if (content.includes('don burleson-castillo')) {
+                              policyData = mockPolicies['don burleson-castillo']
+                            } else if (content.includes('maria gonzalez')) {
+                              policyData = mockPolicies['maria gonzalez']
+                            } else if (content.includes('james richardson')) {
+                              policyData = mockPolicies['james richardson']
+                            }
+
+                            if (policyData) {
+                              generatePolicyAnalysisPDF(policyData)
+                            } else {
+                              // Fallback to text download if policy data not found
+                              const blob = new Blob([message.downloadContent || ''], { type: 'text/plain' })
+                              const url = URL.createObjectURL(blob)
+                              const a = document.createElement('a')
+                              a.href = url
+                              a.download = message.downloadFilename || 'policy_analysis.txt'
+                              document.body.appendChild(a)
+                              a.click()
+                              document.body.removeChild(a)
+                              URL.revokeObjectURL(url)
+                            }
+                          }}
+                          className="mt-3 flex items-center gap-2 px-4 py-2 bg-stellar-orange text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium"
+                        >
+                          <Download size={16} />
+                          <span>Download PDF Report</span>
+                        </button>
+                      )}
+
                       {message.suggestions && (
                         <div className="mt-2 flex flex-wrap gap-2">
                           {message.suggestions.map((suggestion, idx) => (
                             <button
                               key={idx}
                               onClick={() => handleSend(suggestion)}
-                              className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:border-stellar-orange hover:text-stellar-orange transition"
+                              className="text-xs px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full hover:border-stellar-orange hover:text-stellar-orange transition"
                             >
                               {suggestion}
                             </button>
                           ))}
                         </div>
                       )}
-                      
+
+                      {/* Sources section for assistant messages */}
+                      {message.role === 'assistant' && message.sources && message.sources.length > 0 && (
+                        <SourcesSection sources={message.sources} />
+                      )}
+
                       <p className={`text-xs mt-1 ${
-                        message.role === 'user' ? 'text-right text-gray-400' : 'text-left text-gray-400'
+                        message.role === 'user' ? 'text-right text-gray-400 dark:text-gray-500' : 'text-left text-gray-400 dark:text-gray-500'
                       }`}>
-                        {message.timestamp.toLocaleTimeString('en-US', { 
-                          hour: '2-digit', 
+                        {message.timestamp.toLocaleTimeString('en-US', {
+                          hour: '2-digit',
                           minute: '2-digit'
                         })}
                       </p>
@@ -475,6 +610,38 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                 ))}
               </AnimatePresence>
               
+              {/* Analysis Indicator */}
+              {isAnalyzing && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex justify-start"
+                >
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-3 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="flex space-x-1">
+                        <motion.div
+                          className="w-2 h-2 bg-stellar-orange rounded-full"
+                          animate={{ opacity: [0.4, 1, 0.4] }}
+                          transition={{ duration: 1.2, repeat: Infinity, delay: 0 }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-stellar-orange rounded-full"
+                          animate={{ opacity: [0.4, 1, 0.4] }}
+                          transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-stellar-orange rounded-full"
+                          animate={{ opacity: [0.4, 1, 0.4] }}
+                          transition={{ duration: 1.2, repeat: Infinity, delay: 0.8 }}
+                        />
+                      </div>
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Analyzing policy...</span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
               {/* Typing Indicator */}
               {isTyping && (
                 <motion.div
@@ -483,7 +650,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                   className="flex justify-start"
                 >
                   <div className="max-w-[80%]">
-                    <div className="bg-white border border-gray-200 text-gray-800 shadow-sm rounded-2xl px-4 py-3">
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200 shadow-sm rounded-2xl px-4 py-3">
                       <div className="flex gap-1">
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
                         <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
@@ -505,7 +672,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
       {/* Input Area - Microsoft Copilot Style */}
       <div className="absolute bottom-20 sm:bottom-0 left-0 right-0 z-40 p-4">
         {/* Glassmorphism container with border */}
-        <div className="bg-white/70 backdrop-blur-xl backdrop-saturate-150 border-2 border-white/30 rounded-xl p-3 shadow-lg shadow-black/10 ring-2 ring-white">
+        <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl backdrop-saturate-150 border-2 border-white/30 dark:border-gray-700/30 rounded-xl p-3 shadow-lg shadow-black/10 ring-2 ring-white dark:ring-gray-700">
             {/* Text Input Area */}
             <textarea
               ref={textareaRef}
@@ -521,7 +688,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               }}
               placeholder="Message Stella"
               disabled={isTyping}
-              className="w-full px-3 py-2 bg-transparent text-sm text-gray-900 placeholder-gray-500 focus:outline-none resize-none transition-all disabled:opacity-50"
+              className="w-full px-3 py-2 bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none resize-none transition-all disabled:opacity-50"
               style={{
                 minHeight: '40px',
                 maxHeight: '200px',
@@ -535,7 +702,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                 <div className="relative">
                   <button
                     onClick={() => setShowModelDropdown(!showModelDropdown)}
-                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                    className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-colors"
                   >
                     <span>{modelOptions.find(m => m.value === selectedModel)?.label}</span>
                     <ChevronDown className="w-4 h-4" />
@@ -543,7 +710,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                   
                   {/* Dropdown Menu */}
                   {showModelDropdown && (
-                    <div className="absolute bottom-full left-0 mb-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-10">
+                    <div className="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-10">
                       {modelOptions.map((model) => (
                         <button
                           key={model.value}
@@ -551,10 +718,10 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                             setSelectedModel(model.value)
                             setShowModelDropdown(false)
                           }}
-                          className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors"
+                          className="w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                         >
-                          <div className="font-medium text-sm text-gray-900">{model.label}</div>
-                          <div className="text-xs text-gray-500">{model.description}</div>
+                          <div className="font-medium text-sm text-gray-900 dark:text-gray-100">{model.label}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{model.description}</div>
                         </button>
                       ))}
                     </div>
@@ -567,7 +734,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                   <div className="relative">
                     <button
                       onClick={() => setShowAttachMenu(!showAttachMenu)}
-                      className="p-1.5 text-gray-600 hover:bg-gray-50 rounded-full transition-colors"
+                      className="p-1.5 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full transition-colors"
                       aria-label="Attach file"
                     >
                       <Plus className={cn("w-6 h-6 transition-transform", showAttachMenu && "rotate-45")} />
@@ -582,7 +749,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: 10 }}
                           transition={{ duration: 0.15 }}
-                          className="absolute bottom-full right-0 mb-2 bg-white rounded-2xl shadow-xl border border-gray-100 p-2 min-w-[200px] z-50"
+                          className="absolute bottom-full right-0 mb-2 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-2 min-w-[200px] z-50"
                         >
                           <div className="space-y-1">
                             <button
@@ -590,7 +757,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                                 fileInputRef.current?.click()
                                 setShowAttachMenu(false)
                               }}
-                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors"
                             >
                               <FileText className="w-5 h-5 text-blue-500" />
                               <span>Upload Policy</span>
@@ -601,7 +768,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                                 photoInputRef.current?.click()
                                 setShowAttachMenu(false)
                               }}
-                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors"
                             >
                               <Image className="w-5 h-5 text-green-500" />
                               <span>Upload Photos</span>
@@ -623,7 +790,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                                 input.click()
                                 setShowAttachMenu(false)
                               }}
-                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors"
                             >
                               <Camera className="w-5 h-5 text-purple-500" />
                               <span>Take Photo</span>
@@ -639,7 +806,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                                 }
                                 setShowAttachMenu(false)
                               }}
-                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors"
                             >
                               <Link className="w-5 h-5 text-indigo-500" />
                               <span>Link Claim ID</span>
@@ -664,9 +831,9 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                         const reader = new FileReader()
                         reader.onload = (event) => {
                           const base64 = event.target?.result
-                          // Store the policy document in state (you'll need to add this state)
-                          // For now, we'll just send a message indicating the file was uploaded
-                          handleSend(`I've uploaded my policy document: ${file.name}`)
+                          // Store the policy document in state
+                          // Send a message indicating the file was uploaded
+                          handleSend(`I've uploaded a policy document: ${file.name}`)
                         }
                         reader.readAsDataURL(file)
                       }
@@ -685,7 +852,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                         // Convert files to base64 for demo purposes
                         // In production, you would upload to a server
                         const fileNames = Array.from(files).map(f => f.name).join(', ')
-                        handleSend(`I've uploaded ${files.length} photo${files.length > 1 ? 's' : ''} of my policy: ${fileNames}`)
+                        handleSend(`I've uploaded ${files.length} photo${files.length > 1 ? 's' : ''} of policy documents: ${fileNames}`)
                       }
                       e.target.value = '' // Reset input
                     }}
@@ -707,7 +874,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                         ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                         : isRecording
                         ? "bg-red-500 text-white animate-pulse"
-                        : "text-gray-600 hover:bg-gray-50"
+                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
                     )}
                     aria-label={inputValue.trim() ? "Send message" : "Voice input"}
                   >
@@ -733,7 +900,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/20 z-30 sm:absolute sm:rounded-2xl"
+              className="fixed inset-0 bg-black/20 dark:bg-black/50 z-30 sm:absolute sm:rounded-2xl"
               onClick={() => setShowHistoryModal(false)}
             />
 
@@ -743,28 +910,28 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: "tween", duration: 0.2, ease: "easeInOut" }}
-              className="absolute top-2 left-2 bottom-24 sm:bottom-2 w-72 sm:w-80 bg-slate-50 z-40 rounded-2xl flex flex-col overflow-hidden shadow-[8px_8px_24px_rgba(0,0,0,0.15)] ring-2 ring-white"
+              className="absolute top-2 left-2 bottom-24 sm:bottom-2 w-72 sm:w-80 bg-slate-50 dark:bg-gray-900 z-40 rounded-2xl flex flex-col overflow-hidden shadow-[8px_8px_24px_rgba(0,0,0,0.15)] ring-2 ring-white dark:ring-gray-800"
             >
               {/* Modal Header */}
               <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900">Chat History</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Chat History</h3>
                 <button
                   onClick={() => setShowHistoryModal(false)}
-                  className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 >
-                  <X className="w-5 h-5 text-gray-500" />
+                  <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 </button>
               </div>
 
               {/* Tab Navigation */}
               <div className="flex-shrink-0 px-4 pt-4">
-                <div className="flex p-1 bg-gray-100 rounded-xl">
+                <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl">
                   <button
                     onClick={() => setActiveTab('recent')}
                     className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       activeTab === 'recent'
                         ? 'bg-white text-stellar-orange shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
                     }`}
                   >
                     Recent
@@ -774,7 +941,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                     className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       activeTab === 'saved'
                         ? 'bg-white text-stellar-orange shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
                     }`}
                   >
                     Saved
@@ -785,13 +952,13 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               {/* Search Input */}
               <div className="flex-shrink-0 px-4 pt-3">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500" />
                   <input
                     type="text"
                     placeholder="Search chats..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:border-stellar-orange/50 placeholder-gray-400"
+                    className="w-full pl-9 pr-3 py-2 text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-full focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:border-stellar-orange/50 placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
               </div>
@@ -800,7 +967,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               <div className="flex-shrink-0 p-4 border-b border-gray-200">
                 <button
                   onClick={createNewChat}
-                  className="w-full flex items-center gap-3 px-4 py-3 bg-stellar-orange text-white rounded-full hover:bg-red-600 transition-colors shadow-lg"
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-stellar-orange text-white rounded-full hover:bg-red-600 dark:hover:bg-red-700 transition-colors shadow-lg"
                 >
                   <Plus size={20} />
                   <span className="font-medium">New Chat</span>
@@ -811,7 +978,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               <div className="flex-1 overflow-y-auto p-2">
                 <div className="space-y-2">
                   {filteredChats.length === 0 ? (
-                    <div className="text-center py-8 text-gray-500 text-sm">
+                    <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
                       {activeTab === 'saved' ? 'No saved chats yet' : 'No recent chats'}
                     </div>
                   ) : (
@@ -834,12 +1001,12 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                             className="flex-1 text-left"
                           >
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium line-clamp-2 break-words text-gray-900">
+                              <p className="text-sm font-medium line-clamp-2 break-words text-gray-900 dark:text-gray-100">
                                 {chat.title}
                               </p>
                               <div className="flex items-center gap-1.5 mt-1">
-                                <Clock size={10} className="text-gray-400 flex-shrink-0" />
-                                <p className="text-xs text-gray-500 truncate">
+                                <Clock size={10} className="text-gray-400 dark:text-gray-500 flex-shrink-0" />
+                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                                   {chat.savedAt && chat.isSaved
                                     ? `Saved ${formatTimeAgo(chat.savedAt)}`
                                     : formatTimeAgo(chat.timestamp)}
@@ -852,18 +1019,111 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                               e.stopPropagation()
                               toggleSaveChat(chat.id)
                             }}
-                            className="p-1 hover:bg-gray-200 rounded-lg transition-colors flex-shrink-0"
+                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
                             aria-label={chat.isSaved ? "Unsave chat" : "Save chat"}
                           >
                             <Star
                               size={16}
-                              className={chat.isSaved ? 'fill-amber-400 text-amber-400' : 'text-gray-400'}
+                              className={chat.isSaved ? 'fill-amber-400 text-amber-400' : 'text-gray-400 dark:text-gray-500'}
                             />
                           </button>
                         </div>
                       </div>
                     ))
                   )}
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Context Gathering Modal for Qlik */}
+      <AnimatePresence>
+        {showContextModal && selectedModel === 'quick' && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowContextModal(false)}
+              className="fixed inset-0 bg-black/50 dark:bg-black/70 z-50"
+            />
+
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed inset-x-4 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-900 rounded-2xl shadow-xl z-50 max-w-md mx-auto"
+            >
+              <div className="p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                  Who's Policy Should I Look Up?
+                </h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  To provide accurate policy information, please enter the name of the insured person or property address.
+                </p>
+
+                <input
+                  type="text"
+                  value={contextInput}
+                  onChange={(e) => setContextInput(e.target.value)}
+                  placeholder="e.g., John Smith or 123 Main Street"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:border-stellar-orange/50 mb-4"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && contextInput.trim()) {
+                      const insuredName = contextInput.trim()
+                      setShowContextModal(false)
+                      setNeedsContext(false)
+
+                      // Send the context with the pending question or just the context
+                      if (pendingQuestion) {
+                        handleSend(`For the policy of ${insuredName}: ${pendingQuestion}`)
+                        setPendingQuestion(null)
+                      } else {
+                        handleSend(insuredName)
+                      }
+                      setContextInput('')
+                    }
+                  }}
+                />
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowContextModal(false)
+                      setContextInput('')
+                      setPendingQuestion(null)
+                    }}
+                    className="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (contextInput.trim()) {
+                        const insuredName = contextInput.trim()
+                        setShowContextModal(false)
+                        setNeedsContext(false)
+
+                        // Send the context with the pending question or just the context
+                        if (pendingQuestion) {
+                          handleSend(`For the policy of ${insuredName}: ${pendingQuestion}`)
+                          setPendingQuestion(null)
+                        } else {
+                          handleSend(insuredName)
+                        }
+                        setContextInput('')
+                      }
+                    }}
+                    disabled={!contextInput.trim()}
+                    className="flex-1 px-4 py-2 bg-stellar-orange text-white hover:bg-red-600 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Continue
+                  </button>
                 </div>
               </div>
             </motion.div>

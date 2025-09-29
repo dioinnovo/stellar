@@ -62,7 +62,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-gray-50 to-white">
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      <nav className="sticky top-0 z-50 bg-white dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -70,13 +70,13 @@ export default function LandingPage() {
                 <div className="w-10 h-10 bg-stellar-orange rounded-lg flex items-center justify-center">
                   <span className="text-white font-bold text-xl">S</span>
                 </div>
-                <span className="text-xl font-bold text-gray-900">Stellar Intelligence</span>
+                <span className="text-xl font-bold text-gray-900 dark:text-gray-100">Stellar Intelligence</span>
               </Link>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <Link href="#features" className="text-gray-600 hover:text-gray-900">Features</Link>
-              <Link href="#testimonials" className="text-gray-600 hover:text-gray-900">Testimonials</Link>
-              <Link href="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</Link>
+              <Link href="#features" className="text-gray-600 hover:text-gray-900 dark:text-gray-100">Features</Link>
+              <Link href="#testimonials" className="text-gray-600 hover:text-gray-900 dark:text-gray-100">Testimonials</Link>
+              <Link href="/pricing" className="text-gray-600 hover:text-gray-900 dark:text-gray-100">Pricing</Link>
               <Link href="/dashboard/inspection" className="bg-stellar-orange text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
                 Get Started
               </Link>
@@ -94,11 +94,11 @@ export default function LandingPage() {
                 <Zap className="h-4 w-4" />
                 AI-Powered Insurance Intelligence
               </div>
-              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+              <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 dark:text-gray-100 mb-6">
                 Maximize Every
                 <span className="text-stellar-orange"> Insurance Claim</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8">
+              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
                 Transform property inspections into comprehensive reports in minutes. Our AI finds overlooked coverage,
                 accelerates processing, and increases settlement values by 20-30%.
               </p>
@@ -107,11 +107,11 @@ export default function LandingPage() {
                   Start Free Trial
                   <ArrowRight className="h-5 w-5" />
                 </Link>
-                <Link href="/pricing" className="inline-flex items-center justify-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-50 transition font-semibold">
+                <Link href="/pricing" className="inline-flex items-center justify-center gap-2 bg-white dark:bg-gray-900 text-gray-900 px-6 py-3 rounded-lg border border-gray-300 hover:bg-gray-50 transition font-semibold">
                   View Pricing
                 </Link>
               </div>
-              <div className="mt-8 flex items-center gap-6 text-sm text-gray-600">
+              <div className="mt-8 flex items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
                 <div className="flex items-center gap-2">
                   <Check className="h-5 w-5 text-green-500" />
                   No credit card required
@@ -124,40 +124,40 @@ export default function LandingPage() {
             </div>
             <div className="relative">
               <div className="bg-gradient-to-br from-orange-100 to-blue-100 rounded-2xl p-8 shadow-2xl">
-                <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold text-gray-900">Claim Analysis Dashboard</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Claim Analysis Dashboard</h3>
                     <span className="text-green-500 text-sm font-medium">Live</span>
                   </div>
                   <div className="space-y-3">
-                    <div className="bg-gray-50 rounded p-3">
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded p-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Coverage Found</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Coverage Found</span>
                         <span className="text-sm font-semibold text-green-600">+$24,500</span>
                       </div>
                     </div>
-                    <div className="bg-gray-50 rounded p-3">
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded p-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Processing Time</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Processing Time</span>
                         <span className="text-sm font-semibold text-blue-600">12 minutes</span>
                       </div>
                     </div>
-                    <div className="bg-gray-50 rounded p-3">
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded p-3">
                       <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Confidence Score</span>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Confidence Score</span>
                         <span className="text-sm font-semibold text-purple-600">98.5%</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="absolute -bottom-4 -right-4 bg-white rounded-lg shadow-xl p-4 flex items-center gap-3">
+              <div className="absolute -bottom-4 -right-4 bg-white dark:bg-gray-900 rounded-lg shadow-xl p-4 flex items-center gap-3">
                 <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                   <Check className="h-6 w-6 text-green-500" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">Report Generated</p>
-                  <p className="text-xs text-gray-600">Ready for review</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">Report Generated</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">Ready for review</p>
                 </div>
               </div>
             </div>
@@ -183,22 +183,22 @@ export default function LandingPage() {
       <section id="features" className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               Powered by Advanced AI
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Our platform combines computer vision, natural language processing, and machine learning to deliver
               unmatched accuracy and speed in claims processing.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <div key={index} className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition">
+              <div key={index} className="bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg hover:shadow-xl transition">
                 <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
                   <feature.icon className="h-6 w-6 text-stellar-orange" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -206,48 +206,48 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 lg:py-32 bg-gray-50">
+      <section className="py-20 lg:py-32 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               Simple 3-Step Process
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               From inspection to settlement in record time
             </p>
           </div>
           <div className="grid lg:grid-cols-3 gap-8">
             <div className="relative">
-              <div className="bg-white rounded-xl p-8 shadow-lg">
+              <div className="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg">
                 <div className="w-12 h-12 bg-stellar-orange text-white rounded-full flex items-center justify-center font-bold text-xl mb-4">
                   1
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Upload Inspection Data</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Upload Inspection Data</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   Simply upload photos, videos, and notes from your property inspection. Our AI handles all formats.
                 </p>
               </div>
               <ChevronRight className="hidden lg:block absolute -right-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-8 w-8" />
             </div>
             <div className="relative">
-              <div className="bg-white rounded-xl p-8 shadow-lg">
+              <div className="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg">
                 <div className="w-12 h-12 bg-stellar-orange text-white rounded-full flex items-center justify-center font-bold text-xl mb-4">
                   2
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Analysis</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">AI Analysis</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   Our AI analyzes damage, finds coverage opportunities, and generates a comprehensive report in minutes.
                 </p>
               </div>
               <ChevronRight className="hidden lg:block absolute -right-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-8 w-8" />
             </div>
             <div className="relative">
-              <div className="bg-white rounded-xl p-8 shadow-lg">
+              <div className="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg">
                 <div className="w-12 h-12 bg-stellar-orange text-white rounded-full flex items-center justify-center font-bold text-xl mb-4">
                   3
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Maximize Settlement</h3>
-                <p className="text-gray-600">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">Maximize Settlement</h3>
+                <p className="text-gray-600 dark:text-gray-400">
                   Use our detailed report with negotiation insights to secure the best possible settlement for your client.
                 </p>
               </div>
@@ -260,26 +260,26 @@ export default function LandingPage() {
       <section id="testimonials" className="py-20 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
               Trusted by Industry Leaders
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-gray-600 dark:text-gray-400">
               See what our customers have to say about Stellar Intelligence
             </p>
           </div>
           <div className="grid lg:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="bg-white rounded-xl p-8 shadow-lg">
+              <div key={index} className="bg-white dark:bg-gray-900 rounded-xl p-8 shadow-lg">
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <p className="text-gray-600 mb-6 italic">"{testimonial.content}"</p>
+                <p className="text-gray-600 dark:text-gray-400 mb-6 italic">"{testimonial.content}"</p>
                 <div>
-                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                  <p className="text-sm text-gray-600">{testimonial.role}</p>
-                  <p className="text-sm text-gray-500">{testimonial.company}</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">{testimonial.name}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{testimonial.company}</p>
                 </div>
               </div>
             ))}
@@ -297,7 +297,7 @@ export default function LandingPage() {
             Join thousands of adjusters who are settling claims faster and for higher amounts with Stellar Intelligence.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/dashboard/inspection" className="inline-flex items-center justify-center gap-2 bg-white text-stellar-orange px-8 py-4 rounded-lg hover:bg-orange-50 transition font-semibold">
+            <Link href="/dashboard/inspection" className="inline-flex items-center justify-center gap-2 bg-white dark:bg-gray-900 text-stellar-orange px-8 py-4 rounded-lg hover:bg-orange-50 transition font-semibold">
               Start Free Trial
               <ArrowRight className="h-5 w-5" />
             </Link>

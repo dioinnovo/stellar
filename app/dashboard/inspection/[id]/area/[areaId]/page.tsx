@@ -602,13 +602,13 @@ export default function AreaInspectionPage() {
       {/* Form Content - This is rendered inside the enhanced component when expanded */}
       <div className="space-y-4">
             {/* Photo Upload Section */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-4">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-base font-semibold text-gray-900">Photo Documentation</h2>
+                <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">Photo Documentation</h2>
                 <select
                   value={selectedPhotoCategory}
                   onChange={(e) => setSelectedPhotoCategory(e.target.value)}
-                  className="px-3 py-2 border border-gray-200 rounded-lg text-base"
+                  className="px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-base"
                 >
                   {PHOTO_CATEGORIES.map(category => (
                     <option key={category} value={category}>{category}</option>
@@ -620,17 +620,17 @@ export default function AreaInspectionPage() {
               <div
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
-                className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer"
+                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-gray-400 transition-colors cursor-pointer"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <Camera className="mx-auto mb-3 text-gray-400" size={40} />
-                <p className="text-sm font-medium text-gray-900 mb-1">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
                   Upload Photos - {selectedPhotoCategory}
                 </p>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                   Drag and drop photos here or click to browse
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
                   Recommended: 4-8 photos per area • JPG, PNG up to 10MB each
                 </p>
               </div>
@@ -651,7 +651,7 @@ export default function AreaInspectionPage() {
                 return photoCount > 0;
               })() && (
                 <div className="mt-6">
-                  <h3 className="font-medium text-gray-900 mb-3">
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">
                     Uploaded Photos ({areaData.mediaFiles.filter(f => f.type === 'photo').length})
                   </h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -660,7 +660,7 @@ export default function AreaInspectionPage() {
                         <img
                           src={file.url}
                           alt="Inspection"
-                          className="w-full aspect-square object-cover rounded-lg border border-gray-200"
+                          className="w-full aspect-square object-cover rounded-lg border border-gray-200 dark:border-gray-700"
                         />
                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
                           <button
@@ -683,8 +683,8 @@ export default function AreaInspectionPage() {
             </div>
 
             {/* Audio Recording Section */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <h2 className="text-base font-semibold text-gray-900 mb-3">Voice Notes</h2>
+            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-4">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Voice Notes</h2>
               
               <div className="flex items-center gap-3 mb-3">
                 <button
@@ -719,9 +719,9 @@ export default function AreaInspectionPage() {
               {/* Audio Files */}
               {areaData.mediaFiles.filter(f => f.type === 'audio').length > 0 && (
                 <div className="space-y-2">
-                  <h3 className="font-medium text-gray-900">Recorded Notes</h3>
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100">Recorded Notes</h3>
                   {areaData.mediaFiles.filter(f => f.type === 'audio').map((file) => (
-                    <div key={file.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div key={file.id} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg hover:bg-gray-100 transition-colors">
                       <button
                         onClick={() => {
                           setSelectedVoiceNote(file)
@@ -734,11 +734,11 @@ export default function AreaInspectionPage() {
                         </div>
                         <div className="flex-1">
                           <div className="text-sm font-medium">Voice Note</div>
-                          <div className="text-xs text-gray-600">
+                          <div className="text-xs text-gray-600 dark:text-gray-400">
                             {file.timestamp.toLocaleTimeString()} {file.duration ? `• ${file.duration}s` : ''}
                           </div>
                           {file.transcript && (
-                            <div className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
                               "{file.transcript}"
                             </div>
                           )}
@@ -757,12 +757,12 @@ export default function AreaInspectionPage() {
             </div>
 
             {/* Text Documentation */}
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <h2 className="text-base font-semibold text-gray-900 mb-3">Written Documentation</h2>
+            <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-4">
+              <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">Written Documentation</h2>
               
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Key Findings
                   </label>
                   <textarea
@@ -774,14 +774,14 @@ export default function AreaInspectionPage() {
                       e.target.style.height = 'auto'
                       e.target.style.height = e.target.scrollHeight + 'px'
                     }}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm resize-none"
                     style={{ minHeight: '72px', overflow: 'hidden' }}
                     placeholder="Document visible damage, conditions, and observations..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Damage Description
                   </label>
                   <textarea
@@ -793,14 +793,14 @@ export default function AreaInspectionPage() {
                       e.target.style.height = 'auto'
                       e.target.style.height = e.target.scrollHeight + 'px'
                     }}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm resize-none"
                     style={{ minHeight: '72px', overflow: 'hidden' }}
                     placeholder="Describe the extent and nature of damage..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Recommended Actions
                   </label>
                   <textarea
@@ -812,7 +812,7 @@ export default function AreaInspectionPage() {
                       e.target.style.height = 'auto'
                       e.target.style.height = e.target.scrollHeight + 'px'
                     }}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm resize-none"
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg text-sm resize-none"
                     style={{ minHeight: '48px', overflow: 'hidden' }}
                     placeholder="Immediate repairs needed, safety concerns..."
                   />
@@ -823,20 +823,20 @@ export default function AreaInspectionPage() {
             {/* AI Insights */}
             {areaData.aiInsights.length > 0 && (
               <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
-                <h2 className="text-base font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
                   <Brain size={18} className="text-blue-600" />
                   AI Insights
                 </h2>
                 <div className="space-y-2">
                   {areaData.aiInsights.map((insight, idx) => (
-                    <div key={idx} className="bg-white rounded-lg p-3">
+                    <div key={idx} className="bg-white dark:bg-gray-900 rounded-lg p-3">
                       <div className="flex items-start gap-2">
                         {insight.type === 'suggestion' && <Lightbulb size={16} className="text-yellow-500 mt-0.5" />}
                         {insight.type === 'warning' && <AlertTriangle size={16} className="text-red-500 mt-0.5" />}
                         <div className="flex-1">
-                          <h4 className="text-sm font-medium text-gray-900">{insight.title}</h4>
-                          <p className="text-xs text-gray-600 mt-1">{insight.description}</p>
-                          <div className="text-xs text-gray-500 mt-2">
+                          <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100">{insight.title}</h4>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{insight.description}</p>
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                             Confidence: {insight.confidence}%
                           </div>
                         </div>
@@ -863,17 +863,17 @@ export default function AreaInspectionPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+              className="bg-white dark:bg-gray-900 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+              <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 p-6 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-purple-100 rounded-lg">
                     <MicrophoneIcon className="w-5 h-5 text-purple-600" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Voice Note Transcript</h2>
-                    <p className="text-sm text-gray-600">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Voice Note Transcript</h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       {selectedVoiceNote.timestamp.toLocaleTimeString()}
                       {selectedVoiceNote.duration && ` • ${selectedVoiceNote.duration} seconds`}
                     </p>
@@ -881,7 +881,7 @@ export default function AreaInspectionPage() {
                 </div>
                 <button
                   onClick={() => setShowTranscriptModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -890,9 +890,9 @@ export default function AreaInspectionPage() {
               <div className="p-6">
                 {selectedVoiceNote.transcript ? (
                   <div className="space-y-4">
-                    <div className="bg-gray-50 rounded-xl p-4">
-                      <h3 className="font-medium text-gray-700 mb-2">Transcript</h3>
-                      <p className="text-gray-900 leading-relaxed whitespace-pre-wrap">
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
+                      <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Transcript</h3>
+                      <p className="text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-wrap">
                         {selectedVoiceNote.transcript}
                       </p>
                     </div>
@@ -900,7 +900,7 @@ export default function AreaInspectionPage() {
                     {/* Audio Player (if URL is available) */}
                     {selectedVoiceNote.url && selectedVoiceNote.url !== '#' && (
                       <div className="bg-purple-50 rounded-xl p-4">
-                        <h3 className="font-medium text-gray-700 mb-2">Audio Recording</h3>
+                        <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Audio Recording</h3>
                         <audio controls className="w-full">
                           <source src={selectedVoiceNote.url} type="audio/wav" />
                           Your browser does not support the audio element.
@@ -917,7 +917,7 @@ export default function AreaInspectionPage() {
                             navigator.clipboard.writeText(selectedVoiceNote.transcript)
                           }
                         }}
-                        className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                        className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
                       >
                         Copy Transcript
                       </button>
@@ -932,7 +932,7 @@ export default function AreaInspectionPage() {
                 ) : (
                   <div className="text-center py-8">
                     <MicrophoneIcon className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600">No transcript available for this voice note</p>
+                    <p className="text-gray-600 dark:text-gray-400">No transcript available for this voice note</p>
                   </div>
                 )}
               </div>

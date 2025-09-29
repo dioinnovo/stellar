@@ -45,7 +45,7 @@ const URGENCY_LEVELS = [
     label: 'Routine',
     description: 'Within 48-72 hours',
     color: 'border-gray-300 bg-gray-50',
-    icon: <Clock className="w-6 h-6 text-gray-600" />
+    icon: <Clock className="w-6 h-6 text-gray-600 dark:text-gray-400" />
   },
   {
     value: 'urgent',
@@ -215,30 +215,30 @@ export default function NewInspectionPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div>
             <Link
               href="/dashboard/inspection"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-3"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 transition-colors mb-3"
             >
               <ArrowLeft size={20} />
               <span>Cancel</span>
             </Link>
             <div>
-              <h1 className="text-xl sm:text-3xl font-semibold text-gray-900">
+              <h1 className="text-xl sm:text-3xl font-semibold text-gray-900 dark:text-gray-100">
                 Quick Inspection Setup
               </h1>
-              <p className="text-sm text-gray-600 mt-1">Start inspection immediately - details can be added later</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Start inspection immediately - details can be added later</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto sm:px-6 py-4 sm:py-6">
-        <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-8">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 p-4 sm:p-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -250,14 +250,14 @@ export default function NewInspectionPage() {
                 <div className="p-2 bg-red-50 rounded-lg">
                   <AlertCircle className="text-red-600" size={20} />
                 </div>
-                <h2 className="text-lg font-semibold text-gray-900">What Happened?</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">What Happened?</h2>
               </div>
               
               <div className="space-y-4">
                 {/* Date of Loss */}
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Date of Loss *
                     </label>
                     <input
@@ -265,12 +265,12 @@ export default function NewInspectionPage() {
                       value={formData.incident.dateOfLoss}
                       onChange={(e) => updateField('incident', 'dateOfLoss', e.target.value)}
                       max={new Date().toISOString().split('T')[0]}
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E74C3C]/20"
+                      className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E74C3C]/20"
                     />
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Estimated Value (Optional)
                     </label>
                     <div className="relative">
@@ -283,7 +283,7 @@ export default function NewInspectionPage() {
                           const formatted = value ? parseInt(value).toLocaleString() : ''
                           updateField('incident', 'estimatedValue', formatted)
                         }}
-                        className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E74C3C]/20"
+                        className="w-full pl-10 pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E74C3C]/20"
                         placeholder="50,000"
                       />
                     </div>
@@ -292,7 +292,7 @@ export default function NewInspectionPage() {
 
                 {/* Damage Types */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Damage Types * (Select all that apply)
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -318,7 +318,7 @@ export default function NewInspectionPage() {
 
                 {/* Severity */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Damage Severity *
                   </label>
                   <div className="grid grid-cols-4 gap-2">
@@ -354,14 +354,14 @@ export default function NewInspectionPage() {
 
                 {/* Brief Description */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Brief Description (Optional)
                   </label>
                   <textarea
                     value={formData.incident.initialDescription}
                     onChange={(e) => updateField('incident', 'initialDescription', e.target.value)}
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E74C3C]/20"
+                    className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#E74C3C]/20"
                     placeholder="Quick notes about the damage (can be added later)..."
                   />
                 </div>
@@ -374,12 +374,12 @@ export default function NewInspectionPage() {
                 <div className="p-2 bg-blue-50 rounded-lg">
                   <MapPin className="text-blue-600" size={20} />
                 </div>
-                <h2 className="text-lg font-semibold text-gray-900">Property Location</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Property Location</h2>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Property Address *
                   </label>
                   <input
@@ -397,7 +397,7 @@ export default function NewInspectionPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Property Type *
                   </label>
                   <div className="grid grid-cols-2 gap-3">
@@ -439,7 +439,7 @@ export default function NewInspectionPage() {
                 <div className="p-2 bg-amber-50 rounded-lg">
                   <Clock className="text-amber-600" size={20} />
                 </div>
-                <h2 className="text-lg font-semibold text-gray-900">Inspection Urgency</h2>
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Inspection Urgency</h2>
               </div>
               
               <div className="grid grid-cols-3 gap-2">
@@ -461,7 +461,7 @@ export default function NewInspectionPage() {
                       <div className="font-medium text-sm">
                         {level.label}
                       </div>
-                      <div className="text-[10px] text-gray-500 mt-0.5">{level.description}</div>
+                      <div className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{level.description}</div>
                     </div>
                   </button>
                 ))}
@@ -472,10 +472,10 @@ export default function NewInspectionPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+            <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
               <Link
                 href="/dashboard/inspection"
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 transition-colors"
               >
                 <ArrowLeft size={18} />
                 <span>Cancel</span>

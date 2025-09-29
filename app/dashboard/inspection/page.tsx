@@ -309,17 +309,17 @@ export default function InspectionListPage() {
       />
 
       {/* Search and Filters Section - Always Visible */}
-      <div className="bg-white rounded-2xl border border-gray-200/50 p-4">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-4">
         <div className="space-y-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
             <input
               type="text"
               placeholder="Search by address, client, or claim ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-gray-50/50 border border-gray-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:bg-white transition-all text-sm md:text-base"
+              className="w-full pl-12 pr-4 py-3 bg-gray-50/50 dark:bg-gray-800/50 border border-gray-200/60 dark:border-gray-700/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:bg-white dark:focus:bg-gray-700 transition-all text-sm md:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
           </div>
 
@@ -329,7 +329,7 @@ export default function InspectionListPage() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:border-stellar-orange/50"
+              className="px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:border-stellar-orange/50"
             >
               <option value="all">All Status</option>
               <option value="scheduled">Scheduled</option>
@@ -342,7 +342,7 @@ export default function InspectionListPage() {
             <select
               value={filterDamageType}
               onChange={(e) => setFilterDamageType(e.target.value)}
-              className="px-4 py-2.5 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:border-stellar-orange/50"
+              className="px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-stellar-orange/30 focus:border-stellar-orange/50"
             >
               <option value="all">All Damage Types</option>
               <option value="Hurricane">Hurricane</option>
@@ -357,7 +357,7 @@ export default function InspectionListPage() {
           {/* Active Filters Display */}
           {(filterStatus !== 'all' || filterDamageType !== 'all') && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-gray-600">Active filters:</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">Active filters:</span>
               {filterStatus !== 'all' && (
                 <button
                   onClick={() => setFilterStatus('all')}
@@ -381,7 +381,7 @@ export default function InspectionListPage() {
                   setFilterStatus('all')
                   setFilterDamageType('all')
                 }}
-                className="text-sm text-gray-500 hover:text-gray-700 underline"
+                className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline"
               >
                 Clear all
               </button>
@@ -392,9 +392,9 @@ export default function InspectionListPage() {
 
       {/* Scheduled Inspections Section */}
       {activeScheduledInspections.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200/50 p-4">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-4">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">Scheduled Inspections</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Scheduled Inspections</h2>
             <div className="flex items-center gap-3">
               {activeScheduledInspections.filter(i => i.status === 'in_progress').length > 0 && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
@@ -416,7 +416,7 @@ export default function InspectionListPage() {
                 key={inspection.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group border border-gray-200"
+                className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 cursor-pointer group border border-gray-200 dark:border-gray-700"
                 onClick={() => {
                   if (inspection.status === 'in_progress') {
                     // For in-progress inspections, continue the inspection
@@ -442,9 +442,9 @@ export default function InspectionListPage() {
                     <div className="absolute inset-0 bg-gray-300">
                       <div className="w-full h-full flex items-center justify-center">
                         {inspection.propertyType === 'Commercial' ? (
-                          <Building2 className="text-gray-400" size={64} />
+                          <Building2 className="text-gray-400 dark:text-gray-600" size={64} />
                         ) : (
-                          <Home className="text-gray-400" size={64} />
+                          <Home className="text-gray-400 dark:text-gray-600" size={64} />
                         )}
                       </div>
                     </div>
@@ -474,7 +474,7 @@ export default function InspectionListPage() {
                   </div>
                   
                   <div className="absolute top-2 left-2">
-                    <span className="inline-block px-2 py-1 rounded-full text-[10px] font-semibold bg-white/90 text-gray-800 shadow-lg">
+                    <span className="inline-block px-2 py-1 rounded-full text-[10px] font-semibold bg-white/90 dark:bg-gray-800/90 text-gray-800 dark:text-gray-200 shadow-lg">
                       {inspection.propertyType}
                     </span>
                   </div>
@@ -625,7 +625,7 @@ export default function InspectionListPage() {
       
       {/* Empty State - No inspections at all */}
       {activeScheduledInspections.length === 0 && !searchTerm && (
-        <div className="bg-white rounded-2xl border border-gray-200/50 p-12 text-center">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200/50 dark:border-gray-700/50 p-12 text-center">
           <AlertCircle className="text-gray-400 mx-auto mb-4" size={48} />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">No inspections found</h3>
           <p className="text-gray-600">Get started by creating your first inspection</p>

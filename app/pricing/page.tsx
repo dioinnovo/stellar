@@ -402,7 +402,7 @@ export default function InternalPricingOnePager() {
       ` }} />
 
       {/* Header */}
-      <header className="sticky top-0 z-20 backdrop-blur bg-white/80 border-b border-slate-200 print:hidden">
+      <header className="sticky top-0 z-20 backdrop-blur bg-white dark:bg-gray-900/80 border-b border-slate-200 print:hidden">
         <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between print:py-2">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-2xl bg-cyan-500/10 ring-1 ring-cyan-500/30 grid place-items-center">
@@ -414,10 +414,10 @@ export default function InternalPricingOnePager() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <a href={openaiPricing} target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-xs ring-1 ring-slate-200 transition">
+            <a href={openaiPricing} target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-900 hover:bg-slate-50 text-xs ring-1 ring-slate-200 transition">
               <LinkIcon className="h-3.5 w-3.5" /> OpenAI Pricing
             </a>
-            <a href={gcvPricing} target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-xs ring-1 ring-slate-200 transition">
+            <a href={gcvPricing} target="_blank" rel="noopener noreferrer" className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-gray-900 hover:bg-slate-50 text-xs ring-1 ring-slate-200 transition">
               <LinkIcon className="h-3.5 w-3.5" /> Google Vision Pricing
             </a>
             <button
@@ -452,7 +452,7 @@ export default function InternalPricingOnePager() {
             </ul>
           </div>
           <div>
-            <div className="relative rounded-3xl border border-slate-200/50 bg-white/70 backdrop-blur-sm p-6 shadow-sm">
+            <div className="relative rounded-3xl border border-slate-200/50 bg-white dark:bg-gray-900/70 backdrop-blur-sm p-6 shadow-sm">
               <h3 className="text-sm font-semibold text-slate-800">Visual Cost Snapshot</h3>
               <p className="text-xs text-slate-500 mb-4">Estimated all‑in cost per report (with 30% buffer applied).</p>
               <div className="mt-2 grid grid-cols-3 gap-4">
@@ -468,7 +468,7 @@ export default function InternalPricingOnePager() {
                   </div>
                 ))}
               </div>
-              <div className="mt-5 rounded-xl bg-slate-50/60 backdrop-blur-sm p-3 text-[13px] text-slate-700 ring-1 ring-slate-200/50">
+              <div className="mt-5 rounded-xl bg-slate-50 dark:bg-gray-900/60 backdrop-blur-sm p-3 text-[13px] text-slate-700 ring-1 ring-slate-200/50">
                 <p>COGS are dominated by STT minutes and number of photos processed; LLM + embeddings are minimal at this scale.</p>
               </div>
             </div>
@@ -479,11 +479,11 @@ export default function InternalPricingOnePager() {
         <section className="mt-14 print:mt-6">
           <h3 className="text-lg font-semibold">Authoritative Pricing Sources</h3>
           <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm print:grid-cols-2">
-            <a href={openaiPricing} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2 p-3 rounded-xl ring-1 ring-slate-200 bg-white hover:bg-slate-50 transition">
+            <a href={openaiPricing} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2 p-3 rounded-xl ring-1 ring-slate-200 bg-white dark:bg-gray-900 hover:bg-slate-50 transition">
               <LinkIcon className="h-4 w-4 text-cyan-700" /> OpenAI Pricing (Whisper, Embeddings, GPT‑4o mini)
               <span className="ml-auto text-xs text-slate-500 group-hover:text-slate-700">openai.com</span>
             </a>
-            <a href={gcvPricing} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2 p-3 rounded-xl ring-1 ring-slate-200 bg-white hover:bg-slate-50 transition">
+            <a href={gcvPricing} target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2 p-3 rounded-xl ring-1 ring-slate-200 bg-white dark:bg-gray-900 hover:bg-slate-50 transition">
               <LinkIcon className="h-4 w-4 text-cyan-700" /> Google Cloud Vision Pricing (Labels, Object Localization)
               <span className="ml-auto text-xs text-slate-500 group-hover:text-slate-700">cloud.google.com</span>
             </a>
@@ -498,7 +498,7 @@ export default function InternalPricingOnePager() {
           </div>
           <div className="mt-4 overflow-hidden rounded-2xl ring-1 ring-slate-200 print:mt-2">
             <table className="min-w-full divide-y divide-slate-200 text-sm print:text-xs">
-              <thead className="bg-slate-50/70 backdrop-blur-sm">
+              <thead className="bg-slate-50 dark:bg-gray-900/70 backdrop-blur-sm">
                 <tr>
                   <th className="px-4 py-3 text-left font-medium print:px-2 print:py-1">Component</th>
                   <th className="px-4 py-3 text-left font-medium print:px-2 print:py-1">Provider</th>
@@ -507,9 +507,9 @@ export default function InternalPricingOnePager() {
                   <th className="px-4 py-3 text-left font-medium print:px-2 print:py-1">Est. Cost / Report</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 bg-white">
+              <tbody className="divide-y divide-slate-200 bg-white dark:bg-gray-900">
                 {costRows.map((r, i) => (
-                  <tr key={i} className="hover:bg-slate-50">
+                  <tr key={i} className="hover:bg-slate-50 dark:bg-gray-900">
                     <td className="px-4 py-3 print:px-2 print:py-1">{r.component}</td>
                     <td className="px-4 py-3 print:px-2 print:py-1">{r.provider}</td>
                     <td className="px-4 py-3 print:px-2 print:py-1">{r.cost}</td>
@@ -517,7 +517,7 @@ export default function InternalPricingOnePager() {
                     <td className="px-4 py-3 font-semibold print:px-2 print:py-1">{r.est}</td>
                   </tr>
                 ))}
-                <tr className="bg-slate-50/70">
+                <tr className="bg-slate-50 dark:bg-gray-900/70">
                   <td className="px-4 py-3 font-semibold print:px-2 print:py-1" colSpan={4}>Total (incl. 30% buffer range)</td>
                   <td className="px-4 py-3 font-extrabold text-emerald-700 print:px-2 print:py-1">~$1–$3</td>
                 </tr>

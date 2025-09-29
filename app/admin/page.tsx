@@ -119,9 +119,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Navigation */}
-      <nav className="bg-white border-b border-gray-200">
+      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -135,24 +135,24 @@ export default function AdminDashboard() {
                 />
               </Link>
               <span className="text-gray-400">/</span>
-              <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Admin Dashboard</h1>
             </div>
             <div className="flex items-center gap-4">
               <Link 
                 href="/demo"
-                className="text-gray-600 hover:text-stellar-orange transition"
+                className="text-gray-600 dark:text-gray-400 hover:text-stellar-orange transition"
               >
                 Demo
               </Link>
               <Link 
                 href="/inspection"
-                className="text-gray-600 hover:text-stellar-orange transition"
+                className="text-gray-600 dark:text-gray-400 hover:text-stellar-orange transition"
               >
                 Inspection
               </Link>
               <button
                 onClick={fetchClaims}
-                className="p-2 text-gray-600 hover:text-stellar-orange transition"
+                className="p-2 text-gray-600 dark:text-gray-400 hover:text-stellar-orange transition"
               >
                 <RefreshCw size={20} />
               </button>
@@ -164,51 +164,51 @@ export default function AdminDashboard() {
       <div className="container mx-auto px-6 py-8">
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
             <div className="flex items-center justify-between mb-2">
               <FileText className="text-stellar-orange" size={24} />
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {claims.length}
               </span>
             </div>
-            <p className="text-gray-600">Total Claims</p>
-            <p className="text-sm text-gray-500 mt-1">This month</p>
+            <p className="text-gray-600 dark:text-gray-400">Total Claims</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">This month</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
             <div className="flex items-center justify-between mb-2">
               <DollarSign className="text-green-500" size={24} />
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 ${statistics?.totalEstimatedAmount.toLocaleString() || 0}
               </span>
             </div>
-            <p className="text-gray-600">Total Estimates</p>
-            <p className="text-sm text-gray-500 mt-1">Approved claims</p>
+            <p className="text-gray-600 dark:text-gray-400">Total Estimates</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Approved claims</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
             <div className="flex items-center justify-between mb-2">
               <Clock className="text-blue-500" size={24} />
-              <span className="text-2xl font-bold text-gray-900">
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                 {statistics?.averageProcessingTime || '2.5h'}
               </span>
             </div>
-            <p className="text-gray-600">Avg Processing</p>
-            <p className="text-sm text-gray-500 mt-1">Time to estimate</p>
+            <p className="text-gray-600 dark:text-gray-400">Avg Processing</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Time to estimate</p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
             <div className="flex items-center justify-between mb-2">
               <TrendingUp className="text-purple-500" size={24} />
-              <span className="text-2xl font-bold text-gray-900">94%</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">94%</span>
             </div>
-            <p className="text-gray-600">Approval Rate</p>
-            <p className="text-sm text-gray-500 mt-1">Last 30 days</p>
+            <p className="text-gray-600 dark:text-gray-400">Approval Rate</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Last 30 days</p>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 mb-6">
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex-1 min-w-[200px]">
               <div className="relative">
@@ -218,7 +218,7 @@ export default function AdminDashboard() {
                   placeholder="Search claims..."
                   value={filters.search}
                   onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
                 />
               </div>
             </div>
@@ -226,7 +226,7 @@ export default function AdminDashboard() {
             <select
               value={filters.status}
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
             >
               <option value="">All Status</option>
               <option value="SUBMITTED">Submitted</option>
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
             <select
               value={filters.type}
               onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
             >
               <option value="">All Types</option>
               <option value="commercial">Commercial</option>
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
             <select
               value={filters.priority}
               onChange={(e) => setFilters({ ...filters, priority: e.target.value })}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
             >
               <option value="">All Priority</option>
               <option value="URGENT">Urgent</option>
@@ -267,10 +267,10 @@ export default function AdminDashboard() {
         </div>
 
         {/* Claims Table */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-3 text-left">
                     <input
@@ -282,34 +282,34 @@ export default function AdminDashboard() {
                           setSelectedClaims([])
                         }
                       }}
-                      className="rounded border-gray-300"
+                      className="rounded border-gray-300 dark:border-gray-600"
                     />
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Claim #
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Type
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Insured
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Property
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Priority
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Estimate
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Submitted
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -317,7 +317,7 @@ export default function AdminDashboard() {
               <tbody className="divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={10} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={10} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                       <div className="flex justify-center items-center gap-2">
                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-stellar-orange" />
                         Loading claims...
@@ -326,13 +326,13 @@ export default function AdminDashboard() {
                   </tr>
                 ) : claims.length === 0 ? (
                   <tr>
-                    <td colSpan={10} className="px-6 py-12 text-center text-gray-500">
+                    <td colSpan={10} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">
                       No claims found
                     </td>
                   </tr>
                 ) : (
                   claims.map((claim) => (
-                    <tr key={claim.id} className="hover:bg-gray-50">
+                    <tr key={claim.id} className="hover:bg-gray-50 dark:bg-gray-900">
                       <td className="px-6 py-4">
                         <input
                           type="checkbox"
@@ -344,13 +344,13 @@ export default function AdminDashboard() {
                               setSelectedClaims(selectedClaims.filter(id => id !== claim.id))
                             }
                           }}
-                          className="rounded border-gray-300"
+                          className="rounded border-gray-300 dark:border-gray-600"
                         />
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           <Hash size={14} className="text-gray-400" />
-                          <span className="text-sm font-medium text-gray-900">
+                          <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                             {claim.claimNumber}
                           </span>
                         </div>
@@ -358,25 +358,25 @@ export default function AdminDashboard() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
                           {claim.type === 'commercial' ? (
-                            <Building2 size={16} className="text-gray-500" />
+                            <Building2 size={16} className="text-gray-500 dark:text-gray-400" />
                           ) : (
-                            <Home size={16} className="text-gray-500" />
+                            <Home size={16} className="text-gray-500 dark:text-gray-400" />
                           )}
-                          <span className="text-sm text-gray-700 capitalize">
+                          <span className="text-sm text-gray-700 dark:text-gray-300 capitalize">
                             {claim.type}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{claim.insuredName}</p>
-                          <p className="text-xs text-gray-500">{claim.insuredEmail}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{claim.insuredName}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{claim.insuredEmail}</p>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1">
                           <MapPin size={14} className="text-gray-400" />
-                          <span className="text-sm text-gray-700 truncate max-w-[200px]">
+                          <span className="text-sm text-gray-700 dark:text-gray-300 truncate max-w-[200px]">
                             {claim.propertyAddress}
                           </span>
                         </div>
@@ -395,12 +395,12 @@ export default function AdminDashboard() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm font-medium text-gray-900">
+                        <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
                           {claim.estimatedAmount ? `$${claim.estimatedAmount.toLocaleString()}` : '-'}
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm text-gray-700 dark:text-gray-300">
                           {new Date(claim.submittedAt).toLocaleDateString()}
                         </span>
                       </td>
@@ -420,22 +420,22 @@ export default function AdminDashboard() {
           </div>
 
           {/* Pagination */}
-          <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <div className="text-sm text-gray-700">
+          <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <div className="text-sm text-gray-700 dark:text-gray-300">
               Showing page {page} of {totalPages}
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page === 1}
-                className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft size={18} />
               </button>
               <button
                 onClick={() => setPage(Math.min(totalPages, page + 1))}
                 disabled={page === totalPages}
-                className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronRight size={18} />
               </button>

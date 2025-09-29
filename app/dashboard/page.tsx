@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { 
+import {
   TrendingUp, DollarSign, Users, FileText, Clock, AlertTriangle,
   Calendar, BarChart3, Activity, Zap, Target, Shield,
   ArrowUp, ArrowDown, Building2, Home, Droplets, Flame,
-  CloudRain, Palette, Briefcase
+  CloudRain, Palette, Briefcase, Presentation
 } from 'lucide-react'
 import Link from 'next/link'
 import { PageHeader } from '@/components/ui/page-header'
@@ -91,12 +91,12 @@ export default function DashboardPage() {
         {kpiCards.map((kpi, index) => (
           <div
             key={kpi.title}
-            className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 sm:p-6 hover:shadow-lg transition"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 p-3 sm:p-6 hover:shadow-lg transition"
           >
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
               <div className="flex-1">
-                <p className="text-xs sm:text-sm text-gray-600">{kpi.title}</p>
-                <p className="text-xl sm:text-3xl font-bold text-stellar-dark mt-1 sm:mt-2">{kpi.value}</p>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{kpi.title}</p>
+                <p className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mt-1 sm:mt-2">{kpi.value}</p>
                 <div className="flex items-center gap-1 sm:gap-2 mt-2 sm:mt-3">
                   {kpi.trend === 'up' ? (
                     <ArrowUp className="text-green-500" size={14} />
@@ -106,7 +106,7 @@ export default function DashboardPage() {
                   <span className={`text-xs sm:text-sm font-medium ${kpi.trend === 'up' ? 'text-green-500' : 'text-red-500'}`}>
                     {kpi.change}
                   </span>
-                  <span className="text-[10px] sm:text-xs text-gray-500 hidden sm:inline">vs last month</span>
+                  <span className="text-[10px] sm:text-xs text-gray-500 dark:text-gray-400 hidden sm:inline">vs last month</span>
                 </div>
               </div>
               <div className={`p-2 sm:p-3 rounded-lg ${kpi.lightColor} mt-2 sm:mt-0`}>
@@ -118,9 +118,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Scheduled Inspections */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg sm:text-xl font-bold text-stellar-dark">Scheduled Inspections</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Scheduled Inspections</h2>
           <Link href="/dashboard/inspection" className="text-stellar-orange text-sm hover:underline">
             View All
           </Link>
@@ -128,10 +128,10 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4">
           {scheduledInspections.map((inspection) => (
-            <div key={inspection.id} className="p-4 border border-gray-200 rounded-lg hover:border-stellar-orange transition bg-white hover:shadow-md">
+            <div key={inspection.id} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-stellar-orange transition bg-white dark:bg-gray-800 hover:shadow-md">
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-semibold text-sm text-stellar-dark leading-tight mb-1">{inspection.property}</h3>
+                  <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100 leading-tight mb-1">{inspection.property}</h3>
                   <span className={`inline-block px-2 py-0.5 text-xs font-medium rounded-full ${
                     inspection.status === 'confirmed' ? 'bg-green-100 text-green-600' :
                     'bg-yellow-100 text-yellow-600'
@@ -139,14 +139,14 @@ export default function DashboardPage() {
                     {inspection.status}
                   </span>
                 </div>
-                <div className="space-y-2 pt-2 border-t border-gray-100">
+                <div className="space-y-2 pt-2 border-t border-gray-100 dark:border-gray-800">
                   <div className="flex items-center gap-2">
                     <Calendar size={14} className="text-gray-400 flex-shrink-0" />
-                    <span className="text-xs text-gray-600">{inspection.time}</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">{inspection.time}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-3.5 h-3.5 rounded-full bg-orange-400 flex-shrink-0" />
-                    <span className="text-xs text-gray-700 font-medium">{inspection.type}</span>
+                    <span className="text-xs text-gray-700 dark:text-gray-300 font-medium">{inspection.type}</span>
                   </div>
                 </div>
               </div>
@@ -156,9 +156,9 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Activity - Full Width */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg sm:text-xl font-bold text-stellar-dark">Recent Activity</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100">Recent Activity</h2>
           <Link href="/dashboard/activity" className="text-stellar-orange text-sm hover:underline">
             View All
           </Link>
@@ -166,7 +166,7 @@ export default function DashboardPage() {
 
         <div className="space-y-4">
           {recentActivity.map((activity) => (
-            <div key={activity.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div key={activity.id} className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition">
               <div className={`p-2 rounded-lg ${
                 activity.status === 'new' ? 'bg-blue-100' :
                 activity.status === 'success' ? 'bg-green-100' :
@@ -175,13 +175,13 @@ export default function DashboardPage() {
               }`}>
                 {activity.type === 'claim_submitted' && <FileText className="text-blue-600" size={20} />}
                 {activity.type === 'settlement_reached' && <DollarSign className="text-green-600" size={20} />}
-                {activity.type === 'inspection_complete' && <Shield className="text-gray-600" size={20} />}
+                {activity.type === 'inspection_complete' && <Shield className="text-gray-600 dark:text-gray-400" size={20} />}
                 {activity.type === 'negotiation_update' && <Activity className="text-yellow-600" size={20} />}
-                {activity.type === 'document_uploaded' && <FileText className="text-gray-600" size={20} />}
+                {activity.type === 'document_uploaded' && <FileText className="text-gray-600 dark:text-gray-400" size={20} />}
               </div>
               <div className="flex-1">
-                <p className="font-medium text-stellar-dark">{activity.title}</p>
-                <p className="text-sm text-gray-500 mt-1">{activity.time}</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100">{activity.title}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{activity.time}</p>
               </div>
             </div>
           ))}
@@ -190,54 +190,54 @@ export default function DashboardPage() {
 
       {/* Claims by Type */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-bold text-stellar-dark mb-4">Claims by Type</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Claims by Type</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
               <AlertTriangle className="text-orange-500 w-8 h-8 mb-2" />
-              <span className="text-2xl font-bold text-gray-900">18</span>
-              <span className="text-xs text-gray-600 text-center mt-1">Hurricane</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">18</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 text-center mt-1">Hurricane</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
               <Droplets className="text-blue-500 w-8 h-8 mb-2" />
-              <span className="text-2xl font-bold text-gray-900">12</span>
-              <span className="text-xs text-gray-600 text-center mt-1">Water</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">12</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 text-center mt-1">Water</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
               <Flame className="text-red-500 w-8 h-8 mb-2" />
-              <span className="text-2xl font-bold text-gray-900">8</span>
-              <span className="text-xs text-gray-600 text-center mt-1">Fire</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">8</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 text-center mt-1">Fire</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
               <Shield className="text-purple-500 w-8 h-8 mb-2" />
-              <span className="text-2xl font-bold text-gray-900">5</span>
-              <span className="text-xs text-gray-600 text-center mt-1">Vandalism</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">5</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 text-center mt-1">Vandalism</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
-              <Home className="text-gray-600 w-8 h-8 mb-2" />
-              <span className="text-2xl font-bold text-gray-900">9</span>
-              <span className="text-xs text-gray-600 text-center mt-1">Roof</span>
+            <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+              <Home className="text-gray-600 dark:text-gray-400 w-8 h-8 mb-2" />
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">9</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 text-center mt-1">Roof</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
               <CloudRain className="text-cyan-500 w-8 h-8 mb-2" />
-              <span className="text-2xl font-bold text-gray-900">7</span>
-              <span className="text-xs text-gray-600 text-center mt-1">Flood</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">7</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 text-center mt-1">Flood</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
               <Palette className="text-green-600 w-8 h-8 mb-2" />
-              <span className="text-2xl font-bold text-gray-900">4</span>
-              <span className="text-xs text-gray-600 text-center mt-1">Mold</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">4</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 text-center mt-1">Mold</span>
             </div>
-            <div className="flex flex-col items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition">
+            <div className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition">
               <Briefcase className="text-indigo-500 w-8 h-8 mb-2" />
-              <span className="text-2xl font-bold text-gray-900">6</span>
-              <span className="text-xs text-gray-600 text-center mt-1">Business Loss</span>
+              <span className="text-2xl font-bold text-gray-900 dark:text-gray-100">6</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400 text-center mt-1">Business Loss</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
-          <h2 className="text-lg sm:text-xl font-bold text-stellar-dark mb-4">Property Types</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">Property Types</h2>
           <div className="space-y-4">
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -245,9 +245,9 @@ export default function DashboardPage() {
                   <Building2 className="text-blue-500 w-5 h-5" />
                   <span className="font-medium text-sm sm:text-base">Commercial</span>
                 </div>
-                <span className="text-xs sm:text-sm text-gray-600">60%</span>
+                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">60%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div className="bg-blue-500 h-2 rounded-full" style={{ width: '60%' }}></div>
               </div>
             </div>
@@ -257,12 +257,23 @@ export default function DashboardPage() {
                   <Home className="text-green-500 w-5 h-5" />
                   <span className="font-medium text-sm sm:text-base">Residential</span>
                 </div>
-                <span className="text-xs sm:text-sm text-gray-600">40%</span>
+                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">40%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div className="bg-green-500 h-2 rounded-full" style={{ width: '40%' }}></div>
               </div>
             </div>
+          </div>
+
+          {/* Discreet Presentation Button */}
+          <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <Link
+              href="/presentation"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:text-stellar-orange bg-gray-50 dark:bg-gray-700 hover:bg-orange-50 dark:hover:bg-gray-600 rounded-lg transition-all duration-200"
+            >
+              <Presentation size={16} />
+              <span>View Presentation</span>
+            </Link>
           </div>
         </div>
       </div>

@@ -177,10 +177,10 @@ export default function ClaimDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stellar-orange mx-auto mb-4" />
-          <p className="text-gray-600">Loading claim details...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading claim details...</p>
         </div>
       </div>
     )
@@ -188,10 +188,10 @@ export default function ClaimDetailPage() {
 
   if (!claim) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <AlertTriangle className="text-red-500 mx-auto mb-4" size={48} />
-          <p className="text-gray-600">Claim not found</p>
+          <p className="text-gray-600 dark:text-gray-400">Claim not found</p>
           <Link href="/admin" className="text-stellar-orange hover:underline mt-2 inline-block">
             Back to Dashboard
           </Link>
@@ -201,15 +201,15 @@ export default function ClaimDetailPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link 
                 href="/admin"
-                className="flex items-center gap-2 text-gray-600 hover:text-stellar-orange transition"
+                className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-stellar-orange transition"
               >
                 <ArrowLeft size={20} />
                 Back to Dashboard
@@ -217,7 +217,7 @@ export default function ClaimDetailPage() {
               <span className="text-gray-400">|</span>
               <div className="flex items-center gap-2">
                 <Hash size={16} className="text-gray-400" />
-                <h1 className="text-3xl font-bold text-gray-800">{claim.claimNumber}</h1>
+                <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">{claim.claimNumber}</h1>
               </div>
             </div>
             
@@ -236,7 +236,7 @@ export default function ClaimDetailPage() {
                       setIsEditing(false)
                       setEditedClaim(claim)
                     }}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 rounded-lg hover:bg-gray-300 transition"
                   >
                     <X size={18} />
                     Cancel
@@ -251,7 +251,7 @@ export default function ClaimDetailPage() {
                     <Edit size={18} />
                     Edit Claim
                   </button>
-                  <button className="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                  <button className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 rounded-lg hover:bg-gray-300 transition">
                     <Download size={18} />
                     Export
                   </button>
@@ -267,16 +267,16 @@ export default function ClaimDetailPage() {
           {/* Left Column - Main Information */}
           <div className="lg:col-span-2 space-y-6">
             {/* Status Card */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-800">Claim Status</h2>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Claim Status</h2>
                 <div className="flex items-center gap-3">
                   {isEditing ? (
                     <>
                       <select
                         value={editedClaim.status}
                         onChange={(e) => setEditedClaim({ ...editedClaim, status: e.target.value })}
-                        className="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                        className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
                       >
                         <option value="SUBMITTED">Submitted</option>
                         <option value="TRIAGING">Triaging</option>
@@ -289,7 +289,7 @@ export default function ClaimDetailPage() {
                       <select
                         value={editedClaim.priority}
                         onChange={(e) => setEditedClaim({ ...editedClaim, priority: e.target.value })}
-                        className="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                        className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
                       >
                         <option value="LOW">Low</option>
                         <option value="MEDIUM">Medium</option>
@@ -313,26 +313,26 @@ export default function ClaimDetailPage() {
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">Submitted</p>
-                  <p className="font-medium text-gray-900">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Submitted</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
                     {new Date(claim.submittedAt).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Last Updated</p>
-                  <p className="font-medium text-gray-900">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Last Updated</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
                     {new Date(claim.updatedAt).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Processing Time</p>
-                  <p className="font-medium text-gray-900">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Processing Time</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
                     {Math.round((new Date(claim.updatedAt).getTime() - new Date(claim.submittedAt).getTime()) / (1000 * 60 * 60))} hours
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Lead Status</p>
-                  <p className="font-medium text-gray-900">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Lead Status</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">
                     {claim.lead?.qualification || 'N/A'}
                   </p>
                 </div>
@@ -340,12 +340,12 @@ export default function ClaimDetailPage() {
             </div>
 
             {/* Property & Damage Details */}
-            <div className="bg-white rounded-lg shadow-sm">
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
               <button
                 onClick={() => toggleSection('details')}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:bg-gray-900 transition"
               >
-                <h2 className="text-lg font-semibold text-gray-800">Property & Damage Details</h2>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Property & Damage Details</h2>
                 {expandedSections.details ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
               </button>
               
@@ -353,43 +353,43 @@ export default function ClaimDetailPage() {
                 <div className="px-6 pb-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h3 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
+                      <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
                         {claim.type === 'commercial' ? <Building2 size={18} /> : <Home size={18} />}
                         Property Information
                       </h3>
                       <div className="space-y-2">
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Type:</span>
+                          <span className="text-gray-500 dark:text-gray-400">Type:</span>
                           <span className="font-medium capitalize">{claim.type}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Address:</span>
+                          <span className="text-gray-500 dark:text-gray-400">Address:</span>
                           <span className="font-medium text-right">{claim.propertyAddress}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Policy #:</span>
+                          <span className="text-gray-500 dark:text-gray-400">Policy #:</span>
                           <span className="font-medium">{claim.policyNumber || 'N/A'}</span>
                         </div>
                       </div>
                     </div>
                     
                     <div>
-                      <h3 className="font-medium text-gray-700 mb-3 flex items-center gap-2">
+                      <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
                         <AlertTriangle size={18} />
                         Damage Information
                       </h3>
                       <div className="space-y-2">
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Type:</span>
+                          <span className="text-gray-500 dark:text-gray-400">Type:</span>
                           <span className="font-medium">{claim.damageType}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Severity:</span>
+                          <span className="text-gray-500 dark:text-gray-400">Severity:</span>
                           <span className="font-medium">{claim.severity || 'N/A'}</span>
                         </div>
                         <div className="mt-3">
-                          <span className="text-gray-500">Description:</span>
-                          <p className="mt-1 text-sm text-gray-700">{claim.damageDescription || 'No description provided'}</p>
+                          <span className="text-gray-500 dark:text-gray-400">Description:</span>
+                          <p className="mt-1 text-sm text-gray-700 dark:text-gray-300">{claim.damageDescription || 'No description provided'}</p>
                         </div>
                       </div>
                     </div>
@@ -399,12 +399,12 @@ export default function ClaimDetailPage() {
             </div>
 
             {/* AI Analysis */}
-            <div className="bg-white rounded-lg shadow-sm">
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
               <button
                 onClick={() => toggleSection('ai')}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:bg-gray-900 transition"
               >
-                <h2 className="text-lg font-semibold text-gray-800">AI Analysis & Estimates</h2>
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">AI Analysis & Estimates</h2>
                 {expandedSections.ai ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
               </button>
               
@@ -417,8 +417,8 @@ export default function ClaimDetailPage() {
                           <Shield className="text-green-600" size={28} />
                         </div>
                       </div>
-                      <p className="text-sm text-gray-500">AI Confidence</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">AI Confidence</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                         {(claim.aiConfidence * 100).toFixed(1)}%
                       </p>
                     </div>
@@ -429,8 +429,8 @@ export default function ClaimDetailPage() {
                           <AlertTriangle className="text-yellow-600" size={28} />
                         </div>
                       </div>
-                      <p className="text-sm text-gray-500">Fraud Score</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Fraud Score</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                         {(claim.fraudScore * 100).toFixed(1)}%
                       </p>
                     </div>
@@ -441,44 +441,44 @@ export default function ClaimDetailPage() {
                           <TrendingUp className="text-blue-600" size={28} />
                         </div>
                       </div>
-                      <p className="text-sm text-gray-500">Settlement Score</p>
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Settlement Score</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                         {(claim.settlementScore * 100).toFixed(1)}%
                       </p>
                     </div>
                   </div>
                   
                   <div className="border-t pt-4">
-                    <h3 className="font-medium text-gray-700 mb-3">Financial Summary</h3>
+                    <h3 className="font-medium text-gray-700 dark:text-gray-300 mb-3">Financial Summary</h3>
                     <div className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-500">Estimated Amount:</span>
-                        <span className="text-xl font-bold text-gray-900">
+                        <span className="text-gray-500 dark:text-gray-400">Estimated Amount:</span>
+                        <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
                           ${claim.estimatedAmount?.toLocaleString() || '0'}
                         </span>
                       </div>
                       {isEditing ? (
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-500">Approved Amount:</span>
+                          <span className="text-gray-500 dark:text-gray-400">Approved Amount:</span>
                           <input
                             type="number"
                             value={editedClaim.approvedAmount || ''}
                             onChange={(e) => setEditedClaim({ ...editedClaim, approvedAmount: parseFloat(e.target.value) })}
-                            className="px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                            className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange"
                             placeholder="Enter amount"
                           />
                         </div>
                       ) : (
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-500">Approved Amount:</span>
+                          <span className="text-gray-500 dark:text-gray-400">Approved Amount:</span>
                           <span className="text-xl font-bold text-green-600">
                             ${claim.approvedAmount?.toLocaleString() || 'Pending'}
                           </span>
                         </div>
                       )}
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-500">Deductible:</span>
-                        <span className="text-lg text-gray-700">
+                        <span className="text-gray-500 dark:text-gray-400">Deductible:</span>
+                        <span className="text-lg text-gray-700 dark:text-gray-300">
                           ${claim.deductible?.toLocaleString() || '0'}
                         </span>
                       </div>
@@ -489,12 +489,12 @@ export default function ClaimDetailPage() {
             </div>
 
             {/* Documents */}
-            <div className="bg-white rounded-lg shadow-sm">
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
               <button
                 onClick={() => toggleSection('documents')}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:bg-gray-900 transition"
               >
-                <h2 className="text-lg font-semibold text-gray-800">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                   Documents ({claim.documents.length})
                 </h2>
                 {expandedSections.documents ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -505,21 +505,21 @@ export default function ClaimDetailPage() {
                   {claim.documents.length > 0 ? (
                     <div className="space-y-3">
                       {claim.documents.map((doc) => (
-                        <div key={doc.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div key={doc.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                           <div className="flex items-center gap-3">
-                            <FileImage className="text-gray-500" size={20} />
+                            <FileImage className="text-gray-500 dark:text-gray-400" size={20} />
                             <div>
-                              <p className="font-medium text-gray-900">{doc.filename}</p>
-                              <p className="text-sm text-gray-500">
+                              <p className="font-medium text-gray-900 dark:text-gray-100">{doc.filename}</p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
                                 Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}
                               </p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <button className="p-2 text-gray-600 hover:text-stellar-orange transition">
+                            <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-stellar-orange transition">
                               <Eye size={18} />
                             </button>
-                            <button className="p-2 text-gray-600 hover:text-stellar-orange transition">
+                            <button className="p-2 text-gray-600 dark:text-gray-400 hover:text-stellar-orange transition">
                               <Download size={18} />
                             </button>
                           </div>
@@ -527,7 +527,7 @@ export default function ClaimDetailPage() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500">No documents uploaded</p>
+                    <p className="text-gray-500 dark:text-gray-400">No documents uploaded</p>
                   )}
                 </div>
               )}
@@ -537,20 +537,20 @@ export default function ClaimDetailPage() {
           {/* Right Column - Contact & Activity */}
           <div className="space-y-6">
             {/* Contact Information */}
-            <div className="bg-white rounded-lg shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Contact Information</h2>
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
+              <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Contact Information</h2>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <User className="text-gray-400" size={20} />
                   <div>
-                    <p className="text-sm text-gray-500">Insured Name</p>
-                    <p className="font-medium text-gray-900">{claim.insuredName}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Insured Name</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{claim.insuredName}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="text-gray-400" size={20} />
                   <div>
-                    <p className="text-sm text-gray-500">Email</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Email</p>
                     <a href={`mailto:${claim.insuredEmail}`} className="font-medium text-stellar-orange hover:underline">
                       {claim.insuredEmail}
                     </a>
@@ -559,7 +559,7 @@ export default function ClaimDetailPage() {
                 <div className="flex items-center gap-3">
                   <Phone className="text-gray-400" size={20} />
                   <div>
-                    <p className="text-sm text-gray-500">Phone</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Phone</p>
                     <a href={`tel:${claim.insuredPhone}`} className="font-medium text-stellar-orange hover:underline">
                       {claim.insuredPhone}
                     </a>
@@ -572,7 +572,7 @@ export default function ClaimDetailPage() {
                   <Send size={18} />
                   Send Email
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 rounded-lg hover:bg-gray-300 transition">
                   <MessageSquare size={18} />
                   Add Note
                 </button>
@@ -581,8 +581,8 @@ export default function ClaimDetailPage() {
 
             {/* GraphRAG Enrichments */}
             {claim.enrichments.length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-6">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
                   <Lightbulb className="text-yellow-500" size={20} />
                   AI Suggestions
                 </h2>
@@ -597,7 +597,7 @@ export default function ClaimDetailPage() {
                           <div className="w-6 h-6 bg-stellar-orange text-white rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
                             {index + 1}
                           </div>
-                          <p className="text-sm text-gray-700 flex-1">{content.text}</p>
+                          <p className="text-sm text-gray-700 dark:text-gray-300 flex-1">{content.text}</p>
                         </div>
                       )
                     })}
@@ -606,12 +606,12 @@ export default function ClaimDetailPage() {
             )}
 
             {/* Activity Timeline */}
-            <div className="bg-white rounded-lg shadow-sm">
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
               <button
                 onClick={() => toggleSection('timeline')}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition"
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:bg-gray-900 transition"
               >
-                <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center gap-2">
                   <Activity size={20} />
                   Activity Timeline
                 </h2>
@@ -624,13 +624,13 @@ export default function ClaimDetailPage() {
                     {claim.activities.map((activity, index) => (
                       <div key={activity.id} className="flex gap-3">
                         <div className="flex-shrink-0">
-                          <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                            <Activity className="text-gray-500" size={16} />
+                          <div className="w-8 h-8 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                            <Activity className="text-gray-500 dark:text-gray-400" size={16} />
                           </div>
                         </div>
                         <div className="flex-1">
-                          <p className="text-sm font-medium text-gray-900">{activity.description}</p>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{activity.description}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                             {new Date(activity.createdAt).toLocaleString()}
                           </p>
                         </div>

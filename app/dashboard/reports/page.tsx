@@ -218,17 +218,17 @@ export default function ReportsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'approved':
-        return 'bg-green-100 text-green-800 border-green-200'
+        return 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 border-green-200 dark:border-green-800'
       case 'pending_approval':
-        return 'bg-blue-100 text-blue-800 border-blue-200'
+        return 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800'
       case 'in_review':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+        return 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800'
       case 'sent':
-        return 'bg-purple-100 text-purple-800 border-purple-200'
+        return 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-800'
       case 'requires_revision':
-        return 'bg-red-100 text-red-800 border-red-200'
+        return 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200'
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 border-gray-200 dark:border-gray-700'
     }
   }
 
@@ -295,45 +295,45 @@ export default function ReportsPage() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-2">
             <FileText className="w-8 h-8 text-gray-400" />
-            <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-600 rounded">Total</span>
+            <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 rounded">Total</span>
           </div>
-          <p className="text-2xl font-bold text-stellar-dark">{stats.total}</p>
-          <p className="text-sm text-gray-500 mt-1">Reports Generated</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.total}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Reports Generated</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-2">
             <CheckCircle className="w-8 h-8 text-green-500" />
-            <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded">Approved</span>
+            <span className="text-xs font-medium px-2 py-1 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded">Approved</span>
           </div>
-          <p className="text-2xl font-bold text-stellar-dark">{stats.approved}</p>
-          <p className="text-sm text-gray-500 mt-1">Ready to Submit</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{stats.approved}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Ready to Submit</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-2">
             <DollarSign className="w-8 h-8 text-green-600" />
-            <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded">Value</span>
+            <span className="text-xs font-medium px-2 py-1 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded">Value</span>
           </div>
-          <p className="text-xl font-bold text-stellar-dark">{formatCurrency(stats.totalSettlement)}</p>
-          <p className="text-sm text-gray-500 mt-1">Total Settlements</p>
+          <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{formatCurrency(stats.totalSettlement)}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Total Settlements</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between mb-2">
             <TrendingUp className="w-8 h-8 text-stellar-orange" />
-            <span className="text-xs font-medium px-2 py-1 bg-orange-100 text-stellar-orange rounded">Avg</span>
+            <span className="text-xs font-medium px-2 py-1 bg-orange-100 dark:bg-orange-900/20 text-stellar-orange dark:text-orange-400 rounded">Avg</span>
           </div>
-          <p className="text-2xl font-bold text-stellar-dark">+{stats.averageIncrease.toFixed(1)}%</p>
-          <p className="text-sm text-gray-500 mt-1">Settlement Increase</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">+{stats.averageIncrease.toFixed(1)}%</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Settlement Increase</p>
         </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="bg-white rounded-xl shadow-sm p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4">
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -342,7 +342,7 @@ export default function ReportsPage() {
               placeholder="Search by property, claim number, or adjuster..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange/20 focus:border-stellar-orange"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange/20 focus:border-stellar-orange"
             />
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -353,7 +353,7 @@ export default function ReportsPage() {
                 className={`px-4 py-2 rounded-lg font-medium transition ${
                   selectedFilter === filter
                     ? 'bg-stellar-orange text-white'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
               >
                 {filter === 'all' ? `All (${stats.total})` :
@@ -377,7 +377,7 @@ export default function ReportsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
           >
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer"
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer"
                  onClick={() => {
                    if (report.status === 'approved' || report.status === 'sent') {
                      // For approved/sent reports, go to the comprehensive report view
@@ -403,7 +403,7 @@ export default function ReportsPage() {
 
                 {/* Property Type Badge */}
                 <div className="absolute top-3 left-3">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/90 text-gray-800 shadow-lg">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white dark:bg-gray-800/90 text-gray-800 dark:text-gray-200 shadow-lg">
                     {report.property.type === 'residential' ?
                       <Home className="w-3.5 h-3.5" /> :
                       <Building2 className="w-3.5 h-3.5" />
@@ -440,12 +440,12 @@ export default function ReportsPage() {
                 {/* Claim Info */}
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <p className="text-xs text-gray-500">Claim Number</p>
-                    <p className="font-semibold text-stellar-dark">{report.claimNumber}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Claim Number</p>
+                    <p className="font-semibold text-gray-900 dark:text-gray-100">{report.claimNumber}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-gray-500">Completed</p>
-                    <p className="font-medium text-gray-700">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Completed</p>
+                    <p className="font-medium text-gray-700 dark:text-gray-300">
                       {typeof report.completedDate === 'string'
                         ? new Date(report.completedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
                         : report.completedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
@@ -455,10 +455,10 @@ export default function ReportsPage() {
 
                 {/* Settlement Info */}
                 {report.status === 'approved' && (
-                  <div className="bg-green-50 rounded-lg p-3 mb-4">
+                  <div className="bg-green-50 dark:bg-green-900/10 rounded-lg p-3 mb-4">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-gray-600">Settlement Value</span>
-                      <span className="text-xs font-medium px-2 py-0.5 bg-green-100 text-green-700 rounded">
+                      <span className="text-sm text-gray-600 dark:text-gray-400">Settlement Value</span>
+                      <span className="text-xs font-medium px-2 py-0.5 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded">
                         +{report.settlement.increase}%
                       </span>
                     </div>
@@ -466,7 +466,7 @@ export default function ReportsPage() {
                       <span className="text-2xl font-bold text-green-600">
                         {formatCurrency(report.settlement.approved)}
                       </span>
-                      <span className="text-sm text-gray-500 line-through">
+                      <span className="text-sm text-gray-500 dark:text-gray-400 line-through">
                         {formatCurrency(report.settlement.estimated)}
                       </span>
                     </div>
@@ -479,38 +479,38 @@ export default function ReportsPage() {
                     <div className="flex items-center justify-center mb-1">
                       <Shield className="w-4 h-4 text-gray-400" />
                     </div>
-                    <p className="text-xs text-gray-500">Damage</p>
-                    <p className="text-sm font-medium text-gray-900">{report.damageType}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Damage</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{report.damageType}</p>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-1">
                       <Award className="w-4 h-4 text-gray-400" />
                     </div>
-                    <p className="text-xs text-gray-500">AI Score</p>
-                    <p className="text-sm font-medium text-gray-900">{report.confidenceScore}%</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">AI Score</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{report.confidenceScore}%</p>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-1">
                       <Clock className="w-4 h-4 text-gray-400" />
                     </div>
-                    <p className="text-xs text-gray-500">Time</p>
-                    <p className="text-sm font-medium text-gray-900">{report.timeToComplete}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Time</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{report.timeToComplete}</p>
                   </div>
                 </div>
 
                 {/* Inspector Info */}
-                <div className="flex items-center gap-2 py-3 border-t border-gray-100">
-                  <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-gray-600" />
+                <div className="flex items-center gap-2 py-3 border-t border-gray-100 dark:border-gray-800">
+                  <div className="w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
                       {report.adjuster?.name || 'Inspector Assigned'}
                     </p>
                     {report.adjuster && (
                       <div className="flex items-center gap-1">
                         <Star className="w-3 h-3 text-yellow-500 fill-current" />
-                        <span className="text-xs text-gray-500">{report.adjuster.rating}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{report.adjuster.rating}</span>
                       </div>
                     )}
                   </div>
@@ -557,7 +557,7 @@ export default function ReportsPage() {
                           const inspectionId = report.inspectionId || 'INS-002';
                           router.push(`/dashboard/inspection/${inspectionId}/report`);
                         }}
-                        className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+                        className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition"
                       >
                         <Eye className="w-4 h-4" />
                         <span className="text-sm font-medium">View</span>
@@ -583,11 +583,11 @@ export default function ReportsPage() {
 
       {/* Empty State */}
       {filteredReports.length === 0 && (
-        <div className="bg-white rounded-xl shadow-sm p-12">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-12">
           <div className="text-center">
             <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Reports Found</h3>
-            <p className="text-gray-600">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">No Reports Found</h3>
+            <p className="text-gray-600 dark:text-gray-400">
               {searchTerm ? 'Try adjusting your search or filters' : 'No completed reports available'}
             </p>
           </div>

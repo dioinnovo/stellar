@@ -184,8 +184,8 @@ export function PropertyAreaSwipe({
                           {getCategoryIcon(area)}
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900">{area.name}</h3>
-                          <p className="text-sm text-gray-500">{area.category}</p>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{area.name}</h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{area.category}</p>
                         </div>
                       </div>
                       <div className={`
@@ -200,10 +200,10 @@ export function PropertyAreaSwipe({
                   {/* Card Body */}
                   <div className="p-6">
                     {/* Preview Image Placeholder */}
-                    <div className="w-full h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
+                    <div className="w-full h-48 bg-gray-100 dark:bg-gray-800 rounded-lg mb-4 flex items-center justify-center">
                       <div className="text-center">
                         <Camera className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                        <p className="text-sm text-gray-500">Area Preview</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Area Preview</p>
                       </div>
                     </div>
 
@@ -211,13 +211,13 @@ export function PropertyAreaSwipe({
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div className="flex items-center gap-2">
                         <Camera className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
                           {area.photoCount || 0} Photos
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <FileText className="w-4 h-4 text-gray-400" />
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">
                           {area.notesCount || 0} Notes
                         </span>
                       </div>
@@ -226,11 +226,11 @@ export function PropertyAreaSwipe({
                     {/* Progress Bar */}
                     {area.completionPercentage !== undefined && (
                       <div className="mb-4">
-                        <div className="flex justify-between text-xs text-gray-600 mb-1">
+                        <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
                           <span>Progress</span>
                           <span>{area.completionPercentage}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                           <div 
                             className="bg-stellar-orange h-2 rounded-full transition-all"
                             style={{ width: `${area.completionPercentage}%` }}
@@ -241,7 +241,7 @@ export function PropertyAreaSwipe({
 
                     {/* Swipe Hints (only for top card) */}
                     {isTopCard && (
-                      <div className="flex justify-between items-center text-xs text-gray-500">
+                      <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
                         <div className="flex items-center gap-1">
                           <SkipForward className="w-3 h-3" />
                           <span>Swipe left to skip</span>
@@ -308,7 +308,7 @@ export function PropertyAreaSwipe({
       {/* Remaining Areas Indicator */}
       {cards.length > 0 && (
         <div className="text-center mt-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             {currentAreaIndex + 1} of {areas.length} areas
           </p>
           <div className="flex justify-center gap-1 mt-2">

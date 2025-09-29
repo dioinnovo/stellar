@@ -152,7 +152,7 @@ export default function DemoPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 border-b border-gray-200">
+      <nav className="fixed top-0 w-full bg-white dark:bg-gray-900/80 backdrop-blur-md z-50 border-b border-gray-200">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center space-x-2">
@@ -168,7 +168,7 @@ export default function DemoPage() {
             <div className="flex items-center gap-4">
               <Link 
                 href="/"
-                className="text-gray-700 hover:text-stellar-orange transition"
+                className="text-gray-700 dark:text-gray-300 hover:text-stellar-orange transition"
               >
                 Back to Overview
               </Link>
@@ -184,7 +184,7 @@ export default function DemoPage() {
             <h1 className="text-4xl font-bold text-stellar-dark mb-4">
               Your AI Claims Assistant in Action
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Experience how AI will enhance your claims operations with instant classification, 
               automated estimates, and intelligent fraud detection
             </p>
@@ -219,12 +219,12 @@ export default function DemoPage() {
             >
               {/* Claims Intelligence Tab - Initial Assessment & Triage */}
               {activeTab === 'claims-intelligence' && (
-                <div className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
                   <div className="max-w-5xl mx-auto">
                     <h2 className="text-2xl font-bold text-stellar-dark mb-4">
                       Comprehensive Claims Intelligence
                     </h2>
-                    <p className="text-gray-600 mb-8">
+                    <p className="text-gray-600 dark:text-gray-400 mb-8">
                       Upload photos for instant AI-powered classification, detailed damage assessment, 
                       and settlement recommendations - all in one seamless workflow.
                     </p>
@@ -267,7 +267,7 @@ export default function DemoPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-sm text-gray-600">Preliminary Estimate</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Preliminary Estimate</p>
                             <p className="text-xl font-bold text-stellar-orange">{currentClaim.estimate}</p>
                           </div>
                         </div>
@@ -277,8 +277,8 @@ export default function DemoPage() {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       {/* Left: Upload Section */}
                       <div>
-                        <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                          <h3 className="font-semibold text-gray-800 mb-4">Upload Claim Photos</h3>
+                        <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-6">
+                          <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-4">Upload Claim Photos</h3>
                           
                           {/* Upload Section */}
                           <input
@@ -291,12 +291,12 @@ export default function DemoPage() {
                           />
                           <button
                             onClick={() => fileInputRef.current?.click()}
-                            className="w-full border-2 border-dashed border-gray-300 rounded-lg p-8 hover:border-stellar-orange transition flex flex-col items-center gap-3"
+                            className="w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 hover:border-stellar-orange transition flex flex-col items-center gap-3"
                           >
                             <Camera className="text-gray-400" size={48} />
                             <div className="text-center">
-                              <p className="text-gray-700 font-medium">Upload Claim Photos</p>
-                              <p className="text-sm text-gray-500 mt-1">Drag and drop or click to browse</p>
+                              <p className="text-gray-700 dark:text-gray-300 font-medium">Upload Claim Photos</p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Drag and drop or click to browse</p>
                             </div>
                           </button>
                         </div>
@@ -304,13 +304,13 @@ export default function DemoPage() {
                         {/* Uploaded Files Display */}
                         {uploadedFiles.length > 0 && (
                           <div className="mb-6">
-                            <h4 className="font-medium text-gray-800 mb-3">Uploaded Files</h4>
+                            <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-3">Uploaded Files</h4>
                             <div className="space-y-2">
                               {uploadedFiles.map((file) => (
-                                <div key={file.id} className="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-3">
+                                <div key={file.id} className="flex items-center justify-between bg-white dark:bg-gray-900 border border-gray-200 rounded-lg p-3">
                                   <div className="flex items-center gap-2">
-                                    <FileImage className="text-gray-500" size={20} />
-                                    <span className="text-sm text-gray-700">{file.name}</span>
+                                    <FileImage className="text-gray-500 dark:text-gray-400" size={20} />
+                                    <span className="text-sm text-gray-700 dark:text-gray-300">{file.name}</span>
                                   </div>
                                   <button
                                     onClick={() => removeFile(file.id)}
@@ -327,7 +327,7 @@ export default function DemoPage() {
                         {/* Use Sample Images Option */}
                         {uploadedFiles.length === 0 && (
                           <div className="text-center mb-4">
-                            <p className="text-sm text-gray-500">Or use sample {selectedClaim} property images</p>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">Or use sample {selectedClaim} property images</p>
                           </div>
                         )}
 
@@ -372,19 +372,19 @@ export default function DemoPage() {
                                 
                                 <div className="space-y-3">
                                   <div className="flex justify-between items-center">
-                                    <span className="text-gray-700">Classification:</span>
+                                    <span className="text-gray-700 dark:text-gray-300">Classification:</span>
                                     <span className="font-bold text-green-700">REPAIRABLE</span>
                                   </div>
                                   <div className="flex justify-between items-center">
-                                    <span className="text-gray-700">Settlement Type:</span>
+                                    <span className="text-gray-700 dark:text-gray-300">Settlement Type:</span>
                                     <span className="font-bold text-blue-700">CASH ELIGIBLE</span>
                                   </div>
                                   <div className="flex justify-between items-center">
-                                    <span className="text-gray-700">Severity:</span>
+                                    <span className="text-gray-700 dark:text-gray-300">Severity:</span>
                                     <span className="font-bold text-orange-700">MODERATE</span>
                                   </div>
                                   <div className="flex justify-between items-center">
-                                    <span className="text-gray-700">Confidence:</span>
+                                    <span className="text-gray-700 dark:text-gray-300">Confidence:</span>
                                     <span className="font-bold text-green-700">{confidenceScore.toFixed(1)}%</span>
                                   </div>
                                 </div>
@@ -396,9 +396,9 @@ export default function DemoPage() {
                               <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="bg-white border border-gray-200 rounded-lg p-6"
+                                className="bg-white dark:bg-gray-900 border border-gray-200 rounded-lg p-6"
                               >
-                                <h4 className="font-semibold text-gray-900 mb-4">Detected Damages</h4>
+                                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Detected Damages</h4>
                                 <div className="space-y-2">
                                   {currentClaim.damages.map((damage, index) => (
                                     <motion.div
@@ -406,10 +406,10 @@ export default function DemoPage() {
                                       initial={{ opacity: 0, x: -20 }}
                                       animate={{ opacity: 1, x: 0 }}
                                       transition={{ delay: index * 0.1 }}
-                                      className="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+                                      className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"
                                     >
                                       <div>
-                                        <p className="font-medium text-gray-800">{damage.type}</p>
+                                        <p className="font-medium text-gray-800 dark:text-gray-200">{damage.type}</p>
                                         <p className={`text-sm ${
                                           damage.severity === 'Major' ? 'text-red-600' :
                                           damage.severity === 'Moderate' ? 'text-orange-600' :
@@ -421,8 +421,8 @@ export default function DemoPage() {
                                         </p>
                                       </div>
                                       <div className="text-right">
-                                        <span className="text-sm font-medium text-gray-700">{damage.confidence}%</span>
-                                        <p className="text-xs text-gray-500">confidence</p>
+                                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{damage.confidence}%</span>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">confidence</p>
                                       </div>
                                     </motion.div>
                                   ))}
@@ -446,7 +446,7 @@ export default function DemoPage() {
                                   <p className="text-2xl font-bold text-blue-700 mb-3">
                                     {currentClaim.estimate}
                                   </p>
-                                  <p className="text-sm text-gray-600 mb-4">
+                                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                                     Customer can accept immediate payment or proceed with detailed estimate
                                   </p>
                                   <div className="grid grid-cols-2 gap-3">
@@ -455,7 +455,7 @@ export default function DemoPage() {
                                     </button>
                                     <button 
                                       onClick={() => setActiveTab('estimation')}
-                                      className="bg-white text-blue-600 py-2 rounded-lg text-sm font-medium border border-blue-300 hover:bg-blue-50 transition"
+                                      className="bg-white dark:bg-gray-900 text-blue-600 py-2 rounded-lg text-sm font-medium border border-blue-300 hover:bg-blue-50 transition"
                                     >
                                       Detailed Estimate
                                     </button>
@@ -477,7 +477,7 @@ export default function DemoPage() {
                                     ].map((step, index) => (
                                       <div key={index} className="flex items-center gap-2">
                                         <CheckCircle className="text-purple-500" size={16} />
-                                        <span className="text-sm text-gray-700">{step}</span>
+                                        <span className="text-sm text-gray-700 dark:text-gray-300">{step}</span>
                                       </div>
                                     ))}
                                   </div>
@@ -486,9 +486,9 @@ export default function DemoPage() {
                             )}
                           </div>
                         ) : (
-                          <div className="bg-gray-50 rounded-lg p-8 text-center">
+                          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-8 text-center">
                             <Brain className="mx-auto mb-4 text-gray-400" size={48} />
-                            <p className="text-gray-600">
+                            <p className="text-gray-600 dark:text-gray-400">
                               Upload photos or use sample images to see comprehensive AI analysis
                             </p>
                           </div>
@@ -498,27 +498,27 @@ export default function DemoPage() {
 
                     {/* Action Panel - Navigate to other tabs */}
                     {selectedImage && analysisPhase >= 3 && (
-                      <div className="mt-8 bg-gray-50 rounded-lg p-6">
-                        <h3 className="font-semibold text-gray-800 mb-4">Additional Analysis Options</h3>
+                      <div className="mt-8 bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-4">Additional Analysis Options</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <button
                             onClick={() => setActiveTab('estimation')}
-                            className="flex items-center justify-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-stellar-orange transition"
+                            className="flex items-center justify-center gap-3 p-4 bg-white dark:bg-gray-900 border-2 border-gray-200 rounded-lg hover:border-stellar-orange transition"
                           >
                             <DollarSign className="text-stellar-orange" size={24} />
                             <div className="text-left">
-                              <p className="font-medium text-gray-900">Generate Detailed Estimate</p>
-                              <p className="text-xs text-gray-500">Create line-item breakdown</p>
+                              <p className="font-medium text-gray-900 dark:text-gray-100">Generate Detailed Estimate</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Create line-item breakdown</p>
                             </div>
                           </button>
                           <button
                             onClick={() => setActiveTab('coverage-analysis')}
-                            className="flex items-center justify-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-lg hover:border-stellar-orange transition"
+                            className="flex items-center justify-center gap-3 p-4 bg-white dark:bg-gray-900 border-2 border-gray-200 rounded-lg hover:border-stellar-orange transition"
                           >
                             <Shield className="text-green-600" size={24} />
                             <div className="text-left">
-                              <p className="font-medium text-gray-900">Maximize Coverage</p>
-                              <p className="text-xs text-gray-500">Find overlooked benefits</p>
+                              <p className="font-medium text-gray-900 dark:text-gray-100">Maximize Coverage</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Find overlooked benefits</p>
                             </div>
                           </button>
                         </div>
@@ -530,7 +530,7 @@ export default function DemoPage() {
 
               {/* Old AI Assessment Tab - Now consolidated into Claims Intelligence */}
               {false && (
-                <div className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
                   {/* Claim Type Selector */}
                   <div className="mb-6 flex gap-4">
                     <button
@@ -568,7 +568,7 @@ export default function DemoPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-gray-600">Preliminary Estimate</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">Preliminary Estimate</p>
                         <p className="text-xl font-bold text-stellar-orange">{currentClaim.estimate}</p>
                       </div>
                     </div>
@@ -580,7 +580,7 @@ export default function DemoPage() {
                       <h2 className="text-2xl font-bold text-stellar-dark mb-4">
                         Visual Damage Detection
                       </h2>
-                      <p className="text-gray-600 mb-6">
+                      <p className="text-gray-600 dark:text-gray-400 mb-6">
                         Upload claim photos or use sample images to see AI-powered damage analysis in action.
                       </p>
 
@@ -596,24 +596,24 @@ export default function DemoPage() {
                         />
                         <button
                           onClick={() => fileInputRef.current?.click()}
-                          className="w-full border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-stellar-orange transition flex flex-col items-center gap-2"
+                          className="w-full border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 hover:border-stellar-orange transition flex flex-col items-center gap-2"
                         >
                           <Upload className="text-gray-400" size={32} />
-                          <span className="text-gray-600 font-medium">Upload Claim Photos</span>
-                          <span className="text-sm text-gray-500">or drag and drop</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-medium">Upload Claim Photos</span>
+                          <span className="text-sm text-gray-500 dark:text-gray-400">or drag and drop</span>
                         </button>
                       </div>
 
                       {/* Uploaded Files */}
                       {uploadedFiles.length > 0 && (
                         <div className="mb-6">
-                          <h3 className="font-semibold text-gray-800 mb-3">Uploaded Files</h3>
+                          <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">Uploaded Files</h3>
                           <div className="space-y-2">
                             {uploadedFiles.map((file) => (
-                              <div key={file.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-3">
+                              <div key={file.id} className="flex items-center justify-between bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
                                 <div className="flex items-center gap-2">
-                                  <FileImage className="text-gray-500" size={20} />
-                                  <span className="text-sm text-gray-700">{file.name}</span>
+                                  <FileImage className="text-gray-500 dark:text-gray-400" size={20} />
+                                  <span className="text-sm text-gray-700 dark:text-gray-300">{file.name}</span>
                                 </div>
                                 <button
                                   onClick={() => removeFile(file.id)}
@@ -629,7 +629,7 @@ export default function DemoPage() {
 
                       {/* Sample Images Grid */}
                       <div className="mb-6">
-                        <h3 className="font-semibold text-gray-800 mb-3">
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">
                           {uploadedFiles.length === 0 ? 'Sample Claim Images' : 'Or Use Sample Images'}
                         </h3>
                         <div className="grid grid-cols-2 gap-4">
@@ -640,10 +640,10 @@ export default function DemoPage() {
                                 selectedImage === image.id ? 'border-stellar-orange' : 'border-gray-200'
                               }`}
                             >
-                              <div className="aspect-video bg-gray-200 rounded mb-2 flex items-center justify-center">
+                              <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded mb-2 flex items-center justify-center">
                                 <Camera className="text-gray-400" size={32} />
                               </div>
-                              <p className="text-sm text-gray-700">{image.name}</p>
+                              <p className="text-sm text-gray-700 dark:text-gray-300">{image.name}</p>
                               {selectedImage !== null && selectedImage >= image.id && (
                                 <div className="absolute top-2 right-2">
                                   <CheckCircle className="text-green-500" size={24} />
@@ -682,14 +682,14 @@ export default function DemoPage() {
                       {selectedImage ? (
                         <div className="space-y-4">
                           {/* Confidence Score */}
-                          <div className="bg-gray-50 rounded-lg p-4">
+                          <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
                             <div className="flex justify-between items-center mb-2">
-                              <span className="text-gray-700">Confidence Score</span>
+                              <span className="text-gray-700 dark:text-gray-300">Confidence Score</span>
                               <span className="text-2xl font-bold text-green-600">
                                 {confidenceScore.toFixed(1)}%
                               </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                               <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${confidenceScore}%` }}
@@ -700,18 +700,18 @@ export default function DemoPage() {
 
                           {/* Detected Damages */}
                           <div className="space-y-3">
-                            <h4 className="font-semibold text-gray-700">Detected Damages:</h4>
+                            <h4 className="font-semibold text-gray-700 dark:text-gray-300">Detected Damages:</h4>
                             {currentClaim.damages.map((damage, index) => (
                               <motion.div
                                 key={index}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.1 }}
-                                className="bg-white border border-gray-200 rounded-lg p-3"
+                                className="bg-white dark:bg-gray-900 border border-gray-200 rounded-lg p-3"
                               >
                                 <div className="flex justify-between items-start">
                                   <div>
-                                    <p className="font-medium text-gray-800">{damage.type}</p>
+                                    <p className="font-medium text-gray-800 dark:text-gray-200">{damage.type}</p>
                                     <p className={`text-sm ${
                                       damage.severity === 'Major' ? 'text-red-600' :
                                       damage.severity === 'Moderate' ? 'text-orange-600' :
@@ -722,7 +722,7 @@ export default function DemoPage() {
                                       {damage.severity}
                                     </p>
                                   </div>
-                                  <span className="text-sm text-gray-500">
+                                  <span className="text-sm text-gray-500 dark:text-gray-400">
                                     {damage.confidence}% confidence
                                   </span>
                                 </div>
@@ -756,9 +756,9 @@ export default function DemoPage() {
                           </div>
                         </div>
                       ) : (
-                        <div className="bg-gray-50 rounded-lg p-8 text-center">
+                        <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-8 text-center">
                           <Brain className="mx-auto mb-4 text-gray-400" size={48} />
-                          <p className="text-gray-600">
+                          <p className="text-gray-600 dark:text-gray-400">
                             Click "Analyze with AI" to see damage detection in action
                           </p>
                         </div>
@@ -770,31 +770,31 @@ export default function DemoPage() {
 
               {/* Coverage Analysis Tab */}
               {activeTab === 'coverage-analysis' && (
-                <div className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
                   <div className="max-w-4xl mx-auto">
                     <h2 className="text-2xl font-bold text-stellar-dark mb-4">
                       Automated Policy Coverage Matching
                     </h2>
-                    <p className="text-gray-600 mb-8">
+                    <p className="text-gray-600 dark:text-gray-400 mb-8">
                       Our AI instantly matches detected damage with relevant policy provisions, 
                       ensuring no coverage is overlooked.
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Policy Document */}
-                      <div className="bg-gray-50 rounded-lg p-6">
+                      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
                         <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-semibold text-gray-800">Policy Document</h3>
+                          <h3 className="font-semibold text-gray-800 dark:text-gray-200">Policy Document</h3>
                           <FileText className="text-gray-400" size={24} />
                         </div>
                         <div className="space-y-2">
-                          <div className="bg-white rounded p-3 text-sm">
+                          <div className="bg-white dark:bg-gray-900 rounded p-3 text-sm">
                             <p className="font-medium">Policy #: HO-2024-78432</p>
-                            <p className="text-gray-600">Homeowners Comprehensive</p>
+                            <p className="text-gray-600 dark:text-gray-400">Homeowners Comprehensive</p>
                           </div>
-                          <div className="bg-white rounded p-3 text-sm">
+                          <div className="bg-white dark:bg-gray-900 rounded p-3 text-sm">
                             <p className="font-medium">Coverage Limit: $450,000</p>
-                            <p className="text-gray-600">Deductible: $2,500</p>
+                            <p className="text-gray-600 dark:text-gray-400">Deductible: $2,500</p>
                           </div>
                         </div>
                       </div>
@@ -802,7 +802,7 @@ export default function DemoPage() {
                       {/* Coverage Matches */}
                       <div className="bg-green-50 rounded-lg p-6">
                         <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-semibold text-gray-800">Coverage Matches</h3>
+                          <h3 className="font-semibold text-gray-800 dark:text-gray-200">Coverage Matches</h3>
                           <CheckCircle className="text-green-500" size={24} />
                         </div>
                         <div className="space-y-2">
@@ -812,7 +812,7 @@ export default function DemoPage() {
                             { coverage: 'Additional Living Expenses', status: 'May Apply', page: 'p.23' },
                             { coverage: 'Ordinance or Law', status: 'Available', page: 'p.31' },
                           ].map((item, index) => (
-                            <div key={index} className="bg-white rounded p-3 flex justify-between items-center">
+                            <div key={index} className="bg-white dark:bg-gray-900 rounded p-3 flex justify-between items-center">
                               <div>
                                 <p className="font-medium text-sm">{item.coverage}</p>
                                 <p className={`text-xs ${
@@ -823,7 +823,7 @@ export default function DemoPage() {
                                   {item.status}
                                 </p>
                               </div>
-                              <span className="text-xs text-gray-500">{item.page}</span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">{item.page}</span>
                             </div>
                           ))}
                         </div>
@@ -839,7 +839,7 @@ export default function DemoPage() {
                           { label: 'Documentation', status: 'Complete', icon: FileCheck },
                           { label: 'Time Limits', status: 'Within Limits', icon: Clock },
                         ].map((item, index) => (
-                          <div key={index} className="bg-white rounded-lg p-4 flex items-center gap-3">
+                          <div key={index} className="bg-white dark:bg-gray-900 rounded-lg p-4 flex items-center gap-3">
                             <item.icon className="text-blue-600" size={24} />
                             <div>
                               <p className="font-medium text-sm">{item.label}</p>
@@ -855,19 +855,19 @@ export default function DemoPage() {
 
               {/* Cost Estimation Tab */}
               {activeTab === 'estimation' && (
-                <div className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
                   <h2 className="text-2xl font-bold text-stellar-dark mb-4">
                     Intelligent Cost Estimation
                   </h2>
-                  <p className="text-gray-600 mb-8">
+                  <p className="text-gray-600 dark:text-gray-400 mb-8">
                     Generate accurate repair estimates with industry-standard pricing and local market data.
                   </p>
 
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Estimate Summary */}
                     <div className="lg:col-span-2">
-                      <div className="bg-gray-50 rounded-lg p-6">
-                        <h3 className="font-semibold text-gray-800 mb-4">Repair Estimate Breakdown</h3>
+                      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-4">Repair Estimate Breakdown</h3>
                         <div className="space-y-3">
                           {[
                             { item: 'Roof Repair', code: 'RFG 240', quantity: '25 SQ', unit: '$285/SQ', total: '$7,125' },
@@ -876,17 +876,17 @@ export default function DemoPage() {
                             { item: 'Painting & Finishing', code: 'PNT 450', quantity: '300 SF', unit: '$4/SF', total: '$1,200' },
                             { item: 'Debris Removal', code: 'DBR 100', quantity: '1 Load', unit: '$450', total: '$450' },
                           ].map((line, index) => (
-                            <div key={index} className="bg-white rounded-lg p-3">
+                            <div key={index} className="bg-white dark:bg-gray-900 rounded-lg p-3">
                               <div className="grid grid-cols-5 gap-2 text-sm">
                                 <div>
                                   <p className="font-medium">{line.item}</p>
-                                  <p className="text-xs text-gray-500">{line.code}</p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">{line.code}</p>
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-gray-600">{line.quantity}</p>
+                                  <p className="text-gray-600 dark:text-gray-400">{line.quantity}</p>
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-gray-600">{line.unit}</p>
+                                  <p className="text-gray-600 dark:text-gray-400">{line.unit}</p>
                                 </div>
                                 <div className="text-right col-span-2">
                                   <p className="font-semibold">{line.total}</p>
@@ -899,15 +899,15 @@ export default function DemoPage() {
                         <div className="mt-6 pt-6 border-t">
                           <div className="space-y-2">
                             <div className="flex justify-between">
-                              <span className="text-gray-600">Subtotal</span>
+                              <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
                               <span className="font-medium">$11,815</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-600">Overhead & Profit (20%)</span>
+                              <span className="text-gray-600 dark:text-gray-400">Overhead & Profit (20%)</span>
                               <span className="font-medium">$2,363</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-600">Tax (7%)</span>
+                              <span className="text-gray-600 dark:text-gray-400">Tax (7%)</span>
                               <span className="font-medium">$992</span>
                             </div>
                             <div className="flex justify-between text-xl font-bold pt-2 border-t">
@@ -939,18 +939,18 @@ export default function DemoPage() {
                         </div>
                       </div>
 
-                      <div className="bg-gray-50 rounded-lg p-6">
-                        <h3 className="font-semibold text-gray-800 mb-3">Export Options</h3>
+                      <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
+                        <h3 className="font-semibold text-gray-800 dark:text-gray-200 mb-3">Export Options</h3>
                         <div className="space-y-2">
-                          <button className="w-full bg-white border border-gray-300 rounded-lg py-2 px-4 text-sm hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                          <button className="w-full bg-white dark:bg-gray-900 border border-gray-300 rounded-lg py-2 px-4 text-sm hover:bg-gray-50 transition flex items-center justify-center gap-2">
                             <Download size={16} />
                             Export Estimate
                           </button>
-                          <button className="w-full bg-white border border-gray-300 rounded-lg py-2 px-4 text-sm hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                          <button className="w-full bg-white dark:bg-gray-900 border border-gray-300 rounded-lg py-2 px-4 text-sm hover:bg-gray-50 transition flex items-center justify-center gap-2">
                             <FileText size={16} />
                             Generate PDF Report
                           </button>
-                          <button className="w-full bg-white border border-gray-300 rounded-lg py-2 px-4 text-sm hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                          <button className="w-full bg-white dark:bg-gray-900 border border-gray-300 rounded-lg py-2 px-4 text-sm hover:bg-gray-50 transition flex items-center justify-center gap-2">
                             <Eye size={16} />
                             Share with Adjuster
                           </button>
@@ -963,11 +963,11 @@ export default function DemoPage() {
 
               {/* Removed Workflow Tab - now integrated into other tabs */}
               {false && (
-                <div className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8">
                   <h2 className="text-2xl font-bold text-stellar-dark mb-4">
                     Automated Claims Workflow
                   </h2>
-                  <p className="text-gray-600 mb-8">
+                  <p className="text-gray-600 dark:text-gray-400 mb-8">
                     Streamline your entire claims process with intelligent automation and real-time tracking.
                   </p>
 
@@ -1000,7 +1000,7 @@ export default function DemoPage() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-4 mb-1">
-                            <h3 className="font-semibold text-gray-800">{item.title}</h3>
+                            <h3 className="font-semibold text-gray-800 dark:text-gray-200">{item.title}</h3>
                             <span className={`text-sm ${
                               item.status === 'completed' ? 'text-green-600' :
                               item.status === 'active' ? 'text-stellar-orange' :
@@ -1009,7 +1009,7 @@ export default function DemoPage() {
                               {item.time}
                             </span>
                           </div>
-                          <p className="text-gray-600">{item.description}</p>
+                          <p className="text-gray-600 dark:text-gray-400">{item.description}</p>
                         </div>
                       </div>
                     ))}
@@ -1022,10 +1022,10 @@ export default function DemoPage() {
                       { metric: '60%', label: 'Fewer Manual Touchpoints', icon: Users },
                       { metric: '99.9%', label: 'Accuracy Rate', icon: CheckCircle },
                     ].map((benefit, index) => (
-                      <div key={index} className="bg-gray-50 rounded-lg p-6 text-center">
+                      <div key={index} className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 text-center">
                         <benefit.icon className="mx-auto mb-3 text-stellar-orange" size={32} />
                         <div className="text-3xl font-bold text-stellar-dark mb-2">{benefit.metric}</div>
-                        <p className="text-gray-600">{benefit.label}</p>
+                        <p className="text-gray-600 dark:text-gray-400">{benefit.label}</p>
                       </div>
                     ))}
                   </div>

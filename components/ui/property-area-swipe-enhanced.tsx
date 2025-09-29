@@ -143,7 +143,7 @@ export function PropertyAreaSwipeEnhanced({
         className={`relative w-full ${className}`}
       >
         {/* Expanded Header with Navigation */}
-        <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div className="bg-white dark:bg-gray-900 border-b border-gray-200 sticky top-0 z-40">
           <div className="px-4 py-3">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -156,8 +156,8 @@ export function PropertyAreaSwipeEnhanced({
                   {getCategoryIcon(expandedArea)}
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">{expandedArea.name}</h2>
-                  <p className="text-sm text-gray-500">{expandedArea.category}</p>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{expandedArea.name}</h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{expandedArea.category}</p>
                 </div>
               </div>
               
@@ -218,8 +218,8 @@ export function PropertyAreaSwipeEnhanced({
     <div className={`relative w-full ${className}`}>
       {/* Header */}
       <div className="px-4 py-3 mb-4">
-        <h2 className="text-lg font-semibold text-gray-900 mb-2">Swipe Area to Inspect</h2>
-        <p className="text-sm text-gray-600">Tap a card to start documenting or swipe to navigate</p>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Swipe Area to Inspect</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Tap a card to start documenting or swipe to navigate</p>
       </div>
 
       {/* Card Stack */}
@@ -304,8 +304,8 @@ export function PropertyAreaSwipeEnhanced({
                         {getCategoryIcon(area)}
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900">{area.name}</h3>
-                        <p className="text-sm text-gray-500">{area.category}</p>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{area.name}</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{area.category}</p>
                       </div>
                     </div>
                   </div>
@@ -313,7 +313,7 @@ export function PropertyAreaSwipeEnhanced({
                   {/* Card Body */}
                   <div className="p-6">
                     {/* Preview Image or Placeholder */}
-                    <div className="w-full h-48 bg-gray-100 rounded-lg mb-4 overflow-hidden">
+                    <div className="w-full h-48 bg-gray-100 dark:bg-gray-800 rounded-lg mb-4 overflow-hidden">
                       {area.previewImage ? (
                         <img 
                           src={area.previewImage} 
@@ -323,7 +323,7 @@ export function PropertyAreaSwipeEnhanced({
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center">
                           <Camera className="w-12 h-12 text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-500">Tap to start inspection</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">Tap to start inspection</p>
                         </div>
                       )}
                     </div>
@@ -335,7 +335,7 @@ export function PropertyAreaSwipeEnhanced({
                           <div className="p-1 bg-blue-100 rounded">
                             <Camera className="w-4 h-4 text-blue-600" />
                           </div>
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             {area.photoCount || 0} Photos
                           </span>
                         </div>
@@ -343,7 +343,7 @@ export function PropertyAreaSwipeEnhanced({
                           <div className="p-1 bg-purple-100 rounded">
                             <FileText className="w-4 h-4 text-purple-600" />
                           </div>
-                          <span className="text-sm font-medium text-gray-700">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             {area.notesCount || 0} Notes
                           </span>
                         </div>
@@ -352,19 +352,19 @@ export function PropertyAreaSwipeEnhanced({
 
                     {/* Findings Preview */}
                     {area.findings && (
-                      <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                        <p className="text-xs text-gray-600 line-clamp-2">{area.findings}</p>
+                      <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 line-clamp-2">{area.findings}</p>
                       </div>
                     )}
 
                     {/* Progress Bar */}
                     {area.completionPercentage !== undefined && area.completionPercentage > 0 && (
                       <div className="mb-4">
-                        <div className="flex justify-between text-xs text-gray-600 mb-1">
+                        <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400 mb-1">
                           <span>Progress</span>
                           <span>{area.completionPercentage}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                           <div 
                             className="bg-stellar-orange h-2 rounded-full transition-all"
                             style={{ width: `${area.completionPercentage}%` }}
@@ -375,7 +375,7 @@ export function PropertyAreaSwipeEnhanced({
 
                     {/* Swipe Hints (only for top card) */}
                     {isTopCard && (
-                      <div className="flex justify-between items-center text-xs text-gray-500">
+                      <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
                         <div className="flex items-center gap-1">
                           <SkipForward className="w-3 h-3" />
                           <span>Swipe left to skip</span>
@@ -443,7 +443,7 @@ export function PropertyAreaSwipeEnhanced({
       {cards.length > 0 && (
         <div className="px-4 mt-6">
           <div className="text-center mb-3">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               Area {currentAreaIndex + 1} of {areas.length}
             </p>
           </div>
@@ -469,7 +469,7 @@ export function PropertyAreaSwipeEnhanced({
         <div className="flex gap-3">
           <button
             onClick={() => cards[0] && onSwipeLeft(cards[0])}
-            className="flex-1 bg-gray-100 text-gray-700 py-2.5 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 bg-gray-100 dark:bg-gray-800 text-gray-700 py-2.5 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
           >
             <SkipForward size={16} />
             Skip Area

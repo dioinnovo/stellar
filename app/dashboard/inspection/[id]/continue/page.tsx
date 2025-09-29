@@ -164,7 +164,7 @@ export default function ContinueInspectionPage() {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stellar-orange mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading inspection data...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading inspection data...</p>
         </div>
       </div>
     )
@@ -190,22 +190,22 @@ export default function ContinueInspectionPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-40">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto py-4 px-4">
           <div>
             <Link
               href="/dashboard/inspection"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-3"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 transition-colors mb-3"
             >
               <ArrowLeft size={20} />
               <span>Back to Inspections</span>
             </Link>
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
                   Continue Inspection
                 </h1>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   {inspectionSummary?.propertyAddress || 'Loading...'}
                 </p>
               </div>
@@ -234,7 +234,7 @@ export default function ContinueInspectionPage() {
                 </div>
                 <button
                   onClick={() => {}}
-                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg cursor-pointer"
+                  className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:bg-gray-800 rounded-lg cursor-pointer"
                 >
                   <MoreVertical size={20} />
                 </button>
@@ -258,7 +258,7 @@ export default function ContinueInspectionPage() {
       {/* Progress Overview */}
       <div className="max-w-7xl mx-auto py-4 md:py-6 px-4">
         {/* Main Progress Card */}
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 p-6 mb-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-4">
@@ -266,18 +266,18 @@ export default function ContinueInspectionPage() {
                   <Camera className="text-emerald-600" size={24} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900">Inspection in Progress</h2>
-                  <p className="text-sm text-gray-600">Started {inspectionSummary?.elapsedTime || '0m'} ago</p>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Inspection in Progress</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Started {inspectionSummary?.elapsedTime || '0m'} ago</p>
                 </div>
               </div>
               
               {/* Progress Bar */}
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">Overall Progress</span>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Overall Progress</span>
                   <span className="text-2xl font-bold text-emerald-600">{progress.percentage}%</span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
                   <motion.div
                     className="bg-green-600 h-3 rounded-full"
                     initial={{ width: 0 }}
@@ -286,8 +286,8 @@ export default function ContinueInspectionPage() {
                   />
                 </div>
                 <div className="flex items-center justify-between mt-2">
-                  <span className="text-xs text-gray-500">{progress.completed} areas completed</span>
-                  <span className="text-xs text-gray-500">{progress.total - progress.completed} areas remaining</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{progress.completed} areas completed</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{progress.total - progress.completed} areas remaining</span>
                 </div>
               </div>
 
@@ -312,33 +312,33 @@ export default function ContinueInspectionPage() {
 
               {/* Quick Stats */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-gray-50 rounded-lg p-3">
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <ImageIcon size={16} className="text-blue-600" />
-                    <span className="text-xs text-gray-600">Photos</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Photos</span>
                   </div>
-                  <p className="text-xl font-bold text-gray-900">{photos.length}</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{photos.length}</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <Mic size={16} className="text-purple-600" />
-                    <span className="text-xs text-gray-600">Voice Notes</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Voice Notes</span>
                   </div>
-                  <p className="text-xl font-bold text-gray-900">{voiceNotes.length}</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100">{voiceNotes.length}</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <Clock size={16} className="text-amber-600" />
-                    <span className="text-xs text-gray-600">Time Spent</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Time Spent</span>
                   </div>
-                  <p className="text-xl font-bold text-gray-900">3h 15m</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100">3h 15m</p>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-3">
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <TrendingUp size={16} className="text-red-600" />
-                    <span className="text-xs text-gray-600">Est. Damage</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">Est. Damage</span>
                   </div>
-                  <p className="text-xl font-bold text-gray-900">${(totalDamage / 1000).toFixed(0)}k</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-gray-100">${(totalDamage / 1000).toFixed(0)}k</p>
                 </div>
               </div>
             </div>
@@ -366,10 +366,10 @@ export default function ContinueInspectionPage() {
 
         {/* Critical Findings Alert - Better Visual Hierarchy */}
         {inspectionSummary && inspectionSummary.criticalFindings > 0 && (
-          <div className="bg-gray-50 border-l-4 border-red-500 rounded-lg p-4 mb-6">
+          <div className="bg-gray-50 dark:bg-gray-900 border-l-4 border-red-500 rounded-lg p-4 mb-6">
             <div className="flex items-center gap-2 mb-3">
               <AlertTriangle className="text-red-600" size={20} />
-              <h3 className="font-bold text-gray-900">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100">
                 <span className="text-red-600">{inspectionSummary.criticalFindings}</span> Critical Findings Identified
               </h3>
             </div>
@@ -391,12 +391,12 @@ export default function ContinueInspectionPage() {
                   .replace(/contaminated/gi, '<span class="text-red-600 font-medium">contaminated</span>');
 
                 return (
-                  <div key={idx} className="border-l-2 border-gray-300 pl-3">
+                  <div key={idx} className="border-l-2 border-gray-300 dark:border-gray-600 pl-3">
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-700 font-semibold text-sm">{area}:</span>
+                      <span className="text-gray-700 dark:text-gray-300 font-semibold text-sm">{area}:</span>
                     </div>
                     <p
-                      className="text-sm text-gray-600 mt-0.5"
+                      className="text-sm text-gray-600 dark:text-gray-400 mt-0.5"
                       dangerouslySetInnerHTML={{ __html: highlightedFinding }}
                     />
                   </div>
@@ -404,8 +404,8 @@ export default function ContinueInspectionPage() {
               })}
             </div>
 
-            <div className="mt-3 pt-3 border-t border-gray-200">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">Immediate Actions Required:</h4>
+            <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Immediate Actions Required:</h4>
               <div className="flex flex-wrap gap-2">
                 {inspectionSummary?.immediateActions?.map((action, idx) => {
                   // Assign different colors to different actions
@@ -431,7 +431,7 @@ export default function ContinueInspectionPage() {
         )}
 
         {/* Tabs */}
-        <div className="bg-white rounded-t-xl border border-gray-200 border-b-0">
+        <div className="bg-white dark:bg-gray-900 rounded-t-xl border border-gray-200 border-b-0">
           <div className="flex gap-1 p-1">
             {(['overview', 'areas', 'media', 'insights'] as const).map((tab) => (
               <button
@@ -450,63 +450,63 @@ export default function ContinueInspectionPage() {
         </div>
 
         {/* Tab Content */}
-        <div className="bg-white rounded-b-xl border border-gray-200 border-t-0 p-6">
+        <div className="bg-white dark:bg-gray-900 rounded-b-xl border border-gray-200 border-t-0 p-6">
           {/* Overview Tab */}
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* Two Column Layout for Property and Inspection Info */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Property Information Card */}
-                <div className="bg-gray-50 rounded-xl p-5">
-                  <h3 className="font-semibold text-gray-900 mb-4 text-base">Property Information</h3>
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-5">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 text-base">Property Information</h3>
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
                       <Home size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">Address</p>
-                        <p className="font-medium text-gray-900 text-sm break-words">{inspectionSummary?.propertyAddress || '-'}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Address</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100 text-sm break-words">{inspectionSummary?.propertyAddress || '-'}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <User size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">Client</p>
-                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary?.clientName || '-'}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Client</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">{inspectionSummary?.clientName || '-'}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <User size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">Inspector</p>
-                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary?.inspector || '-'}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Inspector</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">{inspectionSummary?.inspector || '-'}</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Inspection Details Card */}
-                <div className="bg-gray-50 rounded-xl p-5">
-                  <h3 className="font-semibold text-gray-900 mb-4 text-base">Inspection Details</h3>
+                <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-5">
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 text-base">Inspection Details</h3>
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
                       <Clock size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">Start Time</p>
-                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary ? formatDate(inspectionSummary.startTime) : '-'}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Start Time</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">{inspectionSummary ? formatDate(inspectionSummary.startTime) : '-'}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <BarChart3 size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">Progress</p>
-                        <p className="font-medium text-gray-900 text-sm">{progress.completed} of {progress.total} areas</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Progress</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">{progress.completed} of {progress.total} areas</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <MapPin size={18} className="text-gray-400 mt-0.5 flex-shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs text-gray-500 mb-0.5">Weather</p>
-                        <p className="font-medium text-gray-900 text-sm">{inspectionSummary?.weatherConditions || '-'}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Weather</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100 text-sm">{inspectionSummary?.weatherConditions || '-'}</p>
                       </div>
                     </div>
                   </div>
@@ -522,7 +522,7 @@ export default function ContinueInspectionPage() {
                     <p className="text-sm text-blue-800 mb-3">
                       Continue with inspection of remaining {progress.total - progress.completed} areas to complete the assessment.
                     </p>
-                    <div className="bg-white/60 rounded-lg px-3 py-2 inline-block">
+                    <div className="bg-white dark:bg-gray-900/60 rounded-lg px-3 py-2 inline-block">
                       <span className="text-xs text-blue-700">Next Area:</span>
                       <span className="font-semibold text-blue-900 ml-2 text-sm">{inspectionSummary?.nextArea || 'Loading...'}</span>
                     </div>
@@ -537,7 +537,7 @@ export default function ContinueInspectionPage() {
             <div className="space-y-6">
               {Object.entries(areasByCategory).map(([category, areas]) => (
                 <div key={category}>
-                  <h3 className="font-semibold text-gray-900 mb-3">{category}</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">{category}</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {areas.map((area, idx) => (
                       <div
@@ -549,7 +549,7 @@ export default function ContinueInspectionPage() {
                       >
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h4 className="font-semibold text-gray-900">{area.name}</h4>
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-100">{area.name}</h4>
                             <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(area.status)}`}>
                               {area.status.replace('_', ' ').toUpperCase()}
                             </span>
@@ -561,15 +561,15 @@ export default function ContinueInspectionPage() {
                         
                         {area.status === 'completed' && (
                           <>
-                            <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">
                               {area.findings}
                             </p>
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-3 text-xs">
-                                <span className="text-gray-500">
+                                <span className="text-gray-500 dark:text-gray-400">
                                   {area.media.filter(m => m.type === 'photo').length} photos
                                 </span>
-                                <span className="text-gray-500">
+                                <span className="text-gray-500 dark:text-gray-400">
                                   {area.media.filter(m => m.type === 'audio').length} notes
                                 </span>
                               </div>
@@ -578,8 +578,8 @@ export default function ContinueInspectionPage() {
                               </span>
                             </div>
                             {area.estimatedCost > 0 && (
-                              <div className="mt-2 pt-2 border-t border-gray-200">
-                                <span className="text-sm font-semibold text-gray-900">
+                              <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                   Est. Cost: ${area.estimatedCost.toLocaleString()}
                                 </span>
                               </div>
@@ -599,7 +599,7 @@ export default function ContinueInspectionPage() {
             <div className="space-y-6">
               {/* Photos Section */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Photos ({photos.length})</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Photos ({photos.length})</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                   {photos.map((photo) => (
                     <div
@@ -610,7 +610,7 @@ export default function ContinueInspectionPage() {
                         setShowMediaModal(true)
                       }}
                     >
-                      <div className="aspect-square rounded-lg overflow-hidden bg-gray-100">
+                      <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
                         <Image
                           src={photo.url}
                           alt={photo.title}
@@ -635,12 +635,12 @@ export default function ContinueInspectionPage() {
 
               {/* Voice Notes Section */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3">Voice Notes ({voiceNotes.length})</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Voice Notes ({voiceNotes.length})</h3>
                 <div className="space-y-3">
                   {voiceNotes.map((note) => (
                     <div
                       key={note.id}
-                      className="bg-gray-50 rounded-xl p-4 border border-gray-200"
+                      className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 border border-gray-200"
                     >
                       <div className="flex items-start gap-3">
                         <button
@@ -656,8 +656,8 @@ export default function ContinueInspectionPage() {
                         <div className="flex-1">
                           <div className="flex items-start justify-between mb-2">
                             <div>
-                              <h4 className="font-semibold text-gray-900">{note.title}</h4>
-                              <p className="text-xs text-gray-500">
+                              <h4 className="font-semibold text-gray-900 dark:text-gray-100">{note.title}</h4>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {note.timestamp} • {note.duration}s
                               </p>
                             </div>
@@ -666,7 +666,7 @@ export default function ContinueInspectionPage() {
                             </span>
                           </div>
                           {note.transcript && (
-                            <div className="bg-white rounded-lg p-3 text-sm text-gray-700">
+                            <div className="bg-white dark:bg-gray-900 rounded-lg p-3 text-sm text-gray-700">
                               <p className="italic">"{note.transcript}"</p>
                             </div>
                           )}
@@ -686,36 +686,36 @@ export default function ContinueInspectionPage() {
               <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-xl p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Brain className="text-purple-600" size={24} />
-                  <h3 className="font-semibold text-gray-900">AI Analysis</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">AI Analysis</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-white rounded-lg p-4">
-                    <h4 className="font-medium text-gray-700 mb-2">Hidden Damage Risk</h4>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Hidden Damage Risk</h4>
                     <p className="text-2xl font-bold text-red-600 mb-1">HIGH</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Multiple indicators suggest water damage extends beyond visible areas
                     </p>
                   </div>
-                  <div className="bg-white rounded-lg p-4">
-                    <h4 className="font-medium text-gray-700 mb-2">Cost Confidence</h4>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Cost Confidence</h4>
                     <p className="text-2xl font-bold text-amber-600 mb-1">75%</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Based on {progress.completed} completed areas
                     </p>
                   </div>
-                  <div className="bg-white rounded-lg p-4">
-                    <h4 className="font-medium text-gray-700 mb-2">Estimated Total Damage</h4>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Estimated Total Damage</h4>
                     <p className="text-2xl font-bold text-emerald-600 mb-1">
                       ${Math.round(totalDamage / 0.65).toLocaleString()}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Projected based on current findings
                     </p>
                   </div>
-                  <div className="bg-white rounded-lg p-4">
-                    <h4 className="font-medium text-gray-700 mb-2">Urgency Level</h4>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-700 dark:text-gray-300 mb-2">Urgency Level</h4>
                     <p className="text-2xl font-bold text-red-600 mb-1">CRITICAL</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
                       Immediate action required for safety
                     </p>
                   </div>
@@ -724,7 +724,7 @@ export default function ContinueInspectionPage() {
 
               {/* Key Findings */}
               <div>
-                <h3 className="font-semibold text-gray-900 mb-4">Key Findings So Far</h3>
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Key Findings So Far</h3>
                 <div className="space-y-3">
                   {inspectionData?.areas
                     .filter(area => area.status === 'completed' && area.priority === 'high')
@@ -736,7 +736,7 @@ export default function ContinueInspectionPage() {
                       return (
                         <div
                           key={area.id}
-                          className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"
+                          className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"
                         >
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-3">
@@ -748,7 +748,7 @@ export default function ContinueInspectionPage() {
                               `} />
 
                               <div>
-                                <h4 className="font-semibold text-gray-900 text-base">{area.name}</h4>
+                                <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-base">{area.name}</h4>
                                 <span className={`
                                   inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium mt-1
                                   ${severity === 'critical'
@@ -766,15 +766,15 @@ export default function ContinueInspectionPage() {
 
                             {/* Cost Badge - Most Important Visual Element */}
                             <div className="text-right">
-                              <p className="text-2xl font-bold text-gray-900">
+                              <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                                 ${area.estimatedCost.toLocaleString()}
                               </p>
-                              <p className="text-xs text-gray-500">Estimated Cost</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">Estimated Cost</p>
                             </div>
                           </div>
 
                           {/* Finding Description - Neutral Color */}
-                          <p className="text-sm text-gray-700 leading-relaxed mb-4">
+                          <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
                             {area.findings}
                           </p>
 
@@ -787,9 +787,9 @@ export default function ContinueInspectionPage() {
                           )}
 
                           {/* Footer with View Details */}
-                          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                          <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
                             <div className="flex items-center gap-4">
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
                                 Area #{index + 1} of {inspectionData?.areas?.filter(a => a.status === 'completed' && a.priority === 'high').length || 0}
                               </span>
                             </div>
@@ -825,14 +825,14 @@ export default function ContinueInspectionPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-white dark:bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900">{selectedArea.name}</h2>
+              <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 p-4 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{selectedArea.name}</h2>
                 <button
                   onClick={() => setSelectedArea(null)}
-                  className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
+                  className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg cursor-pointer"
                 >
                   <X size={20} />
                 </button>
@@ -848,7 +848,7 @@ export default function ContinueInspectionPage() {
                     {selectedArea.priority.toUpperCase()} PRIORITY
                   </span>
                   {selectedArea.estimatedCost > 0 && (
-                    <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                    <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-full text-sm font-medium">
                       ${selectedArea.estimatedCost.toLocaleString()}
                     </span>
                   )}
@@ -857,36 +857,36 @@ export default function ContinueInspectionPage() {
                 {/* Findings */}
                 {selectedArea.findings && (
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Findings</h3>
-                    <p className="text-gray-700">{selectedArea.findings}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Findings</h3>
+                    <p className="text-gray-700 dark:text-gray-300">{selectedArea.findings}</p>
                   </div>
                 )}
 
                 {/* Damage Description */}
                 {selectedArea.damageDescription && (
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Damage Description</h3>
-                    <p className="text-gray-700">{selectedArea.damageDescription}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Damage Description</h3>
+                    <p className="text-gray-700 dark:text-gray-300">{selectedArea.damageDescription}</p>
                   </div>
                 )}
 
                 {/* Recommended Actions */}
                 {selectedArea.recommendedActions && (
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Recommended Actions</h3>
-                    <p className="text-gray-700">{selectedArea.recommendedActions}</p>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Recommended Actions</h3>
+                    <p className="text-gray-700 dark:text-gray-300">{selectedArea.recommendedActions}</p>
                   </div>
                 )}
 
                 {/* Media */}
                 {selectedArea.media.length > 0 && (
                   <div>
-                    <h3 className="font-semibold text-gray-900 mb-3">Documentation</h3>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Documentation</h3>
                     
                     {/* Photos */}
                     {selectedArea.media.filter(m => m.type === 'photo').length > 0 && (
                       <div className="mb-4">
-                        <h4 className="text-sm font-medium text-gray-700 mb-2">Photos</h4>
+                        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Photos</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                           {selectedArea.media
                             .filter(m => m.type === 'photo')
@@ -901,7 +901,7 @@ export default function ContinueInspectionPage() {
                                     className="w-full h-full object-cover"
                                   />
                                 </div>
-                                <p className="text-xs text-gray-600 mt-1">{photo.title}</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{photo.title}</p>
                               </div>
                             ))}
                         </div>
@@ -911,20 +911,20 @@ export default function ContinueInspectionPage() {
                     {/* Voice Notes */}
                     {selectedArea.media.filter(m => m.type === 'audio').length > 0 && (
                       <div>
-                        <h4 className="text-sm font-medium text-gray-700 mb-2">Voice Notes</h4>
+                        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Voice Notes</h4>
                         <div className="space-y-2">
                           {selectedArea.media
                             .filter(m => m.type === 'audio')
                             .map((note) => (
-                              <div key={note.id} className="bg-gray-50 rounded-lg p-3">
+                              <div key={note.id} className="bg-gray-50 dark:bg-gray-900 rounded-lg p-3">
                                 <div className="flex items-start gap-3">
                                   <button className="p-1.5 bg-purple-600 text-white rounded">
                                     <Play size={16} />
                                   </button>
                                   <div className="flex-1">
-                                    <p className="font-medium text-sm text-gray-900">{note.title}</p>
+                                    <p className="font-medium text-sm text-gray-900 dark:text-gray-100">{note.title}</p>
                                     {note.transcript && (
-                                      <p className="text-xs text-gray-600 mt-1 italic">"{note.transcript}"</p>
+                                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 italic">"{note.transcript}"</p>
                                     )}
                                   </div>
                                 </div>
@@ -958,14 +958,14 @@ export default function ContinueInspectionPage() {
               className="max-w-4xl w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-white rounded-t-xl p-4 flex items-center justify-between">
+              <div className="bg-white dark:bg-gray-900 rounded-t-xl p-4 flex items-center justify-between">
                 <div>
-                  <h3 className="font-semibold text-gray-900">{selectedMedia.title}</h3>
-                  <p className="text-sm text-gray-600">{selectedMedia.category} • {selectedMedia.timestamp}</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">{selectedMedia.title}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{selectedMedia.category} • {selectedMedia.timestamp}</p>
                 </div>
                 <button
                   onClick={() => setShowMediaModal(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg cursor-pointer"
+                  className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg cursor-pointer"
                 >
                   <X size={20} />
                 </button>
@@ -980,12 +980,12 @@ export default function ContinueInspectionPage() {
                     className="w-full h-auto"
                   />
                   {selectedMedia.description && (
-                    <div className="bg-white p-4 rounded-b-xl">
-                      <p className="text-gray-700">{selectedMedia.description}</p>
+                    <div className="bg-white dark:bg-gray-900 p-4 rounded-b-xl">
+                      <p className="text-gray-700 dark:text-gray-300">{selectedMedia.description}</p>
                       {selectedMedia.tags && (
                         <div className="flex flex-wrap gap-2 mt-2">
                           {selectedMedia.tags.map((tag) => (
-                            <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                            <span key={tag} className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 text-xs rounded-full">
                               {tag}
                             </span>
                           ))}

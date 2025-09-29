@@ -55,10 +55,10 @@ export default function MobileBottomNav() {
       <div className="relative p-4">
         <nav className="
           relative
-          bg-white/80 backdrop-blur-xl backdrop-saturate-150
-          border border-gray-200/50
+          bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl backdrop-saturate-150
+          border border-gray-200/50 dark:border-gray-700/50
           rounded-full
-          shadow-[0_4px_20px_rgba(0,0,0,0.06)]
+          shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.3)]
           px-1 py-1
         ">
           <ul className="flex items-center justify-around relative">
@@ -89,9 +89,9 @@ export default function MobileBottomNav() {
                     href={item.href}
                     className={`
                       flex flex-col items-center gap-1 px-2 py-1.5 rounded-full transition-all
-                      ${isActive 
-                        ? 'text-white' 
-                        : 'text-gray-600 hover:text-[#E74C3C] hover:bg-gray-100/50'
+                      ${isActive
+                        ? 'text-white'
+                        : 'text-gray-600 dark:text-gray-300 hover:text-[#E74C3C] hover:bg-gray-100/50 dark:hover:bg-gray-800/50'
                       }
                     `}
                   >

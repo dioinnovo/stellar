@@ -30,16 +30,16 @@ function AreaCard({
   const [editedArea, setEditedArea] = useState(area)
 
   return (
-    <div className="bg-gray-50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg">
+    <div className="bg-gray-50 dark:bg-gray-900 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg">
       {/* Clickable Header */}
       <div
-        className="p-6 cursor-pointer transition-colors hover:bg-gray-100"
+        className="p-6 cursor-pointer transition-colors hover:bg-gray-100 dark:bg-gray-800"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-semibold text-gray-900">{area.name}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{area.name}</h3>
               {getStatusIcon(area.status)}
               {enrichmentComplete && (
                 <span className="px-2 py-1 bg-stellar-orange/10 text-stellar-orange text-xs rounded-full flex items-center gap-1">
@@ -48,10 +48,10 @@ function AreaCard({
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-600">{area.category} • {area.status}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{area.category} • {area.status}</p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 text-sm text-gray-500">
+            <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
               <span className="flex items-center gap-1">
                 <Camera size={16} />
                 {area.photoCount}
@@ -81,9 +81,9 @@ function AreaCard({
           opacity: isExpanded ? 1 : 0
         }}
         transition={{ duration: 0.3 }}
-        className="border-t border-gray-200"
+        className="border-t border-gray-200 dark:border-gray-700"
       >
-        <div className="p-6 bg-white">
+        <div className="p-6 bg-white dark:bg-gray-900">
           {/* Action Buttons */}
           <div className="flex gap-3 mb-6">
             <button
@@ -126,36 +126,36 @@ function AreaCard({
             {/* Findings Section */}
             <div className="space-y-4">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <FileText size={16} className="text-gray-500" />
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                  <FileText size={16} className="text-gray-500 dark:text-gray-400" />
                   Inspection Findings
                 </h4>
                 {isEditing ? (
                   <textarea
-                    className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
                     rows={3}
                     value={editedArea.findings}
                     onChange={(e) => setEditedArea({ ...editedArea, findings: e.target.value })}
                   />
                 ) : (
-                  <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">{area.findings}</p>
+                  <p className="text-sm text-gray-700 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">{area.findings}</p>
                 )}
               </div>
 
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <AlertTriangle size={16} className="text-gray-500" />
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                  <AlertTriangle size={16} className="text-gray-500 dark:text-gray-400" />
                   Damage Assessment
                 </h4>
                 {isEditing ? (
                   <textarea
-                    className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                    className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
                     rows={3}
                     value={editedArea.damageDescription}
                     onChange={(e) => setEditedArea({ ...editedArea, damageDescription: e.target.value })}
                   />
                 ) : (
-                  <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-lg">{area.damageDescription}</p>
+                  <p className="text-sm text-gray-700 bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">{area.damageDescription}</p>
                 )}
               </div>
             </div>
@@ -163,17 +163,17 @@ function AreaCard({
             {/* Key Insights and Media */}
             <div className="space-y-4">
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <Lightbulb size={16} className="text-gray-500" />
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                  <Lightbulb size={16} className="text-gray-500 dark:text-gray-400" />
                   Key Insights
                 </h4>
-                <div className="bg-gray-50 p-3 rounded-lg">
+                <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded-lg">
                   {isEditing ? (
                     <div className="space-y-2">
                       {editedArea.keyInsights.map((insight: string, idx: number) => (
                         <input
                           key={idx}
-                          className="w-full p-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
+                          className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-stellar-orange"
                           value={insight}
                           onChange={(e) => {
                             const newInsights = [...editedArea.keyInsights]
@@ -184,7 +184,7 @@ function AreaCard({
                       ))}
                     </div>
                   ) : (
-                    <ul className="text-sm text-gray-700 space-y-1">
+                    <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
                       {area.keyInsights.map((insight: string, idx: number) => (
                         <li key={idx} className="flex items-start gap-2">
                           <span className="text-stellar-orange mt-0.5">•</span>
@@ -197,8 +197,8 @@ function AreaCard({
               </div>
 
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <Camera size={16} className="text-gray-500" />
+                <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                  <Camera size={16} className="text-gray-500 dark:text-gray-400" />
                   Media Documentation
                 </h4>
                 <div className="grid grid-cols-2 gap-3">
@@ -226,8 +226,8 @@ function AreaCard({
             <p className="text-sm text-amber-800">
               This information will be included in the final inspection report. Review carefully before approving.
             </p>
-            <div className="mt-3 p-3 bg-white rounded border border-amber-300">
-              <p className="text-xs font-mono text-gray-700">
+            <div className="mt-3 p-3 bg-white dark:bg-gray-900 rounded border border-amber-300">
+              <p className="text-xs font-mono text-gray-700 dark:text-gray-300">
                 <span className="font-semibold">Area:</span> {area.name} ({area.category})<br/>
                 <span className="font-semibold">Status:</span> {area.status}<br/>
                 <span className="font-semibold">Documentation:</span> {area.photoCount} photos, {area.audioCount} audio recordings<br/>
@@ -622,15 +622,15 @@ export default function InspectionReviewPage() {
   const inspectionSummary = inspectionData || defaultInspectionSummary
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div className="flex flex-col gap-2">
             {/* Back Navigation */}
             <Link 
               href={`/dashboard/inspection`}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 cursor-pointer w-fit"
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 cursor-pointer w-fit"
             >
               <ArrowLeft size={20} />
               Back to Inspections
@@ -640,15 +640,15 @@ export default function InspectionReviewPage() {
             <div>
               <div className="flex items-center gap-4 mb-4">
                 <div>
-                  <h1 className="text-3xl font-semibold text-gray-900">
+                  <h1 className="text-3xl font-semibold text-gray-900 dark:text-gray-100">
                     Inspection Review
                   </h1>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
                     {inspectionSummary.propertyDetails.address}
                   </p>
                 </div>
                 {autoSaveStatus !== 'idle' && (
-                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                  <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
                     {autoSaveStatus === 'saving' ? (
                       <>
                         <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
@@ -668,7 +668,7 @@ export default function InspectionReviewPage() {
               <div className="hidden md:flex items-center gap-3">
                 <Link
                   href={`/dashboard/inspection/${inspectionId}/areas`}
-                  className="flex items-center gap-2 text-gray-700 hover:text-gray-900 cursor-pointer"
+                  className="flex items-center gap-2 text-gray-700 hover:text-gray-900 dark:text-gray-100 cursor-pointer"
                 >
                   <Edit3 size={18} />
                   Edit Areas
@@ -731,46 +731,46 @@ export default function InspectionReviewPage() {
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8">
           {/* Total Photos Card */}
-          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-bl-full opacity-50" />
             <div className="relative">
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 bg-blue-100 rounded-lg">
                   <Camera className="text-blue-600" size={16} />
                 </div>
-                <span className="text-xs font-medium text-gray-600">Total Photos</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Total Photos</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {inspectionSummary.overallInsights.totalPhotos}
               </p>
             </div>
           </div>
 
           {/* Areas Complete Card */}
-          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-green-50 rounded-bl-full opacity-50" />
             <div className="relative">
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 bg-green-100 rounded-lg">
                   <CheckCircle className="text-green-600" size={16} />
                 </div>
-                <span className="text-xs font-medium text-gray-600">Areas Complete</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Areas Complete</span>
               </div>
-              <p className="text-3xl font-bold text-gray-900">
+              <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
                 {inspectionSummary.overallInsights.completedAreas}
               </p>
             </div>
           </div>
 
           {/* Critical Issues Card */}
-          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-red-50 rounded-bl-full opacity-50" />
             <div className="relative">
               <div className="flex items-center gap-2 mb-3">
                 <div className="p-1.5 bg-red-100 rounded-lg">
                   <AlertTriangle className="text-red-600" size={16} />
                 </div>
-                <span className="text-xs font-medium text-gray-600">Critical Issues</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Critical Issues</span>
               </div>
               <p className="text-3xl font-bold text-red-600">
                 {inspectionSummary.overallInsights.criticalIssues}
@@ -779,7 +779,7 @@ export default function InspectionReviewPage() {
           </div>
 
           {/* Est. Repair Cost Card - Compact */}
-          <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
+          <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200 p-4 md:p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-50 rounded-bl-full opacity-50" />
             <div className="flex flex-col h-full">
               {/* Header with icon */}
@@ -787,7 +787,7 @@ export default function InspectionReviewPage() {
                 <div className="p-1.5 bg-emerald-100 rounded-lg">
                   <DollarSign className="text-emerald-600" size={16} />
                 </div>
-                <span className="text-xs font-medium text-gray-600">Est. Repair Cost</span>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">Est. Repair Cost</span>
               </div>
 
               {/* Main Value */}
@@ -804,9 +804,9 @@ export default function InspectionReviewPage() {
         </div>
 
         {/* Tabs */}
-        <div className="bg-white rounded-xl md:rounded-2xl border border-gray-200">
+        <div className="bg-white dark:bg-gray-900 rounded-xl md:rounded-2xl border border-gray-200">
           {/* Tab Headers */}
-          <div className="border-b border-gray-200 px-3 md:px-6 py-3 md:py-4">
+          <div className="border-b border-gray-200 dark:border-gray-700 px-3 md:px-6 py-3 md:py-4">
             <nav className="flex space-x-4 md:space-x-8 overflow-x-auto">
               {tabs.map((tab) => (
                 <button
@@ -826,11 +826,11 @@ export default function InspectionReviewPage() {
           </div>
 
           {/* Action Buttons - Mobile Only */}
-          <div className="block md:hidden border-b border-gray-200 px-3 py-3 space-y-2">
+          <div className="block md:hidden border-b border-gray-200 dark:border-gray-700 px-3 py-3 space-y-2">
             <div className="grid grid-cols-2 gap-2">
               <Link
                 href={`/dashboard/inspection/${inspectionId}/areas`}
-                className="flex items-center justify-center gap-2 py-2 px-2 bg-gray-100 text-gray-700 hover:text-gray-900 rounded-lg cursor-pointer text-sm"
+                className="flex items-center justify-center gap-2 py-2 px-2 bg-gray-100 dark:bg-gray-800 text-gray-700 hover:text-gray-900 rounded-lg cursor-pointer text-sm"
               >
                 <Edit3 size={16} />
                 Edit Areas
@@ -894,11 +894,11 @@ export default function InspectionReviewPage() {
                 {/* Property Summary */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Details</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Property Details</h3>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         <MapPin className="text-gray-400" size={18} />
-                        <span className="text-gray-900">{inspectionSummary.propertyDetails.address}</span>
+                        <span className="text-gray-900 dark:text-gray-100">{inspectionSummary.propertyDetails.address}</span>
                       </div>
                       <div className="flex items-center gap-3">
                         {inspectionSummary.propertyDetails.type === 'residential' ? (
@@ -906,24 +906,24 @@ export default function InspectionReviewPage() {
                         ) : (
                           <Building2 className="text-gray-400" size={18} />
                         )}
-                        <span className="text-gray-900 capitalize">
+                        <span className="text-gray-900 dark:text-gray-100 capitalize">
                           {inspectionSummary.propertyDetails.type} • Built {inspectionSummary.propertyDetails.yearBuilt}
                         </span>
                       </div>
                       <div className="flex items-center gap-3">
                         <User className="text-gray-400" size={18} />
-                        <span className="text-gray-900">{inspectionSummary.propertyDetails.ownerName}</span>
+                        <span className="text-gray-900 dark:text-gray-100">{inspectionSummary.propertyDetails.ownerName}</span>
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Damage Types</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Damage Types</h3>
                     <div className="flex flex-wrap gap-2">
                       {inspectionSummary.propertyDetails.damageTypes.map((type) => (
                         <span
                           key={type}
-                          className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm"
+                          className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-lg text-sm"
                         >
                           {type}
                         </span>
@@ -935,86 +935,86 @@ export default function InspectionReviewPage() {
                 {/* Repair Estimate Breakdown - Added as requested */}
                 <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200 rounded-xl p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Intelligent Cost Estimation</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Intelligent Cost Estimation</h3>
                     <div className="flex items-center gap-1">
                       <TrendingUp className="text-stellar-orange" size={14} />
-                      <span className="text-xs text-gray-600">Market-based pricing</span>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">Market-based pricing</span>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                     Based on recent market prices for repair costs on similar cases in your area.
                   </p>
                   
-                  <div className="bg-white rounded-lg p-4 mb-4">
-                    <h4 className="font-semibold text-gray-900 mb-3">Repair Estimate Breakdown</h4>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg p-4 mb-4">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Repair Estimate Breakdown</h4>
                     <div className="space-y-2">
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
                         <div>
-                          <div className="font-medium text-gray-900">Roof Repair</div>
-                          <div className="text-xs text-gray-500">RFG 240 • 25 SQ</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">Roof Repair</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">RFG 240 • 25 SQ</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm text-gray-600">$285/SQ</div>
-                          <div className="font-semibold text-gray-900">$7,125</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">$285/SQ</div>
+                          <div className="font-semibold text-gray-900 dark:text-gray-100">$7,125</div>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
                         <div>
-                          <div className="font-medium text-gray-900">Gutter Replacement</div>
-                          <div className="text-xs text-gray-500">GTR 110 • 120 LF</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">Gutter Replacement</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">GTR 110 • 120 LF</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm text-gray-600">$12/LF</div>
-                          <div className="font-semibold text-gray-900">$1,440</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">$12/LF</div>
+                          <div className="font-semibold text-gray-900 dark:text-gray-100">$1,440</div>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
                         <div>
-                          <div className="font-medium text-gray-900">Interior Water Damage</div>
-                          <div className="text-xs text-gray-500">WTR 320 • 200 SF</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">Interior Water Damage</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">WTR 320 • 200 SF</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm text-gray-600">$8/SF</div>
-                          <div className="font-semibold text-gray-900">$1,600</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">$8/SF</div>
+                          <div className="font-semibold text-gray-900 dark:text-gray-100">$1,600</div>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
                         <div>
-                          <div className="font-medium text-gray-900">Painting & Finishing</div>
-                          <div className="text-xs text-gray-500">PNT 450 • 300 SF</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">Painting & Finishing</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">PNT 450 • 300 SF</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm text-gray-600">$4/SF</div>
-                          <div className="font-semibold text-gray-900">$1,200</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">$4/SF</div>
+                          <div className="font-semibold text-gray-900 dark:text-gray-100">$1,200</div>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100 dark:border-gray-800">
                         <div>
-                          <div className="font-medium text-gray-900">Debris Removal</div>
-                          <div className="text-xs text-gray-500">DBR 100 • 1 Load</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">Debris Removal</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">DBR 100 • 1 Load</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-sm text-gray-600">$450</div>
-                          <div className="font-semibold text-gray-900">$450</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">$450</div>
+                          <div className="font-semibold text-gray-900 dark:text-gray-100">$450</div>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Subtotal</span>
-                        <span className="font-medium text-gray-900">$11,815</span>
+                        <span className="text-gray-600 dark:text-gray-400">Subtotal</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">$11,815</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Overhead & Profit (20%)</span>
-                        <span className="font-medium text-gray-900">$2,363</span>
+                        <span className="text-gray-600 dark:text-gray-400">Overhead & Profit (20%)</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">$2,363</span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Tax (7%)</span>
-                        <span className="font-medium text-gray-900">$992</span>
+                        <span className="text-gray-600 dark:text-gray-400">Tax (7%)</span>
+                        <span className="font-medium text-gray-900 dark:text-gray-100">$992</span>
                       </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-gray-200">
-                        <span className="text-lg font-semibold text-gray-900">Total Estimate</span>
+                      <div className="flex justify-between items-center pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Total Estimate</span>
                         <span className="text-2xl font-bold text-stellar-orange">${inspectionSummary.overallInsights.repairEstimate.toLocaleString()}</span>
                       </div>
                     </div>
@@ -1023,16 +1023,16 @@ export default function InspectionReviewPage() {
 
                 {/* Area Status Grid */}
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Area Completion Status</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Area Completion Status</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {inspectionSummary.areas.map((area) => (
-                      <div key={area.id} className="bg-gray-50 rounded-xl p-4">
+                      <div key={area.id} className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-gray-900">{area.name}</h4>
+                          <h4 className="font-medium text-gray-900 dark:text-gray-100">{area.name}</h4>
                           {getStatusIcon(area.status)}
                         </div>
-                        <div className="text-sm text-gray-600 mb-2">{area.category}</div>
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">{area.category}</div>
+                        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                           <span className="flex items-center gap-1">
                             <Camera size={14} />
                             {area.photoCount}
@@ -1065,32 +1065,32 @@ export default function InspectionReviewPage() {
                 {/* AI Enrichment Results Section */}
                 {enrichmentComplete && (
                   <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 border border-orange-200 rounded-xl p-6">
-                    <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                       <Brain className="text-stellar-orange" size={20} />
                       AI Enrichment Summary
                     </h4>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                      <div className="bg-white rounded-lg p-4">
-                        <h5 className="font-medium text-gray-900 mb-2">Historical Patterns</h5>
-                        <p className="text-sm text-gray-600">
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                        <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Historical Patterns</h5>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           3 similar cases found with average 28% higher settlements
                         </p>
                         <div className="mt-2 text-lg font-semibold text-green-600">
                           +$45,000 potential
                         </div>
                       </div>
-                      <div className="bg-white rounded-lg p-4">
-                        <h5 className="font-medium text-gray-900 mb-2">Code Violations</h5>
-                        <p className="text-sm text-gray-600">
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                        <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Code Violations</h5>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           5 building code updates require compliance
                         </p>
                         <div className="mt-2 text-lg font-semibold text-stellar-orange">
                           Must address
                         </div>
                       </div>
-                      <div className="bg-white rounded-lg p-4">
-                        <h5 className="font-medium text-gray-900 mb-2">Coverage Gaps</h5>
-                        <p className="text-sm text-gray-600">
+                      <div className="bg-white dark:bg-gray-900 rounded-lg p-4">
+                        <h5 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Coverage Gaps</h5>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
                           2 unclaimed coverage types identified
                         </p>
                         <div className="mt-2 text-lg font-semibold text-blue-600">
@@ -1105,7 +1105,7 @@ export default function InspectionReviewPage() {
 
             {selectedTab === 'insights' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">AI-Generated Insights & Recommendations</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">AI-Generated Insights & Recommendations</h3>
                 
                 {inspectionSummary.aiRecommendations.map((rec, idx) => (
                   <motion.div
@@ -1135,19 +1135,19 @@ export default function InspectionReviewPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-gray-900">{rec.title}</h4>
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">{rec.title}</h4>
                           <div className="flex items-center gap-2">
                             {rec.potentialValue && (
                               <span className="text-green-600 font-semibold">
                                 +${rec.potentialValue.toLocaleString()}
                               </span>
                             )}
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
                               {rec.confidence}% confidence
                             </span>
                           </div>
                         </div>
-                        <p className="text-gray-700">{rec.description}</p>
+                        <p className="text-gray-700 dark:text-gray-300">{rec.description}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -1157,7 +1157,7 @@ export default function InspectionReviewPage() {
 
             {selectedTab === 'opportunities' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900">Historical Recovery Opportunities</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Historical Recovery Opportunities</h3>
                 
                 {inspectionSummary.historicalFindings.map((finding, idx) => (
                   <div key={idx} className="bg-amber-50 border border-amber-200 rounded-xl p-6">
@@ -1167,15 +1167,15 @@ export default function InspectionReviewPage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-semibold text-gray-900">{finding.title}</h4>
+                          <h4 className="font-semibold text-gray-900 dark:text-gray-100">{finding.title}</h4>
                           <span className="text-green-600 font-bold text-lg">
                             +${finding.potentialRecovery.toLocaleString()}
                           </span>
                         </div>
-                        <p className="text-gray-700 mb-2">{finding.description}</p>
+                        <p className="text-gray-700 dark:text-gray-300 mb-2">{finding.description}</p>
                         <div className="flex items-center gap-2 text-sm">
                           <Calendar size={14} className="text-gray-400" />
-                          <span className="text-gray-600">{finding.timeframe}</span>
+                          <span className="text-gray-600 dark:text-gray-400">{finding.timeframe}</span>
                         </div>
                       </div>
                     </div>
@@ -1185,10 +1185,10 @@ export default function InspectionReviewPage() {
                 <div className="bg-green-50 border border-green-200 rounded-xl p-6">
                   <div className="flex items-center gap-3 mb-3">
                     <Target className="text-green-600" size={24} />
-                    <h4 className="font-semibold text-gray-900">Total Recovery Opportunity</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">Total Recovery Opportunity</h4>
                   </div>
                   <div className="flex items-center justify-between">
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 dark:text-gray-300">
                       Combined current claim and historical recovery potential
                     </p>
                     <span className="text-green-600 font-bold text-2xl">
@@ -1207,24 +1207,24 @@ export default function InspectionReviewPage() {
       {/* AI Enrichment Modal */}
       {isEnriching && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 max-w-md w-full mx-4">
             <div className="text-center">
               <div className="mb-6">
                 <Brain className="mx-auto text-stellar-orange animate-pulse" size={48} />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">AI Enhancement in Progress</h3>
-              <p className="text-gray-600 mb-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">AI Enhancement in Progress</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
                 Analyzing your inspection with historical data, building codes, and insurance policies to ensure nothing is missed.
               </p>
               
               {/* Progress Bar */}
-              <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-4">
                 <div 
                   className="bg-stellar-orange h-3 rounded-full transition-all duration-500"
                   style={{ width: `${enrichmentProgress}%` }}
                 />
               </div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
                 {Math.round(enrichmentProgress)}% complete
               </p>
               

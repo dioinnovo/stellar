@@ -245,27 +245,27 @@ export default function InspectionStartPage() {
   const isFormValid = claimData && inspectionSetup.scheduledDate && inspectionSetup.scheduledTime
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header - Mobile Optimized */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
           <div className="space-y-4">
             <Link
               href="/dashboard/inspection"
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="text-sm sm:text-base">Back to Inspections</span>
             </Link>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-900 dark:text-gray-100">
                 Inspection Setup
               </h1>
               <div className="flex items-center gap-2 flex-shrink-0">
               {!isEditMode ? (
                 <button
                   onClick={handleEdit}
-                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-gray-900 dark:text-gray-100 border border-gray-300 rounded-lg transition-colors"
                 >
                   <Edit2 className="w-4 h-4" />
                   <span>Edit Details</span>
@@ -274,7 +274,7 @@ export default function InspectionStartPage() {
                 <>
                   <button
                     onClick={handleCancelEdit}
-                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 border border-gray-300 rounded-lg transition-colors"
                   >
                     <X className="w-4 h-4" />
                     <span>Cancel</span>
@@ -302,26 +302,26 @@ export default function InspectionStartPage() {
           <div className="xl:col-span-3 space-y-6">
             {/* Loading State */}
             {isLoading && !claimData && (
-              <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+              <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-8 text-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stellar-orange mx-auto mb-4" />
-                <p className="text-gray-600">Loading claim information...</p>
+                <p className="text-gray-600 dark:text-gray-400">Loading claim information...</p>
               </div>
             )}
 
             {/* Claim Overview */}
             {claimData && (
               <>
-                <div className="bg-white rounded-xl border border-gray-200 p-6" data-testid="claim-information">
+                <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-6" data-testid="claim-information">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="p-3 bg-stellar-orange/10 rounded-lg">
                       <FileText className="text-stellar-orange" size={24} />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900">Claim Information</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Claim Information</h2>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-4">Property Details</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Property Details</h3>
                       {!isEditMode ? (
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
@@ -340,9 +340,9 @@ export default function InspectionStartPage() {
                             </span>
                           </div>
                           <div className="grid grid-cols-1 gap-2 pt-2">
-                            <div><span className="text-gray-600 font-medium">Built:</span> {claimData.property.yearBuilt}</div>
-                            <div><span className="text-gray-600 font-medium">Size:</span> {claimData.property.squareFootage} sq ft</div>
-                            <div><span className="text-gray-600 font-medium">Stories:</span> {claimData.property.numberOfStories}</div>
+                            <div><span className="text-gray-600 dark:text-gray-400 font-medium">Built:</span> {claimData.property.yearBuilt}</div>
+                            <div><span className="text-gray-600 dark:text-gray-400 font-medium">Size:</span> {claimData.property.squareFootage} sq ft</div>
+                            <div><span className="text-gray-600 dark:text-gray-400 font-medium">Stories:</span> {claimData.property.numberOfStories}</div>
                           </div>
                         </div>
                       ) : (
@@ -365,7 +365,7 @@ export default function InspectionStartPage() {
                             type="text"
                             value={editedClaimData?.property.address || ''}
                             onChange={(e) => updateEditedField('property', 'address', e.target.value)}
-                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
+                            className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                             placeholder="Address"
                           />
                           <div className="grid grid-cols-3 gap-2">
@@ -373,14 +373,14 @@ export default function InspectionStartPage() {
                               type="text"
                               value={editedClaimData?.property.city || ''}
                               onChange={(e) => updateEditedField('property', 'city', e.target.value)}
-                              className="px-2 py-1 text-sm border border-gray-300 rounded"
+                              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                               placeholder="City"
                             />
                             <input
                               type="text"
                               value={editedClaimData?.property.state || ''}
                               onChange={(e) => updateEditedField('property', 'state', e.target.value)}
-                              className="px-2 py-1 text-sm border border-gray-300 rounded"
+                              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                               placeholder="State"
                               maxLength={2}
                             />
@@ -388,7 +388,7 @@ export default function InspectionStartPage() {
                               type="text"
                               value={editedClaimData?.property.zipCode || ''}
                               onChange={(e) => updateEditedField('property', 'zipCode', e.target.value)}
-                              className="px-2 py-1 text-sm border border-gray-300 rounded"
+                              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                               placeholder="ZIP"
                               maxLength={5}
                             />
@@ -398,7 +398,7 @@ export default function InspectionStartPage() {
                               type="text"
                               value={editedClaimData?.property.yearBuilt || ''}
                               onChange={(e) => updateEditedField('property', 'yearBuilt', e.target.value)}
-                              className="px-2 py-1 text-sm border border-gray-300 rounded"
+                              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                               placeholder="Year"
                               maxLength={4}
                             />
@@ -406,14 +406,14 @@ export default function InspectionStartPage() {
                               type="text"
                               value={editedClaimData?.property.squareFootage || ''}
                               onChange={(e) => updateEditedField('property', 'squareFootage', e.target.value)}
-                              className="px-2 py-1 text-sm border border-gray-300 rounded"
+                              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                               placeholder="Sq ft"
                             />
                             <input
                               type="text"
                               value={editedClaimData?.property.numberOfStories || ''}
                               onChange={(e) => updateEditedField('property', 'numberOfStories', e.target.value)}
-                              className="px-2 py-1 text-sm border border-gray-300 rounded"
+                              className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                               placeholder="Stories"
                               maxLength={2}
                             />
@@ -423,18 +423,18 @@ export default function InspectionStartPage() {
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-4">Claim Details</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Claim Details</h3>
                       <div className="space-y-3">
                         <div>
-                          <span className="text-gray-600 font-medium">Claim #:</span><br/>
+                          <span className="text-gray-600 dark:text-gray-400 font-medium">Claim #:</span><br/>
                           <span className="font-semibold text-stellar-orange">{claimData.claimNumber}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600 font-medium">Date of Loss:</span><br/>
+                          <span className="text-gray-600 dark:text-gray-400 font-medium">Date of Loss:</span><br/>
                           <span>{claimData.incident.dateOfLoss}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600 font-medium">Damage Types:</span>
+                          <span className="text-gray-600 dark:text-gray-400 font-medium">Damage Types:</span>
                           <div className="flex flex-wrap gap-2 mt-2">
                             {claimData.incident.damageTypes.map((type) => (
                               <span key={type} className="px-3 py-1 bg-stellar-orange/10 text-stellar-orange text-sm rounded-full font-medium">
@@ -444,14 +444,14 @@ export default function InspectionStartPage() {
                           </div>
                         </div>
                         <div>
-                          <span className="text-gray-600 font-medium">Est. Value:</span><br/>
+                          <span className="text-gray-600 dark:text-gray-400 font-medium">Est. Value:</span><br/>
                           <span className="font-semibold text-green-600 text-lg">${claimData.incident.estimatedValue?.toLocaleString()}</span>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-4">Property Owner</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Property Owner</h3>
                       {!isEditMode ? (
                         <div className="space-y-3">
                           <div className="flex items-center gap-3">
@@ -459,11 +459,11 @@ export default function InspectionStartPage() {
                             <span className="font-medium">{claimData.owner.name}</span>
                           </div>
                           <div>
-                            <span className="text-gray-600 font-medium">Phone:</span><br/>
+                            <span className="text-gray-600 dark:text-gray-400 font-medium">Phone:</span><br/>
                             <span>{claimData.owner.phone}</span>
                           </div>
                           <div>
-                            <span className="text-gray-600 font-medium">Email:</span><br/>
+                            <span className="text-gray-600 dark:text-gray-400 font-medium">Email:</span><br/>
                             <span className="break-all">{claimData.owner.email}</span>
                           </div>
                         </div>
@@ -473,21 +473,21 @@ export default function InspectionStartPage() {
                             type="text"
                             value={editedClaimData?.owner.name || ''}
                             onChange={(e) => updateEditedField('owner', 'name', e.target.value)}
-                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
+                            className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                             placeholder="Owner name"
                           />
                           <input
                             type="tel"
                             value={editedClaimData?.owner.phone || ''}
                             onChange={(e) => updateEditedField('owner', 'phone', e.target.value)}
-                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
+                            className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                             placeholder="Phone"
                           />
                           <input
                             type="email"
                             value={editedClaimData?.owner.email || ''}
                             onChange={(e) => updateEditedField('owner', 'email', e.target.value)}
-                            className="w-full px-2 py-1 text-sm border border-gray-300 rounded"
+                            className="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded"
                             placeholder="Email"
                           />
                         </div>
@@ -495,24 +495,24 @@ export default function InspectionStartPage() {
                     </div>
 
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-4">Insurance Information</h3>
+                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Insurance Information</h3>
                       <div className="space-y-3">
                         <div>
-                          <span className="text-gray-600 font-medium">Company:</span><br/>
+                          <span className="text-gray-600 dark:text-gray-400 font-medium">Company:</span><br/>
                           <span className="font-medium">{claimData.insurance.company}</span>
                         </div>
                         <div>
-                          <span className="text-gray-600 font-medium">Policy:</span><br/>
+                          <span className="text-gray-600 dark:text-gray-400 font-medium">Policy:</span><br/>
                           <span className="font-mono text-sm">{claimData.insurance.policyNumber}</span>
                         </div>
                         {claimData.insurance.adjusterName && (
                           <>
                             <div>
-                              <span className="text-gray-600 font-medium">Adjuster:</span><br/>
+                              <span className="text-gray-600 dark:text-gray-400 font-medium">Adjuster:</span><br/>
                               <span>{claimData.insurance.adjusterName}</span>
                             </div>
                             <div>
-                              <span className="text-gray-600 font-medium">Adjuster Phone:</span><br/>
+                              <span className="text-gray-600 dark:text-gray-400 font-medium">Adjuster Phone:</span><br/>
                               <span>{claimData.insurance.adjusterPhone}</span>
                             </div>
                           </>
@@ -521,28 +521,28 @@ export default function InspectionStartPage() {
                     </div>
                   </div>
 
-                  <div className="mt-8 pt-6 border-t border-gray-200 sm:col-span-2 xl:col-span-4">
-                    <h3 className="font-semibold text-gray-900 mb-3">Initial Damage Description</h3>
-                    <p className="text-gray-700 leading-relaxed">{claimData.incident.initialDescription}</p>
+                  <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 sm:col-span-2 xl:col-span-4">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Initial Damage Description</h3>
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{claimData.incident.initialDescription}</p>
                   </div>
                 </div>
 
                 {/* Inspection Setup */}
-                <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-6">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="p-3 bg-stellar-orange/10 rounded-lg">
                       <Camera className="text-stellar-orange" size={24} />
                     </div>
-                    <h2 className="text-xl font-semibold text-gray-900">Inspection Setup</h2>
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Inspection Setup</h2>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                     <div className="relative">
-                      <label className="block font-medium text-gray-900 mb-2">Inspector *</label>
+                      <label className="block font-medium text-gray-900 dark:text-gray-100 mb-2">Inspector *</label>
                       <select
                         value={inspectionSetup.inspector}
                         onChange={(e) => updateInspectionField('inspector', e.target.value)}
-                        className="w-full px-4 py-3 pr-10 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange bg-white appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 pr-10 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange bg-white dark:bg-gray-900 appearance-none cursor-pointer"
                       >
                         <option value="James Rodriguez">James Rodriguez</option>
                         <option value="Maria Garcia">Maria Garcia</option>
@@ -553,27 +553,27 @@ export default function InspectionStartPage() {
                       </div>
                     </div>
                     <div>
-                      <label className="block font-medium text-gray-900 mb-2">Scheduled Date *</label>
+                      <label className="block font-medium text-gray-900 dark:text-gray-100 mb-2">Scheduled Date *</label>
                       <input
                         type="date"
                         value={inspectionSetup.scheduledDate}
                         onChange={(e) => updateInspectionField('scheduledDate', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
                       />
                     </div>
                     <div>
-                      <label className="block font-medium text-gray-900 mb-2">Scheduled Time *</label>
+                      <label className="block font-medium text-gray-900 dark:text-gray-100 mb-2">Scheduled Time *</label>
                       <input
                         type="time"
                         value={inspectionSetup.scheduledTime}
                         onChange={(e) => updateInspectionField('scheduledTime', e.target.value)}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
                       />
                     </div>
                   </div>
 
                   <div className="mb-8 sm:col-span-2 xl:col-span-3">
-                    <label className="block font-medium text-gray-900 mb-4">Inspection Focus Areas</label>
+                    <label className="block font-medium text-gray-900 dark:text-gray-100 mb-4">Inspection Focus Areas</label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
                       {claimData.incident.damageTypes.map((type) => (
                         <button
@@ -592,12 +592,12 @@ export default function InspectionStartPage() {
                   </div>
 
                   <div className="sm:col-span-2 xl:col-span-3">
-                    <label className="block font-medium text-gray-900 mb-2">Special Instructions</label>
+                    <label className="block font-medium text-gray-900 dark:text-gray-100 mb-2">Special Instructions</label>
                     <textarea
                       value={inspectionSetup.specialInstructions}
                       onChange={(e) => updateInspectionField('specialInstructions', e.target.value)}
                       rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-stellar-orange focus:border-stellar-orange"
                       placeholder="Any specific areas of concern or special inspection requirements..."
                     />
                   </div>
@@ -610,22 +610,22 @@ export default function InspectionStartPage() {
           <div className="space-y-6">
             {/* Historical Data */}
             {isLoading ? (
-              <div className="bg-white rounded-xl border border-gray-200 p-6">
+              <div className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <Brain className="text-stellar-orange animate-pulse" size={24} />
                   <h3 className="font-semibold text-lg">Analyzing History...</h3>
                 </div>
                 <div className="animate-pulse space-y-3">
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                  <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
                 </div>
               </div>
             ) : historicalData && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-xl border border-gray-200 p-6"
+                className="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 p-6"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <Brain className="text-stellar-orange" size={24} />
@@ -634,11 +634,11 @@ export default function InspectionStartPage() {
                 
                 {historicalData.previousClaims.length > 0 && (
                   <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 mb-3">Previous Claims</h4>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Previous Claims</h4>
                     {historicalData.previousClaims.map((claim: any, idx: number) => (
-                      <div key={idx} className="p-4 bg-gray-50 rounded-lg mb-3 border-l-4 border-stellar-orange">
+                      <div key={idx} className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg mb-3 border-l-4 border-stellar-orange">
                         <div className="font-semibold">{claim.type} - {claim.date}</div>
-                        <div className="text-gray-600 mt-1">{claim.settlement}</div>
+                        <div className="text-gray-600 dark:text-gray-400 mt-1">{claim.settlement}</div>
                         <div className="text-stellar-orange font-semibold mt-1">{claim.status}</div>
                       </div>
                     ))}
@@ -646,8 +646,8 @@ export default function InspectionStartPage() {
                 )}
 
                 <div>
-                  <h4 className="font-semibold text-gray-900 mb-3">Market Insights</h4>
-                  <ul className="space-y-2 text-gray-700">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">Market Insights</h4>
+                  <ul className="space-y-2 text-gray-700 dark:text-gray-300">
                     {historicalData.neighborhoodPatterns.map((pattern: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2">
                         <span className="text-stellar-orange font-bold mt-1">•</span>

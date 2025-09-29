@@ -592,7 +592,7 @@ export default function InspectionReportPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-stellar-orange border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading report...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading report...</p>
         </div>
       </div>
     )
@@ -604,7 +604,7 @@ export default function InspectionReportPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-stellar-orange border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Checking report status...</p>
+          <p className="text-gray-600 dark:text-gray-400">Checking report status...</p>
         </div>
       </div>
     )
@@ -614,10 +614,10 @@ export default function InspectionReportPage() {
   if (isApproved === false) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
+        <div className="max-w-md w-full bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 text-center">
           <AlertCircle size={64} className="text-yellow-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Report Pending Approval</h2>
-          <p className="text-gray-600 mb-6">
+          <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">Report Pending Approval</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             This inspection report is currently under review and has not been approved yet.
             Please complete the approval process to view the final report.
           </p>
@@ -637,22 +637,22 @@ export default function InspectionReportPage() {
   return (
     <div className="min-h-screen">
       {/* Header - Non-printable */}
-      <div className="bg-white border-b border-gray-200 print:hidden">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 print:hidden">
         <div className="max-w-7xl mx-auto px-4 py-3 sm:py-4">
           <div>
             <Link
               href={`/dashboard/inspection/${inspectionId}/review`}
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-3"
+              className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:text-gray-100 transition-colors mb-3"
             >
               <ArrowLeft size={20} />
               <span>Back to Review</span>
             </Link>
             <div>
-              <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 break-words">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-900 dark:text-gray-100 break-words">
                 <span className="block sm:inline">Inspection Report</span>
                 <span className="block sm:inline sm:ml-1">- {reportData?.metadata?.reportId || `RPT-${inspectionId}`}</span>
               </h1>
-              <p className="text-sm sm:text-base text-gray-600 mb-4">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4">
                 Generated {reportData?.metadata?.generatedDate || new Date().toLocaleDateString()}
               </p>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
@@ -722,58 +722,58 @@ export default function InspectionReportPage() {
           
           {/* Report Title and Details */}
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">COMPREHENSIVE HOME INSPECTION REPORT</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">COMPREHENSIVE HOME INSPECTION REPORT</h2>
             <div className="w-24 h-1 bg-stellar-orange mx-auto mb-8"></div>
             
             {/* Report Metadata Grid */}
             <div className="grid grid-cols-2 gap-8 max-w-3xl mx-auto mb-12">
               <div className="text-left">
-                <h3 className="font-bold text-gray-900 mb-4 text-lg">PROPERTY DETAILS</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">PROPERTY DETAILS</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Report Number:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Report Number:</span>
                     <span className="font-medium">{reportData?.metadata?.reportId || `RPT-${inspectionId}`}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Inspection Date:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Inspection Date:</span>
                     <span className="font-medium">{reportData?.metadata?.generatedDate || new Date().toLocaleDateString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Property Type:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Property Type:</span>
                     <span className="font-medium capitalize">{reportData.metadata.property.type}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Year Built:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Year Built:</span>
                     <span className="font-medium">{reportData.metadata.property.yearBuilt}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Square Footage:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Square Footage:</span>
                     <span className="font-medium">3,200 sq ft</span>
                   </div>
                 </div>
               </div>
               
               <div className="text-left">
-                <h3 className="font-bold text-gray-900 mb-4 text-lg">INSPECTION INFORMATION</h3>
+                <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">INSPECTION INFORMATION</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Inspector:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Inspector:</span>
                     <span className="font-medium">{reportData.metadata.inspector}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">License #:</span>
+                    <span className="text-gray-600 dark:text-gray-400">License #:</span>
                     <span className="font-medium">FL-HI-2024-0847</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Company:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Company:</span>
                     <span className="font-medium">Stellar Intelligence</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Phone:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Phone:</span>
                     <span className="font-medium">(305) 555-0100</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Email:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Email:</span>
                     <span className="font-medium">inspect@stellarintel.com</span>
                   </div>
                 </div>
@@ -781,24 +781,24 @@ export default function InspectionReportPage() {
             </div>
             
             {/* Client Information */}
-            <div className="border-t border-gray-300 pt-8 mb-12">
-              <h3 className="font-bold text-gray-900 mb-4 text-lg">CLIENT INFORMATION</h3>
+            <div className="border-t border-gray-300 dark:border-gray-600 pt-8 mb-12">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">CLIENT INFORMATION</h3>
               <div className="max-w-2xl mx-auto">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Property Owner:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Property Owner:</span>
                     <span className="font-medium">{reportData.metadata.property.owner}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Policy Number:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Policy Number:</span>
                     <span className="font-medium">{reportData.metadata.property.policyNumber}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Date of Loss:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Date of Loss:</span>
                     <span className="font-medium">{reportData.metadata.claimInfo.dateOfLoss}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Claim Type:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Claim Type:</span>
                     <span className="font-medium">{reportData.metadata.claimInfo.damageTypes.join(', ')}</span>
                   </div>
                 </div>
@@ -806,41 +806,41 @@ export default function InspectionReportPage() {
             </div>
             
             {/* Systems Inspected */}
-            <div className="border-t border-gray-300 pt-8">
-              <h3 className="font-bold text-gray-900 mb-4 text-lg">SYSTEMS INSPECTED</h3>
+            <div className="border-t border-gray-300 dark:border-gray-600 pt-8">
+              <h3 className="font-bold text-gray-900 dark:text-gray-100 mb-4 text-lg">SYSTEMS INSPECTED</h3>
               <div className="grid grid-cols-3 gap-4 text-sm">
                 <div className="text-center">
-                  <div className="font-medium text-gray-900 mb-1">Structural Systems</div>
-                  <div className="text-gray-600">Foundation, Roof, Walls</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Structural Systems</div>
+                  <div className="text-gray-600 dark:text-gray-400">Foundation, Roof, Walls</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-medium text-gray-900 mb-1">Interior Systems</div>
-                  <div className="text-gray-600">Floors, Ceilings, Kitchen</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Interior Systems</div>
+                  <div className="text-gray-600 dark:text-gray-400">Floors, Ceilings, Kitchen</div>
                 </div>
                 <div className="text-center">
-                  <div className="font-medium text-gray-900 mb-1">Mechanical Systems</div>
-                  <div className="text-gray-600">HVAC, Electrical, Plumbing</div>
+                  <div className="font-medium text-gray-900 dark:text-gray-100 mb-1">Mechanical Systems</div>
+                  <div className="text-gray-600 dark:text-gray-400">HVAC, Electrical, Plumbing</div>
                 </div>
               </div>
             </div>
             
             {/* Footer */}
-            <div className="absolute bottom-8 left-0 right-0 text-center text-xs text-gray-500">
+            <div className="absolute bottom-8 left-0 right-0 text-center text-xs text-gray-500 dark:text-gray-400">
               <p>This report is prepared for the exclusive use of {reportData.metadata.property.owner}</p>
               <p className="mt-1">© 2024 Stellar Intelligence - AI-Enhanced Property Inspection Services</p>
             </div>
           </div>
         </div>
         
-        <div className="bg-white rounded-xl sm:rounded-2xl border border-gray-200 print:border-0 print:rounded-none print:shadow-none print:page-break-before">
+        <div className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl border border-gray-200 print:border-0 print:rounded-none print:shadow-none print:page-break-before">
           {/* Report Header */}
-          <div className="p-3 sm:p-6 lg:p-8 print:p-4 border-b border-gray-200 print:border-gray-400 print:break-inside-avoid">
+          <div className="p-3 sm:p-6 lg:p-8 print:p-4 border-b border-gray-200 dark:border-gray-700 print:border-gray-400 print:break-inside-avoid">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4 mb-3 sm:mb-6 print:mb-3">
               <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 mb-1 sm:mb-2 print:mb-1 print:text-center print:uppercase">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-1 sm:mb-2 print:mb-1 print:text-center print:uppercase">
                   Property Inspection Report
                 </h1>
-                <p className="text-sm sm:text-base print:hidden text-gray-600">
+                <p className="text-sm sm:text-base print:hidden text-gray-600 dark:text-gray-400">
                   Comprehensive damage assessment with AI-enhanced analysis
                 </p>
               </div>
@@ -851,10 +851,10 @@ export default function InspectionReportPage() {
                     AI Enhanced
                   </span>
                 </div>
-                <div className="text-xl sm:text-2xl print:text-lg font-bold text-gray-900 print:mb-1">
+                <div className="text-xl sm:text-2xl print:text-lg font-bold text-gray-900 dark:text-gray-100 print:mb-1">
                   Report #{reportData?.metadata?.reportId || `RPT-${inspectionId}`}
                 </div>
-                <div className="text-sm print:text-xs text-gray-600">
+                <div className="text-sm print:text-xs text-gray-600 dark:text-gray-400">
                   Date: {reportData.metadata.generatedDate}
                 </div>
               </div>
@@ -862,8 +862,8 @@ export default function InspectionReportPage() {
 
             {/* Property Information */}
             <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-4 sm:gap-6 print:gap-3 print:break-inside-avoid">
-              <div className="print:border print:border-gray-300 print:p-2 print:rounded">
-                <h3 className="font-semibold text-gray-900 mb-3 print:mb-2 print:text-xs print:uppercase">Property Information</h3>
+              <div className="print:border print:border-gray-300 dark:border-gray-600 print:p-2 print:rounded">
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 print:mb-2 print:text-xs print:uppercase">Property Information</h3>
                 <div className="space-y-2 print:space-y-1 text-sm print:text-[11px]">
                   <div className="flex items-start gap-2">
                     <MapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
@@ -882,20 +882,20 @@ export default function InspectionReportPage() {
                 </div>
               </div>
 
-              <div className="print:border print:border-gray-300 print:p-2 print:rounded">
-                <h3 className="font-semibold text-gray-900 mb-3 print:mb-2 print:text-xs print:uppercase">Claim Information</h3>
+              <div className="print:border print:border-gray-300 dark:border-gray-600 print:p-2 print:rounded">
+                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 print:mb-2 print:text-xs print:uppercase">Claim Information</h3>
                 <div className="space-y-2 print:space-y-1 text-sm print:text-[11px]">
                   <div>
-                    <span className="text-gray-600">Policy:</span> {reportData.metadata.property.policyNumber}
+                    <span className="text-gray-600 dark:text-gray-400">Policy:</span> {reportData.metadata.property.policyNumber}
                   </div>
                   <div>
-                    <span className="text-gray-600">Date of Loss:</span> {reportData.metadata.claimInfo.dateOfLoss}
+                    <span className="text-gray-600 dark:text-gray-400">Date of Loss:</span> {reportData.metadata.claimInfo.dateOfLoss}
                   </div>
                   <div>
-                    <span className="text-gray-600">Damage Types:</span> {reportData.metadata.claimInfo.damageTypes.join(', ')}
+                    <span className="text-gray-600 dark:text-gray-400">Damage Types:</span> {reportData.metadata.claimInfo.damageTypes.join(', ')}
                   </div>
                   <div>
-                    <span className="text-gray-600">Inspector:</span> {reportData.metadata.inspector}
+                    <span className="text-gray-600 dark:text-gray-400">Inspector:</span> {reportData.metadata.inspector}
                   </div>
                 </div>
               </div>
@@ -903,82 +903,82 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Executive Summary - Optimized for Print */}
-          <div className="p-3 sm:p-6 lg:p-8 print:p-4 border-b border-gray-200 print:border-gray-400 print:break-inside-avoid print:page-break-inside-avoid">
-            <h2 className="text-lg sm:text-2xl print:text-xl font-bold text-gray-900 mb-3 sm:mb-6 print:mb-3 print:text-center">EXECUTIVE SUMMARY</h2>
+          <div className="p-3 sm:p-6 lg:p-8 print:p-4 border-b border-gray-200 dark:border-gray-700 print:border-gray-400 print:break-inside-avoid print:page-break-inside-avoid">
+            <h2 className="text-lg sm:text-2xl print:text-xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-6 print:mb-3 print:text-center">EXECUTIVE SUMMARY</h2>
             
             <div className="grid grid-cols-2 lg:grid-cols-4 print:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 print:gap-2 mb-3 sm:mb-6 print:mb-3">
-              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
-                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium mb-1">Total Damage Value</div>
-                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 print:text-center">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Total Damage Value</div>
+                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 dark:text-gray-100 print:text-center">
                   ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
                 </div>
               </div>
-              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
-                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium mb-1">Critical Issues</div>
-                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-red-600 print:text-gray-900 print:text-center">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Critical Issues</div>
+                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-red-600 print:text-gray-900 dark:text-gray-100 print:text-center">
                   {reportData.executiveSummary.criticalIssues}
                 </div>
               </div>
-              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
-                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium mb-1">Confidence Score</div>
-                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-green-600 print:text-gray-900 print:text-center">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Confidence Score</div>
+                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-green-600 print:text-gray-900 dark:text-gray-100 print:text-center">
                   {reportData.executiveSummary.confidenceScore}%
                 </div>
               </div>
-              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white print:border print:border-gray-400">
-                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 print:text-center print:uppercase print:font-medium mb-1">Restoration Timeline</div>
-                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 print:text-center">
+              <div className="bg-gray-50 rounded-lg sm:rounded-xl print:rounded p-2 sm:p-4 print:p-2 print:bg-white dark:bg-gray-900 print:border print:border-gray-400">
+                <div className="text-[10px] sm:text-xs print:text-[10px] text-gray-600 dark:text-gray-400 print:text-center print:uppercase print:font-medium mb-1">Restoration Timeline</div>
+                <div className="text-lg sm:text-2xl lg:text-3xl print:text-base font-bold text-gray-900 dark:text-gray-100 print:text-center">
                   {reportData.executiveSummary.timelineEstimate.split(' ')[0]}
                 </div>
               </div>
             </div>
 
             {/* Estimated Repair Costs Banner - Formal Style */}
-            <div className="bg-gray-50 border border-gray-300 rounded-xl p-4 sm:p-6 mb-6 print:mb-4 print:border-2 print:border-gray-400 print:bg-white">
-              <h3 className="font-semibold text-gray-900 mb-4 text-sm sm:text-base print:text-sm print:uppercase print:text-center">
+            <div className="bg-gray-50 border border-gray-300 rounded-xl p-4 sm:p-6 mb-6 print:mb-4 print:border-2 print:border-gray-400 print:bg-white dark:bg-gray-900">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 text-sm sm:text-base print:text-sm print:uppercase print:text-center">
                 ESTIMATED REPAIR COSTS
               </h3>
               <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-6">
                 <div className="text-center">
-                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
                     IMMEDIATE
                   </div>
-                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-red-600 print:text-gray-900 print:text-base">
+                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-red-600 print:text-gray-900 dark:text-gray-100 print:text-base">
                     ${(reportData.executiveSummary.totalDamageValue * 0.25).toLocaleString()}
                   </div>
-                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-1 print:hidden">
+                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     0-30 days
                   </div>
                 </div>
-                <div className="text-center border-x border-gray-300 print:border-gray-400">
-                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                <div className="text-center border-x border-gray-300 dark:border-gray-600 print:border-gray-400">
+                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
                     SHORT-TERM
                   </div>
-                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-orange-600 print:text-gray-900 print:text-base">
+                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-orange-600 print:text-gray-900 dark:text-gray-100 print:text-base">
                     ${(reportData.executiveSummary.totalDamageValue * 0.45).toLocaleString()}
                   </div>
-                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-1 print:hidden">
+                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     1-3 months
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
+                  <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium mb-1 print:text-[10px] print:uppercase print:font-bold">
                     LONG-TERM
                   </div>
-                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-gray-900 print:text-base">
+                  <div className="text-sm sm:text-lg md:text-xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 print:text-base">
                     ${(reportData.executiveSummary.totalDamageValue * 0.30).toLocaleString()}
                   </div>
-                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 mt-1 print:hidden">
+                  <div className="text-[9px] sm:text-[10px] md:text-xs text-gray-500 dark:text-gray-400 mt-1 print:hidden">
                     3+ months
                   </div>
                 </div>
               </div>
-              <div className="mt-4 pt-3 border-t border-gray-300 print:border-gray-400">
+              <div className="mt-4 pt-3 border-t border-gray-300 dark:border-gray-600 print:border-gray-400">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1">
-                  <span className="text-xs sm:text-sm text-gray-600 font-medium print:text-[10px] print:uppercase print:font-bold">
+                  <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium print:text-[10px] print:uppercase print:font-bold">
                     TOTAL ESTIMATED COST
                   </span>
-                  <span className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 print:text-base">
+                  <span className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 dark:text-gray-100 print:text-base">
                     ${reportData.executiveSummary.totalDamageValue.toLocaleString()}
                   </span>
                 </div>
@@ -986,21 +986,21 @@ export default function InspectionReportPage() {
             </div>
 
             {/* Critical Findings Identified - Better Visual Hierarchy */}
-            <div className="bg-gray-50 border-l-4 border-red-500 rounded-lg p-4 sm:p-6 mb-6 print:mb-4">
+            <div className="bg-gray-50 dark:bg-gray-900 border-l-4 border-red-500 rounded-lg p-4 sm:p-6 mb-6 print:mb-4">
               <div className="flex items-center gap-2 mb-4">
                 <AlertTriangle className="text-red-600" size={24} />
-                <h3 className="text-lg font-bold text-gray-900">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                   <span className="text-red-600">{reportData.executiveSummary.criticalIssues}</span> Critical Findings Identified
                 </h3>
               </div>
 
               <div className="space-y-3">
                 {/* Roof & Gutters */}
-                <div className="border-l-2 border-gray-300 pl-4">
+                <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 font-semibold">Roof & Gutters:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Roof & Gutters:</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     <span className="text-red-600 font-medium">Extensive damage</span> to asphalt shingles on south-facing slope.
                     Multiple missing tiles creating <span className="text-red-600 font-medium">water entry points</span>.
                     Gutters detached in three sections.
@@ -1008,52 +1008,52 @@ export default function InspectionReportPage() {
                 </div>
 
                 {/* Siding & Walls */}
-                <div className="border-l-2 border-gray-300 pl-4">
+                <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 font-semibold">Siding & Walls:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Siding & Walls:</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     Vinyl siding shows <span className="text-orange-600 font-medium">impact damage</span> on east and south walls.
                     Multiple panels cracked or missing. <span className="text-orange-600 font-medium">Water staining</span> visible behind damaged sections.
                   </p>
                 </div>
 
                 {/* Kitchen */}
-                <div className="border-l-2 border-gray-300 pl-4">
+                <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 font-semibold">Kitchen:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Kitchen:</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     <span className="text-orange-600 font-medium">Water damage</span> to ceiling and upper cabinets.
                     Several appliances affected by water exposure. Flooring shows signs of <span className="text-orange-600 font-medium">water damage</span> near sink area.
                   </p>
                 </div>
 
                 {/* HVAC System */}
-                <div className="border-l-2 border-gray-300 pl-4">
+                <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 font-semibold">HVAC System:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">HVAC System:</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     HVAC unit shows <span className="text-red-600 font-medium">impact damage</span>.
                     Ductwork compromised in attic space. System <span className="text-red-600 font-medium">contaminated with water and debris</span>.
                   </p>
                 </div>
 
                 {/* Windows & Doors */}
-                <div className="border-l-2 border-gray-300 pl-4">
+                <div className="border-l-2 border-gray-300 dark:border-gray-600 pl-4">
                   <div className="flex items-start gap-2">
-                    <span className="text-gray-700 font-semibold">Windows & Doors:</span>
+                    <span className="text-gray-700 dark:text-gray-300 font-semibold">Windows & Doors:</span>
                   </div>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     Multiple windows <span className="text-orange-600 font-medium">cracked or broken</span>.
                     Entry door frame damaged. Sliding door track bent.
                   </p>
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <h4 className="text-sm font-semibold text-gray-700 mb-2">Immediate Actions Required:</h4>
+              <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Immediate Actions Required:</h4>
                 <div className="flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">
                     <CheckCircle size={14} />
@@ -1072,13 +1072,13 @@ export default function InspectionReportPage() {
             </div>
 
             <div className="print:break-inside-avoid">
-              <h3 className="font-semibold text-gray-900 mb-3 print:mb-2 print:text-sm print:uppercase">Priority Recommendations</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 print:mb-2 print:text-sm print:uppercase">Priority Recommendations</h3>
               <ul className="space-y-2 print:space-y-1">
                 {reportData.executiveSummary.repairRecommendations.slice(0, 4).map((rec, idx) => (
                   <li key={idx} className="flex items-start gap-2 print:text-xs">
-                    <span className="text-gray-700 mt-0.5 flex-shrink-0 print:font-medium">•</span>
+                    <span className="text-gray-700 dark:text-gray-300 mt-0.5 flex-shrink-0 print:font-medium">•</span>
                     <AlertTriangle className="text-amber-500 mt-0.5 flex-shrink-0 hidden print:hidden" size={16} />
-                    <span className="text-gray-700 print:text-xs print:leading-tight">{rec}</span>
+                    <span className="text-gray-700 dark:text-gray-300 print:text-xs print:leading-tight">{rec}</span>
                   </li>
                 ))}
               </ul>
@@ -1086,23 +1086,23 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Area Findings */}
-          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-6">Detailed Area Findings</h2>
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-6">Detailed Area Findings</h2>
             
             <div className="space-y-3 sm:space-y-6">
               {(reportData?.areaFindings || []).map((area, idx) => (
-                <div key={idx} className="bg-gray-50 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
+                <div key={idx} className="bg-gray-50 dark:bg-gray-900 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
                   {/* Mobile-optimized header with prominent repair cost */}
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3 sm:mb-4">
                     <div className="flex-1">
                       <div className="flex items-start justify-between mb-2">
-                        <h3 className="text-base sm:text-lg font-semibold text-gray-900">{area.area}</h3>
+                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-gray-100">{area.area}</h3>
                         {/* Status Badge - Moved to top right on mobile */}
                         <span className={`${getStatusBadge(area.status, area.priority)} text-xs sm:text-sm inline-block sm:hidden uppercase`}>
                           {area.priority}
                         </span>
                       </div>
-                      <p className="text-xs sm:text-sm text-gray-600">{area.category}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{area.category}</p>
                       {/* Status Badge - Desktop position */}
                       <span className={`${getStatusBadge(area.status, area.priority)} text-xs sm:text-sm hidden sm:inline-block mt-2 uppercase`}>
                         {area.priority}
@@ -1117,20 +1117,20 @@ export default function InspectionReportPage() {
                     </div>
                   </div>
                   
-                  <p className="text-xs sm:text-base text-gray-700 mb-3 sm:mb-4">{area.description}</p>
+                  <p className="text-xs sm:text-base text-gray-700 dark:text-gray-300 mb-3 sm:mb-4">{area.description}</p>
                   
                   {/* Technical Findings */}
                   {area.technicalFindings && (
                     <div className="bg-blue-50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
-                      <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                      <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2 text-sm sm:text-base">
                         <Brain size={16} className="text-blue-600" />
                         Technical Analysis
                       </h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 text-xs sm:text-sm">
                         {Object.entries(area.technicalFindings).map(([key, value]) => (
                           <div key={key} className="flex flex-col sm:flex-row sm:justify-between gap-1">
-                            <span className="text-gray-600 capitalize font-medium sm:font-normal">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                            <span className="font-medium text-gray-900 break-words">{value}</span>
+                            <span className="text-gray-600 dark:text-gray-400 capitalize font-medium sm:font-normal">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                            <span className="font-medium text-gray-900 dark:text-gray-100 break-words">{value}</span>
                           </div>
                         ))}
                       </div>
@@ -1140,15 +1140,15 @@ export default function InspectionReportPage() {
                   {/* Material Specifications */}
                   {area.materialSpecs && (
                     <div className="bg-green-50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
-                      <h4 className="font-medium text-gray-900 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                      <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2 text-sm sm:text-base">
                         <Building2 size={16} className="text-green-600" />
                         Material Specifications
                       </h4>
                       <div className="grid grid-cols-1 gap-2 text-xs sm:text-sm">
                         {Object.entries(area.materialSpecs).map(([key, value]) => (
                           <div key={key} className="flex flex-col sm:block">
-                            <span className="text-gray-600 capitalize font-medium">{key}:</span>
-                            <span className="text-gray-900 sm:ml-2 break-words">{value}</span>
+                            <span className="text-gray-600 dark:text-gray-400 capitalize font-medium">{key}:</span>
+                            <span className="text-gray-900 dark:text-gray-100 sm:ml-2 break-words">{value}</span>
                           </div>
                         ))}
                       </div>
@@ -1193,11 +1193,11 @@ export default function InspectionReportPage() {
 
                   {/* Appliances Affected */}
                   {area.appliancesAffected && (
-                    <div className="bg-gray-50 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
-                      <h4 className="font-medium text-gray-900 mb-3">Affected Equipment & Appliances</h4>
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-2 sm:p-4 mb-3 sm:mb-4">
+                      <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Affected Equipment & Appliances</h4>
                       <ul className="space-y-1 text-sm">
                         {area.appliancesAffected.map((appliance, idx) => (
-                          <li key={idx} className="text-gray-700">• {appliance}</li>
+                          <li key={idx} className="text-gray-700 dark:text-gray-300">• {appliance}</li>
                         ))}
                       </ul>
                     </div>
@@ -1205,15 +1205,15 @@ export default function InspectionReportPage() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2">Documentation</h4>
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Documentation</h4>
+                      <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <Camera size={16} />
                         <span>{area.photoCount} photos captured</span>
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-medium text-gray-900 mb-2">Priority Recommendations</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
+                      <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Priority Recommendations</h4>
+                      <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                         {area.recommendations.map((rec, recIdx) => (
                           <li key={recIdx} className="flex items-start gap-2">
                             <span className="w-1.5 h-1.5 bg-stellar-orange rounded-full mt-2 flex-shrink-0" />
@@ -1229,21 +1229,21 @@ export default function InspectionReportPage() {
           </div>
 
           {/* AI Insights */}
-          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-6">AI-Enhanced Analysis</h2>
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-6">AI-Enhanced Analysis</h2>
             
             <div className="space-y-3 sm:space-y-6">
               <div className="bg-blue-50 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
                 <div className="flex items-center gap-3 mb-4">
                   <Brain className="text-blue-600" size={24} />
-                  <h3 className="text-lg font-semibold text-gray-900">Hidden Damage Assessment</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Hidden Damage Assessment</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <p className="text-gray-700 mb-3">
+                    <p className="text-gray-700 dark:text-gray-300 mb-3">
                       AI analysis of damage patterns and building characteristics suggests additional hidden damage.
                     </p>
-                    <p className="text-gray-700">
+                    <p className="text-gray-700 dark:text-gray-300">
                       <strong>Market Comparison:</strong> {reportData.aiInsights.marketComparison}
                     </p>
                   </div>
@@ -1251,7 +1251,7 @@ export default function InspectionReportPage() {
                     <div className="text-2xl font-bold text-blue-600 mb-1">
                       ${reportData.aiInsights.hiddenDamageEstimate.toLocaleString()}
                     </div>
-                    <div className="text-sm text-gray-600">Estimated Hidden Damage</div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">Estimated Hidden Damage</div>
                   </div>
                 </div>
               </div>
@@ -1259,13 +1259,13 @@ export default function InspectionReportPage() {
               <div className="bg-amber-50 rounded-lg sm:rounded-xl p-3 sm:p-6 print:bg-transparent print:border">
                 <div className="flex items-center gap-3 mb-4">
                   <AlertTriangle className="text-amber-600" size={24} />
-                  <h3 className="text-lg font-semibold text-gray-900">Risk Assessment</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Risk Assessment</h3>
                 </div>
                 <ul className="space-y-2">
                   {reportData.aiInsights.riskAssessment.map((risk, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <span className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0" />
-                      <span className="text-gray-700">{risk}</span>
+                      <span className="text-gray-700 dark:text-gray-300">{risk}</span>
                     </li>
                   ))}
                 </ul>
@@ -1274,8 +1274,8 @@ export default function InspectionReportPage() {
           </div>
 
           {/* AI Intelligence & Predictive Analytics */}
-          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 flex items-center gap-3">
               <Brain className="text-stellar-orange" size={28} />
               AI Intelligence & Predictive Analytics
             </h2>
@@ -1310,53 +1310,53 @@ export default function InspectionReportPage() {
 
             {/* Historical Data Analysis */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <History size={20} className="text-gray-600" />
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                  <History size={20} className="text-gray-600 dark:text-gray-400" />
                   Historical Claims Data
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Similar Claims Analyzed:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Similar Claims Analyzed:</span>
                     <span className="font-semibold">{reportData.aiInsights.historicalData.similarClaims}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Average Settlement:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Average Settlement:</span>
                     <span className="font-semibold text-green-600">
                       ${reportData.aiInsights.historicalData.averageSettlement.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Resolution Time:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Resolution Time:</span>
                     <span className="font-semibold">{reportData.aiInsights.historicalData.timeToResolution}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Litigation Rate:</span>
+                    <span className="text-gray-600 dark:text-gray-400">Litigation Rate:</span>
                     <span className="font-semibold text-red-600">{reportData.aiInsights.historicalData.litigationRate}</span>
                   </div>
                 </div>
               </div>
 
               <div className="bg-amber-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <TrendingUp size={20} className="text-amber-600" />
                   Predictive Analysis
                 </h3>
                 <div className="space-y-3 text-sm">
                   <div>
-                    <span className="font-medium text-gray-700">Additional Damage Risk:</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Additional Damage Risk:</span>
                     <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.additionalDamageRisk}</div>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-700">Cost Inflation Factor:</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Cost Inflation Factor:</span>
                     <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.costInflationFactor}</div>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-700">Material Availability:</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Material Availability:</span>
                     <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.materialAvailability}</div>
                   </div>
                   <div>
-                    <span className="font-medium text-gray-700">Contractor Capacity:</span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Contractor Capacity:</span>
                     <div className="text-amber-700">{reportData.aiInsights.predictiveAnalysis.contractorCapacity}</div>
                   </div>
                 </div>
@@ -1365,8 +1365,8 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Environmental & Risk Assessment */}
-          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 flex items-center gap-3">
               <Globe size={28} className="text-green-600" />
               Environmental & Risk Assessment
             </h2>
@@ -1374,11 +1374,11 @@ export default function InspectionReportPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Environmental Factors */}
               <div className="bg-green-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Environmental Conditions</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Environmental Conditions</h3>
                 <div className="space-y-3 text-sm">
                   {Object.entries(reportData.aiInsights.environmentalFactors).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
-                      <span className="text-gray-600 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
+                      <span className="text-gray-600 dark:text-gray-400 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
                       <span className="font-medium text-green-700">{value}</span>
                     </div>
                   ))}
@@ -1387,7 +1387,7 @@ export default function InspectionReportPage() {
 
               {/* Comprehensive Risk Matrix */}
               <div className="bg-red-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Comprehensive Risk Matrix</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Comprehensive Risk Matrix</h3>
                 <div className="space-y-3">
                   {reportData.aiInsights.riskAssessment.map((risk, idx) => {
                     const riskLevel = risk.includes('CRITICAL') ? 'critical' : risk.includes('HIGH') ? 'high' : 'moderate'
@@ -1411,8 +1411,8 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Claims Intelligence & Strategy */}
-          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 flex items-center gap-3">
               <Target size={28} className="text-purple-600" />
               Claims Intelligence & Strategy
             </h2>
@@ -1420,33 +1420,33 @@ export default function InspectionReportPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Carrier Intelligence */}
               <div className="bg-purple-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <Shield size={20} className="text-purple-600" />
                   Carrier Intelligence Profile
                 </h3>
                 <div className="space-y-4">
                   <div>
                     <span className="text-purple-700 font-medium">Carrier:</span>
-                    <div className="font-semibold text-gray-900">{reportData.aiInsights.claimsIntelligence.carrierProfile.name}</div>
+                    <div className="font-semibold text-gray-900 dark:text-gray-100">{reportData.aiInsights.claimsIntelligence.carrierProfile.name}</div>
                   </div>
                   <div>
                     <span className="text-purple-700 font-medium">Claims Reputation:</span>
-                    <div className="text-sm text-gray-700">{reportData.aiInsights.claimsIntelligence.carrierProfile.claimsReputation}</div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.claimsIntelligence.carrierProfile.claimsReputation}</div>
                   </div>
                   <div>
                     <span className="text-purple-700 font-medium">Negotiation Pattern:</span>
-                    <div className="text-sm text-gray-700">{reportData.aiInsights.claimsIntelligence.carrierProfile.negotiationHistory}</div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.claimsIntelligence.carrierProfile.negotiationHistory}</div>
                   </div>
                   <div>
                     <span className="text-purple-700 font-medium">Timeline Behavior:</span>
-                    <div className="text-sm text-gray-700">{reportData.aiInsights.claimsIntelligence.carrierProfile.timelineBehavior}</div>
+                    <div className="text-sm text-gray-700 dark:text-gray-300">{reportData.aiInsights.claimsIntelligence.carrierProfile.timelineBehavior}</div>
                   </div>
                 </div>
               </div>
 
               {/* Strategic Recommendations */}
               <div className="bg-blue-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <Lightbulb size={20} className="text-blue-600" />
                   Strategic Considerations
                 </h3>
@@ -1465,8 +1465,8 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Quality Assurance Metrics */}
-          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 flex items-center gap-3">
               <Award size={28} className="text-green-600" />
               Quality Assurance & Compliance Metrics
             </h2>
@@ -1489,12 +1489,12 @@ export default function InspectionReportPage() {
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Inspection Methodology</h3>
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Inspection Methodology</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Technology Utilized</h4>
-                  <ul className="space-y-1 text-gray-600">
+                  <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Technology Utilized</h4>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
                     <li>• Thermal imaging cameras (FLIR E8-XT)</li>
                     <li>• Moisture detection meters (Tramex CME5)</li>
                     <li>• Air quality monitoring (Fluke 975)</li>
@@ -1503,8 +1503,8 @@ export default function InspectionReportPage() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-900 mb-2">Standards Compliance</h4>
-                  <ul className="space-y-1 text-gray-600">
+                  <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Standards Compliance</h4>
+                  <ul className="space-y-1 text-gray-600 dark:text-gray-400">
                     <li>• ASTM E2876 - Building Enclosure Commissioning</li>
                     <li>• IICRC S500 - Water Damage Restoration</li>
                     <li>• Florida Building Code 2020 Edition</li>
@@ -1518,18 +1518,18 @@ export default function InspectionReportPage() {
 
           {/* Comprehensive Financial Analysis */}
           <div className="p-3 sm:p-6 lg:p-8">
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6 flex items-center gap-3">
               <DollarSign className="text-green-600" size={28} />
               Comprehensive Financial Analysis
             </h2>
             
             {/* Executive Summary Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="text-2xl font-bold text-gray-900 mb-1">
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-4">
+                <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">
                   ${reportData.financialSummary.currentClaimValue.toLocaleString()}
                 </div>
-                <div className="text-sm text-gray-600">Current Claim Value</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Current Claim Value</div>
               </div>
               <div className="bg-green-50 rounded-xl p-4">
                 <div className="text-2xl font-bold text-green-600 mb-1">
@@ -1555,15 +1555,15 @@ export default function InspectionReportPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               {/* Labor Cost Analysis */}
               <div className="bg-blue-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <User className="text-blue-600" size={20} />
                   Labor Cost Analysis
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900">Skilled Labor</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Skilled Labor</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
                         {reportData.financialSummary.detailedCostAnalysis.laborCosts.skilled.hours} hrs @ ${reportData.financialSummary.detailedCostAnalysis.laborCosts.skilled.rate}/hr
                       </div>
                     </div>
@@ -1573,8 +1573,8 @@ export default function InspectionReportPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900">General Labor</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-medium text-gray-900 dark:text-gray-100">General Labor</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
                         {reportData.financialSummary.detailedCostAnalysis.laborCosts.general.hours} hrs @ ${reportData.financialSummary.detailedCostAnalysis.laborCosts.general.rate}/hr
                       </div>
                     </div>
@@ -1584,8 +1584,8 @@ export default function InspectionReportPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900">Specialized</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Specialized</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
                         {reportData.financialSummary.detailedCostAnalysis.laborCosts.specialized.hours} hrs @ ${reportData.financialSummary.detailedCostAnalysis.laborCosts.specialized.rate}/hr
                       </div>
                     </div>
@@ -1598,15 +1598,15 @@ export default function InspectionReportPage() {
 
               {/* Material Cost Analysis */}
               <div className="bg-green-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                   <Building2 className="text-green-600" size={20} />
                   Material Cost Analysis
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900">Roofing Materials</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Roofing Materials</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
                         {reportData.financialSummary.detailedCostAnalysis.materialCosts.roofing.sqft} sq ft @ ${reportData.financialSummary.detailedCostAnalysis.materialCosts.roofing.rate}/sq ft
                       </div>
                     </div>
@@ -1616,8 +1616,8 @@ export default function InspectionReportPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900">Flooring Systems</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Flooring Systems</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
                         {reportData.financialSummary.detailedCostAnalysis.materialCosts.flooring.sqft} sq ft @ ${reportData.financialSummary.detailedCostAnalysis.materialCosts.flooring.rate}/sq ft
                       </div>
                     </div>
@@ -1627,8 +1627,8 @@ export default function InspectionReportPage() {
                   </div>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-gray-900">Electrical Components</div>
-                      <div className="text-sm text-gray-600">
+                      <div className="font-medium text-gray-900 dark:text-gray-100">Electrical Components</div>
+                      <div className="text-sm text-gray-600 dark:text-gray-400">
                         {reportData.financialSummary.detailedCostAnalysis.materialCosts.electrical.circuits} circuits @ ${reportData.financialSummary.detailedCostAnalysis.materialCosts.electrical.rate}/circuit
                       </div>
                     </div>
@@ -1643,11 +1643,11 @@ export default function InspectionReportPage() {
             {/* Permits & Contingency */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <div className="bg-purple-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Permits & Regulatory Costs</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Permits & Regulatory Costs</h3>
                 <div className="space-y-2">
                   {Object.entries(reportData.financialSummary.detailedCostAnalysis.permitsCosts).map(([key, value]) => (
                     <div key={key} className="flex justify-between">
-                      <span className="text-gray-700 capitalize">{key} Permit:</span>
+                      <span className="text-gray-700 dark:text-gray-300 capitalize">{key} Permit:</span>
                       <span className="font-semibold text-purple-600">${value.toLocaleString()}</span>
                     </div>
                   ))}
@@ -1655,14 +1655,14 @@ export default function InspectionReportPage() {
               </div>
 
               <div className="bg-amber-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Contingency Reserve</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Contingency Reserve</h3>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-gray-700">Reserve Percentage:</span>
+                    <span className="text-gray-700 dark:text-gray-300">Reserve Percentage:</span>
                     <span className="font-semibold text-amber-600">{reportData.financialSummary.detailedCostAnalysis.contingencyReserve.percentage}%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-700">Reserve Amount:</span>
+                    <span className="text-gray-700 dark:text-gray-300">Reserve Amount:</span>
                     <span className="font-semibold text-amber-600">${reportData.financialSummary.detailedCostAnalysis.contingencyReserve.amount.toLocaleString()}</span>
                   </div>
                   <div className="mt-3 text-sm text-amber-700">
@@ -1674,36 +1674,36 @@ export default function InspectionReportPage() {
 
             {/* Market Analysis & Competitive Bids */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <TrendingUp className="text-gray-600" size={20} />
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                  <TrendingUp className="text-gray-600 dark:text-gray-400" size={20} />
                   Regional Market Analysis
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-gray-700">Cost per Sq Ft:</span>
-                    <span className="font-semibold text-gray-900">${reportData.financialSummary.marketComparatives.regionalAverages.sqftCost}</span>
+                    <span className="text-gray-700 dark:text-gray-300">Cost per Sq Ft:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">${reportData.financialSummary.marketComparatives.regionalAverages.sqftCost}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-700">Timeline Average:</span>
-                    <span className="font-semibold text-gray-900">{reportData.financialSummary.marketComparatives.regionalAverages.timelineWeeks} weeks</span>
+                    <span className="text-gray-700 dark:text-gray-300">Timeline Average:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{reportData.financialSummary.marketComparatives.regionalAverages.timelineWeeks} weeks</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-700">Quality Standard:</span>
-                    <span className="font-semibold text-gray-900">{reportData.financialSummary.marketComparatives.regionalAverages.qualityGrade}</span>
+                    <span className="text-gray-700 dark:text-gray-300">Quality Standard:</span>
+                    <span className="font-semibold text-gray-900 dark:text-gray-100">{reportData.financialSummary.marketComparatives.regionalAverages.qualityGrade}</span>
                   </div>
                 </div>
               </div>
 
               <div className="bg-indigo-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Competitive Bid Analysis</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Competitive Bid Analysis</h3>
                 <div className="space-y-3">
                   {(reportData.financialSummary.marketComparatives.competitiveBids || []).map((bid, idx) => (
                     <div key={idx} className="border border-indigo-200 rounded-lg p-3">
                       <div className="flex justify-between items-start">
                         <div>
-                          <div className="font-medium text-gray-900">{bid.name}</div>
-                          <div className="text-sm text-gray-600">Timeline: {bid.timeline}</div>
+                          <div className="font-medium text-gray-900 dark:text-gray-100">{bid.name}</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">Timeline: {bid.timeline}</div>
                         </div>
                         <div className="text-lg font-bold text-indigo-600">
                           ${bid.bid.toLocaleString()}
@@ -1716,15 +1716,15 @@ export default function InspectionReportPage() {
             </div>
 
             {/* Category Breakdown */}
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Comprehensive Cost Breakdown by Category</h3>
+            <div className="bg-white dark:bg-gray-900 border border-gray-200 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Comprehensive Cost Breakdown by Category</h3>
               <div className="space-y-4">
                 {reportData.financialSummary.breakdown.map((item, idx) => (
                   <div key={idx} className="border-l-4 border-stellar-orange pl-4">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                       <div className="flex-1">
-                        <div className="font-semibold text-gray-900 text-base">{item.category}</div>
-                        <div className="text-sm text-gray-600 mt-1">{item.description}</div>
+                        <div className="font-semibold text-gray-900 dark:text-gray-100 text-base">{item.category}</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">{item.description}</div>
                       </div>
                       <div className="text-xl font-bold text-stellar-orange flex-shrink-0">
                         ${item.amount.toLocaleString()}
@@ -1735,7 +1735,7 @@ export default function InspectionReportPage() {
               </div>
               
               {/* Total Summary */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
                 <div className="flex justify-between items-center bg-stellar-orange text-white rounded-lg p-4">
                   <span className="text-lg font-semibold">Total Recovery Opportunity</span>
                   <span className="text-2xl font-bold">
@@ -1747,8 +1747,8 @@ export default function InspectionReportPage() {
           </div>
 
           {/* Hidden Damage Intelligence */}
-          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Hidden Damage Analysis & Discovery</h2>
+          <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">Hidden Damage Analysis & Discovery</h2>
               
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
                 <div className="flex items-start gap-3">
@@ -1762,48 +1762,48 @@ export default function InspectionReportPage() {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Detailed Hidden Damage Breakdown</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Detailed Hidden Damage Breakdown</h3>
                   <div className="space-y-4">
-                    <div className="border border-gray-200 rounded-lg p-4">
+                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900">Behind Kitchen Cabinets</h4>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Behind Kitchen Cabinets</h4>
                         <span className="text-lg font-bold text-red-600">$8,500</span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">Water intrusion damage</p>
-                      <p className="text-xs text-gray-500"><strong>Evidence:</strong> Moisture readings 45% above normal, visible staining patterns</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Water intrusion damage</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Moisture readings 45% above normal, visible staining patterns</p>
                     </div>
                     
-                    <div className="border border-gray-200 rounded-lg p-4">
+                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900">Attic Insulation</h4>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Attic Insulation</h4>
                         <span className="text-lg font-bold text-red-600">$12,000</span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">Complete saturation requiring replacement</p>
-                      <p className="text-xs text-gray-500"><strong>Evidence:</strong> Thermal imaging shows 80% compromised insulation</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Complete saturation requiring replacement</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Thermal imaging shows 80% compromised insulation</p>
                     </div>
 
-                    <div className="border border-gray-200 rounded-lg p-4">
+                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900">Interior Wall Cavities</h4>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Interior Wall Cavities</h4>
                         <span className="text-lg font-bold text-red-600">$15,000</span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">Suspected mold growth</p>
-                      <p className="text-xs text-gray-500"><strong>Evidence:</strong> Air quality testing indicates elevated spore counts</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Suspected mold growth</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Air quality testing indicates elevated spore counts</p>
                     </div>
 
-                    <div className="border border-gray-200 rounded-lg p-4">
+                    <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
-                        <h4 className="font-medium text-gray-900">Subflooring Damage</h4>
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100">Subflooring Damage</h4>
                         <span className="text-lg font-bold text-red-600">$9,500</span>
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">Structural deterioration</p>
-                      <p className="text-xs text-gray-500"><strong>Evidence:</strong> Moisture meter readings consistently above 20%</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Structural deterioration</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400"><strong>Evidence:</strong> Moisture meter readings consistently above 20%</p>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Detection Methods & Technology</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Detection Methods & Technology</h3>
                   <div className="space-y-4">
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <h4 className="font-medium text-blue-900 mb-2">Thermal Imaging Analysis</h4>
@@ -1830,8 +1830,8 @@ export default function InspectionReportPage() {
             </div>
 
             {/* Market Intelligence & Comparable Analysis */}
-            <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Market Intelligence & Settlement Analysis</h2>
+            <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">Market Intelligence & Settlement Analysis</h2>
               
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                 <div className="bg-green-50 rounded-lg p-6 text-center">
@@ -1853,38 +1853,38 @@ export default function InspectionReportPage() {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Comparable Properties Analysis</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Comparable Properties Analysis</h3>
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                       <div>
                         <div className="font-medium">1245 Ocean Ave (Hurricane Ian)</div>
-                        <div className="text-sm text-gray-600">Similar damage profile, 2006 construction</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Similar damage profile, 2006 construction</div>
                       </div>
                       <div className="text-right">
                         <div className="font-bold text-green-600">$342,000</div>
-                        <div className="text-xs text-gray-500">Settled 2023</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Settled 2023</div>
                       </div>
                     </div>
                     
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                       <div>
                         <div className="font-medium">890 Collins Street (Water Damage)</div>
-                        <div className="text-sm text-gray-600">Water intrusion + mold, 2004 construction</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Water intrusion + mold, 2004 construction</div>
                       </div>
                       <div className="text-right">
                         <div className="font-bold text-green-600">$298,000</div>
-                        <div className="text-xs text-gray-500">Settled 2023</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Settled 2023</div>
                       </div>
                     </div>
 
-                    <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                       <div>
                         <div className="font-medium">567 Bay Road (Hurricane + Flood)</div>
-                        <div className="text-sm text-gray-600">Combined perils, 2007 construction</div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">Combined perils, 2007 construction</div>
                       </div>
                       <div className="text-right">
                         <div className="font-bold text-green-600">$425,000</div>
-                        <div className="text-xs text-gray-500">Settled 2024</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">Settled 2024</div>
                       </div>
                     </div>
                   </div>
@@ -1901,7 +1901,7 @@ export default function InspectionReportPage() {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Negotiation Leverage Points</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Negotiation Leverage Points</h3>
                   <div className="space-y-4">
                     <div className="border border-green-200 rounded-lg p-4 bg-green-50">
                       <div className="flex justify-between items-start mb-2">
@@ -1938,8 +1938,8 @@ export default function InspectionReportPage() {
             </div>
 
             {/* Historical Claims Recovery */}
-            <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 print:border-black">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Historical Claims Recovery Analysis</h2>
+            <div className="p-3 sm:p-6 lg:p-8 border-b border-gray-200 dark:border-gray-700 print:border-black">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4 sm:mb-6">Historical Claims Recovery Analysis</h2>
               
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                 <div className="flex items-start gap-3">
@@ -1953,77 +1953,77 @@ export default function InspectionReportPage() {
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Previous Claims Analysis</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Previous Claims Analysis</h3>
                   
                   {/* Mobile-optimized card view for small screens */}
                   <div className="block sm:hidden space-y-4">
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="bg-white dark:bg-gray-900 border border-gray-200 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">2022-09-28</div>
-                          <div className="text-sm text-gray-600">Hurricane Ian</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">2022-09-28</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">Hurricane Ian</div>
                         </div>
                         <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
                       </div>
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Original:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Original:</span>
                           <span className="font-medium">$45,000</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Current:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Current:</span>
                           <span className="font-medium text-blue-600">$68,000</span>
                         </div>
-                        <div className="flex justify-between pt-2 border-t border-gray-100">
-                          <span className="text-gray-600">Underpayment:</span>
+                        <div className="flex justify-between pt-2 border-t border-gray-100 dark:border-gray-800">
+                          <span className="text-gray-600 dark:text-gray-400">Underpayment:</span>
                           <span className="font-bold text-red-600">$23,000</span>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="bg-white dark:bg-gray-900 border border-gray-200 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">2021-07-15</div>
-                          <div className="text-sm text-gray-600">Water Damage</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">2021-07-15</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">Water Damage</div>
                         </div>
                         <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Reopenable</span>
                       </div>
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Original:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Original:</span>
                           <span className="font-medium">$8,500</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Current:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Current:</span>
                           <span className="font-medium text-blue-600">$15,000</span>
                         </div>
-                        <div className="flex justify-between pt-2 border-t border-gray-100">
-                          <span className="text-gray-600">Underpayment:</span>
+                        <div className="flex justify-between pt-2 border-t border-gray-100 dark:border-gray-800">
+                          <span className="text-gray-600 dark:text-gray-400">Underpayment:</span>
                           <span className="font-bold text-red-600">$6,500</span>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="bg-white dark:bg-gray-900 border border-gray-200 rounded-lg p-4">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <div className="text-sm font-medium text-gray-900">2020-03-10</div>
-                          <div className="text-sm text-gray-600">Wind Damage</div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100">2020-03-10</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-400">Wind Damage</div>
                         </div>
                         <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Time Sensitive</span>
                       </div>
                       <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Original:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Original:</span>
                           <span className="font-medium">$12,000</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-600">Current:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Current:</span>
                           <span className="font-medium text-blue-600">$22,000</span>
                         </div>
-                        <div className="flex justify-between pt-2 border-t border-gray-100">
-                          <span className="text-gray-600">Underpayment:</span>
+                        <div className="flex justify-between pt-2 border-t border-gray-100 dark:border-gray-800">
+                          <span className="text-gray-600 dark:text-gray-400">Underpayment:</span>
                           <span className="font-bold text-red-600">$10,000</span>
                         </div>
                       </div>
@@ -2033,22 +2033,22 @@ export default function InspectionReportPage() {
                   {/* Desktop table view - hidden on mobile */}
                   <div className="hidden sm:block overflow-x-auto -mx-4 sm:mx-0">
                     <div className="inline-block min-w-full align-middle">
-                      <table className="min-w-full border border-gray-200 rounded-lg">
-                        <thead className="bg-gray-50">
+                      <table className="min-w-full border border-gray-200 dark:border-gray-700 rounded-lg">
+                        <thead className="bg-gray-50 dark:bg-gray-900">
                           <tr>
-                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 whitespace-nowrap">Date</th>
-                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 whitespace-nowrap">Type</th>
-                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 whitespace-nowrap">Original Payout</th>
-                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 whitespace-nowrap">Current Value</th>
-                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 whitespace-nowrap">Underpayment</th>
-                            <th className="px-4 py-3 text-center text-sm font-medium text-gray-700 whitespace-nowrap">Status</th>
+                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Date</th>
+                            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Type</th>
+                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Original Payout</th>
+                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Current Value</th>
+                            <th className="px-4 py-3 text-right text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Underpayment</th>
+                            <th className="px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Status</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-200 bg-white">
+                        <tbody className="divide-y divide-gray-200 bg-white dark:bg-gray-900">
                           <tr>
-                            <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">2022-09-28</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">Hurricane Ian</td>
-                            <td className="px-4 py-3 text-sm text-right text-gray-900 whitespace-nowrap">$45,000</td>
+                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap">2022-09-28</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Hurricane Ian</td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100 whitespace-nowrap">$45,000</td>
                             <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$68,000</td>
                             <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$23,000</td>
                             <td className="px-4 py-3 text-center whitespace-nowrap">
@@ -2056,9 +2056,9 @@ export default function InspectionReportPage() {
                             </td>
                           </tr>
                           <tr>
-                            <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">2021-07-15</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">Water Damage</td>
-                            <td className="px-4 py-3 text-sm text-right text-gray-900 whitespace-nowrap">$8,500</td>
+                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap">2021-07-15</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Water Damage</td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100 whitespace-nowrap">$8,500</td>
                             <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$15,000</td>
                             <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$6,500</td>
                             <td className="px-4 py-3 text-center whitespace-nowrap">
@@ -2066,9 +2066,9 @@ export default function InspectionReportPage() {
                             </td>
                           </tr>
                           <tr>
-                            <td className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">2020-03-10</td>
-                            <td className="px-4 py-3 text-sm text-gray-600 whitespace-nowrap">Wind Damage</td>
-                            <td className="px-4 py-3 text-sm text-right text-gray-900 whitespace-nowrap">$12,000</td>
+                            <td className="px-4 py-3 text-sm text-gray-900 dark:text-gray-100 whitespace-nowrap">2020-03-10</td>
+                            <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">Wind Damage</td>
+                            <td className="px-4 py-3 text-sm text-right text-gray-900 dark:text-gray-100 whitespace-nowrap">$12,000</td>
                             <td className="px-4 py-3 text-sm text-right font-medium text-blue-600 whitespace-nowrap">$22,000</td>
                             <td className="px-4 py-3 text-sm text-right font-bold text-red-600 whitespace-nowrap">$10,000</td>
                             <td className="px-4 py-3 text-center whitespace-nowrap">
@@ -2134,8 +2134,8 @@ export default function InspectionReportPage() {
             </div>
 
             {/* Footer */}
-            <div className="mt-8 sm:mt-12 pt-4 sm:pt-6 border-t border-gray-200 print:border-black">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm text-gray-600">
+            <div className="mt-8 sm:mt-12 pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700 print:border-black">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                 <div>
                   Report generated by Stellar Intelligence Platform
                 </div>

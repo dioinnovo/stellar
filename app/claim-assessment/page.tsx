@@ -285,7 +285,7 @@ export default function ClaimAssessmentPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       {/* Header */}
-      <nav className="fixed top-0 w-full bg-white backdrop-blur-md z-50 border-b border-gray-200 shadow-sm">
+      <nav className="fixed top-0 w-full bg-white dark:bg-gray-900 backdrop-blur-md z-50 border-b border-gray-200 shadow-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center">
@@ -299,7 +299,7 @@ export default function ClaimAssessmentPage() {
               />
             </Link>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">Need help?</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">Need help?</span>
               <a href="tel:(888) 311-5312" className="text-stellar-orange font-medium">
                 (888) 311-5312
               </a>
@@ -314,14 +314,14 @@ export default function ClaimAssessmentPage() {
           {currentStep <= 5 && (
             <div className="mb-8 mt-4">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-medium text-gray-600">
+                <h2 className="text-sm font-medium text-gray-600 dark:text-gray-400">
                   Step {currentStep} of 5
                 </h2>
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-gray-400">
                   {progressPercentage.toFixed(0)}% Complete
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <motion.div 
                   className="bg-stellar-orange h-2 rounded-full"
                   initial={{ width: 0 }}
@@ -342,11 +342,11 @@ export default function ClaimAssessmentPage() {
             >
               {/* Step 1: Contact Information - Lead Capture */}
               {currentStep === 1 && (
-                <div className="bg-white rounded-3xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8">
                   <h1 className="text-3xl font-bold text-stellar-dark mb-4">
                     Get Your Preliminary Assessment
                   </h1>
-                  <p className="text-gray-600 mb-2">
+                  <p className="text-gray-600 dark:text-gray-400 mb-2">
                     Upload photos for instant AI-powered classification, detailed damage assessment, and settlement recommendations - all in one seamless workflow.
                   </p>
                   <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4 mb-8">
@@ -363,7 +363,7 @@ export default function ClaimAssessmentPage() {
 
                   <div className="space-y-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Full Name
                       </label>
                       <div className="relative">
@@ -373,7 +373,7 @@ export default function ClaimAssessmentPage() {
                           value={contactInfo.name}
                           onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
                           placeholder="John Smith"
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -381,7 +381,7 @@ export default function ClaimAssessmentPage() {
                     {/* Email and Phone - Side by side on desktop, stacked on mobile */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Email Address
                         </label>
                         <div className="relative">
@@ -391,13 +391,13 @@ export default function ClaimAssessmentPage() {
                             value={contactInfo.email}
                             onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
                             placeholder="john@example.com"
-                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Phone Number
                         </label>
                         <div className="relative">
@@ -407,7 +407,7 @@ export default function ClaimAssessmentPage() {
                             value={contactInfo.phone}
                             onChange={(e) => setContactInfo({...contactInfo, phone: e.target.value})}
                             placeholder="(555) 123-4567"
-                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
                           />
                         </div>
                       </div>
@@ -415,7 +415,7 @@ export default function ClaimAssessmentPage() {
 
                     {/* Insurance Company Dropdown */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Insurance Company
                       </label>
                       <div className="relative">
@@ -423,7 +423,7 @@ export default function ClaimAssessmentPage() {
                         <select
                           value={contactInfo.insuranceCompany}
                           onChange={(e) => setContactInfo({...contactInfo, insuranceCompany: e.target.value})}
-                          className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent appearance-none bg-white"
+                          className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent appearance-none bg-white dark:bg-gray-900"
                         >
                           <option value="">Select your insurance company</option>
                           <option value="All State Insurance Company">All State Insurance Company</option>
@@ -464,7 +464,7 @@ export default function ClaimAssessmentPage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                         Preferred Contact Method
                       </label>
                       <div className="grid grid-cols-3 gap-3">
@@ -489,17 +489,17 @@ export default function ClaimAssessmentPage() {
 
               {/* Step 2: Property Type & Damage Selection */}
               {currentStep === 2 && (
-                <div className="bg-white rounded-3xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8">
                   <h1 className="text-3xl font-bold text-stellar-dark mb-4">
                     Tell Us About Your Property
                   </h1>
-                  <p className="text-gray-600 mb-8">
+                  <p className="text-gray-600 dark:text-gray-400 mb-8">
                     Let's start by understanding your property type and the damages you've experienced.
                   </p>
 
                   {/* Property Type Selection */}
                   <div className="mb-8">
-                    <label className="block text-sm font-medium text-gray-700 mb-4">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                       Property Type
                     </label>
                     <div className="grid grid-cols-2 gap-4">
@@ -514,8 +514,8 @@ export default function ClaimAssessmentPage() {
                         <Home className={`mx-auto mb-3 ${
                           propertyType === 'residential' ? 'text-stellar-orange' : 'text-gray-400'
                         }`} size={40} />
-                        <h3 className="font-semibold text-gray-900">Residential</h3>
-                        <p className="text-sm text-gray-600 mt-1">Single family home, condo, or apartment</p>
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100">Residential</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Single family home, condo, or apartment</p>
                       </button>
                       <button
                         onClick={() => handlePropertyTypeSelect('commercial')}
@@ -528,15 +528,15 @@ export default function ClaimAssessmentPage() {
                         <Building2 className={`mx-auto mb-3 ${
                           propertyType === 'commercial' ? 'text-stellar-orange' : 'text-gray-400'
                         }`} size={40} />
-                        <h3 className="font-semibold text-gray-900">Commercial</h3>
-                        <p className="text-sm text-gray-600 mt-1">Office, retail, warehouse, or industrial</p>
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100">Commercial</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Office, retail, warehouse, or industrial</p>
                       </button>
                     </div>
                   </div>
 
                   {/* Property Address */}
                   <div className="mb-8">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Property Address
                     </label>
                     <div className="relative">
@@ -555,7 +555,7 @@ export default function ClaimAssessmentPage() {
                             value={propertyAddress}
                             onChange={(e) => setPropertyAddress(e.target.value)}
                             placeholder="Start typing your property address..."
-                            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
+                            className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
                           />
                         </Autocomplete>
                       ) : (
@@ -564,7 +564,7 @@ export default function ClaimAssessmentPage() {
                           value={propertyAddress}
                           onChange={(e) => setPropertyAddress(e.target.value)}
                           placeholder="Enter your property address"
-                          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
+                          className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
                         />
                       )}
                     </div>
@@ -577,7 +577,7 @@ export default function ClaimAssessmentPage() {
 
                   {/* Damage Type Selection */}
                   <div className="mb-8">
-                    <label className="block text-sm font-medium text-gray-700 mb-4">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
                       Type of Damage (Select all that apply)
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -594,7 +594,7 @@ export default function ClaimAssessmentPage() {
                           <damage.icon className={`mx-auto mb-2 ${
                             selectedDamages.includes(damage.id) ? damage.color : 'text-gray-400'
                           }`} size={24} />
-                          <p className="text-sm font-medium text-gray-900">{damage.name}</p>
+                          <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{damage.name}</p>
                         </button>
                       ))}
                     </div>
@@ -602,14 +602,14 @@ export default function ClaimAssessmentPage() {
 
                   {/* Damage Description */}
                   <div className="mb-8">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Brief Description (Optional)
                     </label>
                     <textarea
                       value={damageDescription}
                       onChange={(e) => setDamageDescription(e.target.value)}
                       placeholder="Describe the damage and when it occurred..."
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-stellar-orange focus:border-transparent"
                       rows={4}
                     />
                   </div>
@@ -618,20 +618,20 @@ export default function ClaimAssessmentPage() {
 
               {/* Step 3: Photo Capture */}
               {currentStep === 3 && (
-                <div className="bg-white rounded-3xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8">
                   <h1 className="text-3xl font-bold text-stellar-dark mb-4">
                     Capture Damage Photos
                   </h1>
-                  <p className="text-gray-600 mb-8">
+                  <p className="text-gray-600 dark:text-gray-400 mb-8">
                     Take or upload photos of the damaged areas. This helps us assess the extent of damage accurately.
                   </p>
 
                   <div className="space-y-4">
                     {photoAreas.map((area) => (
-                      <div key={area.id} className="border border-gray-200 rounded-lg p-4">
+                      <div key={area.id} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-2">
-                            <h3 className="font-medium text-gray-900">{area.name}</h3>
+                            <h3 className="font-medium text-gray-900 dark:text-gray-100">{area.name}</h3>
                             {area.required && (
                               <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full">
                                 Required
@@ -641,7 +641,7 @@ export default function ClaimAssessmentPage() {
                               <CheckCircle className="text-green-500" size={20} />
                             )}
                           </div>
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-gray-500 dark:text-gray-400">
                             {area.photos.length} photo{area.photos.length !== 1 ? 's' : ''}
                           </span>
                         </div>
@@ -651,7 +651,7 @@ export default function ClaimAssessmentPage() {
                           <div className="grid grid-cols-3 gap-2 mb-3">
                             {area.photos.map((photo, index) => (
                               <div key={index} className="relative group">
-                                <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                                <div className="aspect-square bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
                                   <img
                                     src={URL.createObjectURL(photo)}
                                     alt={`${area.name} photo ${index + 1}`}
@@ -682,10 +682,10 @@ export default function ClaimAssessmentPage() {
                         />
                         <label
                           htmlFor={`file-${area.id}`}
-                          className="flex items-center justify-center gap-2 w-full py-2 px-4 bg-gray-50 hover:bg-gray-100 border border-gray-300 rounded-lg cursor-pointer transition"
+                          className="flex items-center justify-center gap-2 w-full py-2 px-4 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 border border-gray-300 rounded-lg cursor-pointer transition"
                         >
-                          <Camera size={20} className="text-gray-600" />
-                          <span className="text-sm font-medium text-gray-700">
+                          <Camera size={20} className="text-gray-600 dark:text-gray-400" />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             {area.photos.length === 0 ? 'Add Photos' : 'Add More Photos'}
                           </span>
                         </label>
@@ -713,11 +713,11 @@ export default function ClaimAssessmentPage() {
 
               {/* Step 4: Policy Upload */}
               {currentStep === 4 && (
-                <div className="bg-white rounded-3xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8">
                   <h1 className="text-3xl font-bold text-stellar-dark mb-4">
                     Upload Your Insurance Policy
                   </h1>
-                  <p className="text-gray-600 mb-8">
+                  <p className="text-gray-600 dark:text-gray-400 mb-8">
                     Upload your policy document so we can match your coverage and maximize your claim.
                   </p>
 
@@ -755,7 +755,7 @@ export default function ClaimAssessmentPage() {
                               }`}>
                                 {isDragOver ? 'Drop your file here' : 'Upload Policy Document'}
                               </p>
-                              <p className="text-sm text-gray-500 mt-1">
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                                 {isDragOver ? 'Release to upload' : 'Click to browse or drag and drop • PDF, JPG, or PNG (Max 10MB)'}
                               </p>
                             </div>
@@ -768,8 +768,8 @@ export default function ClaimAssessmentPage() {
                           <div className="flex items-center gap-3">
                             <FileText className="text-green-600" size={32} />
                             <div>
-                              <p className="font-medium text-gray-900">{policyFile.name}</p>
-                              <p className="text-sm text-gray-600">
+                              <p className="font-medium text-gray-900 dark:text-gray-100">{policyFile.name}</p>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
                                 {(policyFile.size / 1024 / 1024).toFixed(2)} MB
                               </p>
                             </div>
@@ -799,7 +799,7 @@ export default function ClaimAssessmentPage() {
 
               {/* Step 5: AI Analysis */}
               {currentStep === 5 && (
-                <div className="bg-white rounded-3xl shadow-xl p-8">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl p-8">
                   {!analysisComplete ? (
                     <div className="text-center py-12">
                       <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-stellar-orange mx-auto mb-6" />
@@ -809,25 +809,25 @@ export default function ClaimAssessmentPage() {
                       <div className="max-w-md mx-auto space-y-3">
                         <div className="flex items-center gap-3">
                           <Loader2 className="animate-spin text-stellar-orange" size={20} />
-                          <span className="text-gray-600">Detecting damage patterns...</span>
+                          <span className="text-gray-600 dark:text-gray-400">Detecting damage patterns...</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <Loader2 className="animate-spin text-stellar-orange" size={20} />
-                          <span className="text-gray-600">Matching policy coverage...</span>
+                          <span className="text-gray-600 dark:text-gray-400">Matching policy coverage...</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <Loader2 className="animate-spin text-stellar-orange" size={20} />
-                          <span className="text-gray-600">Calculating repair estimates...</span>
+                          <span className="text-gray-600 dark:text-gray-400">Calculating repair estimates...</span>
                         </div>
                       </div>
                     </div>
                   ) : (
                     <>
                       <div className="text-center mb-8">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-3">
+                        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                           Your Preliminary Insurance Assessment
                         </h1>
-                        <p className="text-xl text-gray-600 mb-4">
+                        <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">
                           Our breakthrough AI has uncovered significant hidden opportunities in your claim
                         </p>
                         <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm font-medium">
@@ -849,7 +849,7 @@ export default function ClaimAssessmentPage() {
 
                       {/* Detected Damages */}
                       <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">Detected Damages</h3>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">Detected Damages</h3>
                         <div className="space-y-3">
                           {selectedDamages.map((damageId, index) => {
                             const damage = DAMAGE_TYPES.find(d => d.id === damageId)
@@ -876,7 +876,7 @@ export default function ClaimAssessmentPage() {
                             return (
                               <div 
                                 key={damageId} 
-                                className="border border-gray-200 rounded-lg p-4 bg-white opacity-0 animate-fadeInSlide"
+                                className="border border-gray-200 rounded-lg p-4 bg-white dark:bg-gray-900 opacity-0 animate-fadeInSlide"
                                 style={{ 
                                   animationDelay: `${index * 200}ms`,
                                   animationFillMode: 'forwards'
@@ -884,10 +884,10 @@ export default function ClaimAssessmentPage() {
                               >
                                 <div className="flex items-center justify-between mb-3">
                                   <div className="flex items-center gap-3">
-                                    <damage.icon className="text-gray-600" size={20} />
+                                    <damage.icon className="text-gray-600 dark:text-gray-400" size={20} />
                                     <span className="font-semibold text-lg">{damage.name}</span>
                                   </div>
-                                  <span className="text-sm text-gray-500">
+                                  <span className="text-sm text-gray-500 dark:text-gray-400">
                                     {severity}
                                   </span>
                                 </div>
@@ -895,7 +895,7 @@ export default function ClaimAssessmentPage() {
                                   {details.map((detail: string, detailIndex: number) => (
                                     <div 
                                       key={detailIndex} 
-                                      className="flex items-center gap-2 text-sm text-gray-600 opacity-0 animate-fadeInSlide"
+                                      className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 opacity-0 animate-fadeInSlide"
                                       style={{ 
                                         animationDelay: `${(index * 200) + (detailIndex * 100) + 300}ms`,
                                         animationFillMode: 'forwards'
@@ -915,25 +915,25 @@ export default function ClaimAssessmentPage() {
                       {/* Preliminary Estimate */}
                       <div className="mb-8 opacity-0 animate-fadeInSlide" style={{ animationDelay: `${(selectedDamages.length * 200) + 500}ms`, animationFillMode: 'forwards' }}>
                         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
-                          <h3 className="text-xl font-bold text-gray-900 mb-4">📊 Preliminary Settlement Estimate</h3>
+                          <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4">📊 Preliminary Settlement Estimate</h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="text-center">
-                              <p className="text-sm font-medium text-gray-600 mb-2">AI Estimated Repairs</p>
-                              <p className="text-4xl font-bold text-gray-900 mb-1">
+                              <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">AI Estimated Repairs</p>
+                              <p className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-1">
                                 ${(selectedDamages.length * 15000 + Math.floor(Math.random() * 20000) + 25000).toLocaleString()}
                               </p>
-                              <p className="text-sm text-gray-500">Based on damage analysis</p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">Based on damage analysis</p>
                             </div>
                             <div className="text-center">
-                              <p className="text-sm font-medium text-gray-600 mb-2">Potential Insurance Payout</p>
+                              <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Potential Insurance Payout</p>
                               <p className="text-4xl font-bold text-stellar-orange mb-1">
                                 ${(selectedDamages.length * 15000 + Math.floor(Math.random() * 20000) + 25000 - 2500).toLocaleString()}
                               </p>
-                              <p className="text-sm text-gray-500">After deductible</p>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">After deductible</p>
                             </div>
                           </div>
-                          <div className="mt-4 p-4 bg-white rounded-lg border border-blue-200">
-                            <p className="text-sm text-gray-600 text-center">
+                          <div className="mt-4 p-4 bg-white dark:bg-gray-900 rounded-lg border border-blue-200">
+                            <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
                               <strong>Important:</strong> This is a preliminary estimate. Our experts typically uncover 
                               <span className="font-bold text-stellar-orange"> 15-35% more in additional coverage </span> 
                                during professional assessment.
@@ -946,10 +946,10 @@ export default function ClaimAssessmentPage() {
                       <div className="mb-8 opacity-0 animate-fadeInSlide" style={{ animationDelay: `${(selectedDamages.length * 200) + 1000}ms`, animationFillMode: 'forwards' }}>
                         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
                           <div className="text-center mb-6">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
                               Additional Settlement Opportunities Identified
                             </h3>
-                            <p className="text-lg text-gray-700 mb-4">
+                            <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
                               Our analysis has uncovered potential coverage areas that may increase your settlement value
                             </p>
                             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-6 py-3 rounded-full font-semibold text-lg">
@@ -959,41 +959,41 @@ export default function ClaimAssessmentPage() {
                           </div>
 
                           <div className="grid gap-4 mb-6">
-                            <div className="bg-white rounded-lg p-4 border-l-4 border-blue-500 opacity-0 animate-fadeInSlide" style={{ animationDelay: `${(selectedDamages.length * 200) + 1200}ms`, animationFillMode: 'forwards' }}>
+                            <div className="bg-white dark:bg-gray-900 rounded-lg p-4 border-l-4 border-blue-500 opacity-0 animate-fadeInSlide" style={{ animationDelay: `${(selectedDamages.length * 200) + 1200}ms`, animationFillMode: 'forwards' }}>
                               <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-3">
                                   <Home className="text-blue-600" size={20} />
-                                  <h4 className="font-bold text-gray-900">Additional Living Expenses</h4>
+                                  <h4 className="font-bold text-gray-900 dark:text-gray-100">Additional Living Expenses</h4>
                                 </div>
                                 <span className="text-lg font-bold text-stellar-orange">$15,000-$18,000</span>
                               </div>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
                                 Temporary housing, meals, and storage costs during repairs. This coverage is often overlooked in initial assessments.
                               </p>
                             </div>
                             
-                            <div className="bg-white rounded-lg p-4 border-l-4 border-blue-500 opacity-0 animate-fadeInSlide" style={{ animationDelay: `${(selectedDamages.length * 200) + 1400}ms`, animationFillMode: 'forwards' }}>
+                            <div className="bg-white dark:bg-gray-900 rounded-lg p-4 border-l-4 border-blue-500 opacity-0 animate-fadeInSlide" style={{ animationDelay: `${(selectedDamages.length * 200) + 1400}ms`, animationFillMode: 'forwards' }}>
                               <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-3">
                                   <Shield className="text-blue-600" size={20} />
-                                  <h4 className="font-bold text-gray-900">Code Upgrade Coverage</h4>
+                                  <h4 className="font-bold text-gray-900 dark:text-gray-100">Code Upgrade Coverage</h4>
                                 </div>
                                 <span className="text-lg font-bold text-stellar-orange">$8,000-$22,000</span>
                               </div>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
                                 Required building code upgrades during repairs. These improvements are typically covered under your policy.
                               </p>
                             </div>
                             
-                            <div className="bg-white rounded-lg p-4 border-l-4 border-blue-500 opacity-0 animate-fadeInSlide" style={{ animationDelay: `${(selectedDamages.length * 200) + 1600}ms`, animationFillMode: 'forwards' }}>
+                            <div className="bg-white dark:bg-gray-900 rounded-lg p-4 border-l-4 border-blue-500 opacity-0 animate-fadeInSlide" style={{ animationDelay: `${(selectedDamages.length * 200) + 1600}ms`, animationFillMode: 'forwards' }}>
                               <div className="flex justify-between items-start mb-2">
                                 <div className="flex items-center gap-3">
                                   <ArrowRight className="text-blue-600" size={20} />
-                                  <h4 className="font-bold text-gray-900">Depreciation Recovery</h4>
+                                  <h4 className="font-bold text-gray-900 dark:text-gray-100">Depreciation Recovery</h4>
                                 </div>
                                 <span className="text-lg font-bold text-stellar-orange">$5,000-$15,000</span>
                               </div>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-sm text-gray-600 dark:text-gray-400">
                                 Recovery of depreciation withholds upon completion of repairs. Ensures full replacement cost coverage.
                               </p>
                             </div>
@@ -1030,31 +1030,31 @@ export default function ClaimAssessmentPage() {
 
               {/* Step 6: Success */}
               {currentStep === 6 && (
-                <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-8 text-center">
                   <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <CheckCircle className="text-green-600" size={40} />
                   </div>
                   <h1 className="text-3xl font-bold text-stellar-dark mb-4">
                     Claim Submitted Successfully!
                   </h1>
-                  <p className="text-gray-600 mb-2">
+                  <p className="text-gray-600 dark:text-gray-400 mb-2">
                     Your claim reference number is:
                   </p>
                   <p className="text-2xl font-bold text-stellar-orange mb-6">{claimId}</p>
-                  <p className="text-gray-600 mb-8 max-w-md mx-auto">
+                  <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
                     We've received your claim and our team is already reviewing it. You'll receive a confirmation email shortly with next steps.
                   </p>
 
-                  <div className="bg-gray-50 rounded-lg p-6 mb-8 max-w-md mx-auto">
-                    <h3 className="font-semibold text-gray-900 mb-3">What to Expect:</h3>
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6 mb-8 max-w-md mx-auto">
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-3">What to Expect:</h3>
                     <div className="space-y-3 text-left">
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 bg-stellar-orange/10 rounded-full flex items-center justify-center flex-shrink-0">
                           <span className="text-sm font-bold text-stellar-orange">1</span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Within 1 Hour</p>
-                          <p className="text-sm text-gray-600">Confirmation email with claim details</p>
+                          <p className="font-medium text-gray-900 dark:text-gray-100">Within 1 Hour</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Confirmation email with claim details</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
@@ -1062,8 +1062,8 @@ export default function ClaimAssessmentPage() {
                           <span className="text-sm font-bold text-stellar-orange">2</span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Within 24 Hours</p>
-                          <p className="text-sm text-gray-600">Personal call from your adjuster</p>
+                          <p className="font-medium text-gray-900 dark:text-gray-100">Within 24 Hours</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Personal call from your adjuster</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
@@ -1071,8 +1071,8 @@ export default function ClaimAssessmentPage() {
                           <span className="text-sm font-bold text-stellar-orange">3</span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Within 48 Hours</p>
-                          <p className="text-sm text-gray-600">Scheduled inspection (if needed)</p>
+                          <p className="font-medium text-gray-900 dark:text-gray-100">Within 48 Hours</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">Scheduled inspection (if needed)</p>
                         </div>
                       </div>
                     </div>
@@ -1087,7 +1087,7 @@ export default function ClaimAssessmentPage() {
                     </Link>
                     <Link
                       href="/"
-                      className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition"
+                      className="px-6 py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition"
                     >
                       Return to Home
                     </Link>

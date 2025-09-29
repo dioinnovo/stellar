@@ -179,7 +179,7 @@ export default function AddressAutocomplete({
 
       {/* Suggestions Dropdown */}
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+        <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-900 border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
           {suggestions.map((suggestion, index) => {
             const { primary, secondary } = formatAddress(suggestion)
             return (
@@ -194,11 +194,11 @@ export default function AddressAutocomplete({
                 <div className="flex items-start gap-3">
                   <MapPin className="text-gray-400 flex-shrink-0 mt-0.5" size={16} />
                   <div className="flex-1">
-                    <div className="font-medium text-gray-900 text-sm">
+                    <div className="font-medium text-gray-900 dark:text-gray-100 text-sm">
                       {primary}
                     </div>
                     {secondary && (
-                      <div className="text-xs text-gray-500 mt-0.5">
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                         {secondary}
                       </div>
                     )}
