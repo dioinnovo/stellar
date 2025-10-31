@@ -280,6 +280,61 @@ You can save this comprehensive analysis for your records. The report includes a
       });
     }
 
+    // Check if user is asking for company knowledge / revenue impact analysis
+    if (lastMessage.includes('revenue impact') ||
+        lastMessage.includes('policy reviews this month') ||
+        lastMessage.includes('show me revenue')) {
+
+      const companyAnalysisResponse = `I've analyzed all comprehensive policy reviews completed this month and found some remarkable opportunities for revenue optimization and operational improvement.
+
+## Last 30 Days Revenue Impact Analysis
+
+Across 23 claims reviewed this month, our AI-assisted policy analysis has identified **$847,300 in additional coverage** that was previously overlooked. This represents a **78% hit rate**, meaning 18 out of 23 policies contained hidden provisions that our traditional review process had missed. The average uplift per claim is **$47,072** in additional recoverable coverage.
+
+Breaking down the discovered coverage by type reveals three major opportunity areas. Additional Living Expenses extensions account for the largest portion at **$312,400**, representing **37% of total discoveries**. These ALE provisions were found in 12 of the 23 policies reviewed, with an average value of $26,033 per policy. Interestingly, these are most commonly overlooked in properties built before 2000.
+
+The second major category is Ordinance and Law upgrades, totaling **$245,100 or 29%** of discoveries. We identified these provisions in 9 policies with older construction, averaging $27,233 per policy. Code compliance requirements often trigger this coverage, yet it frequently goes unnoticed in initial reviews.
+
+Increased Cost of Construction riders round out the top three at **$156,200**, comprising **18% of total findings**. These endorsements were present in 7 policies, with an average value of $22,314 per policy. This inflation protection coverage is often missed during standard review procedures.
+
+## Strategic Insight on Property Age Correlation
+
+One of the most valuable patterns emerging from this analysis is that properties built before 2000 have a **2.3 times higher likelihood** of containing overlooked ordinance and law coverage compared to newer properties. Despite this clear pattern, only 34% of our adjusters consistently check for this provision during their reviews. This represents a significant opportunity for process improvement and additional revenue capture.
+
+## Month-Over-Month Performance Trend
+
+This month's discovery rate is **up 34%** compared to last month, strongly suggesting that our AI-assisted review process is learning to identify patterns that manual reviews consistently miss. As the system continues to analyze more policies, we can expect this improvement trend to continue.
+
+## Actionable Recommendations for Leadership
+
+There are three immediate opportunities to capitalize on these insights. First, prioritizing comprehensive reviews on pre-2000 construction properties could generate an additional **$200,000 per month** in coverage discoveries based on current patterns. Second, carrier-specific training is warranted, as **85% of State Farm policies** contain ALE extensions that are frequently overlooked by our team. Third, scheduling focused training on ordinance and law provisions would help our adjusters capture more of these high-value opportunities.
+
+## Operational Efficiency Gains
+
+Beyond the revenue impact, the AI-assisted process has dramatically improved our operational efficiency. Average policy review time has decreased from **4.2 hours to just 47 minutes**, while simultaneously finding **2.1 times more coverage opportunities** per review. The return on investment is substantial: each hour invested in AI-assisted review generates **$18,400 in additional coverage discoveries**.
+
+Would you like me to drill deeper into carrier-specific patterns, analyze performance by adjuster or region, generate a detailed breakdown by property type, or create a comprehensive training plan for the team based on these findings?`;
+
+      return NextResponse.json({
+        response: companyAnalysisResponse,
+        suggestions: [
+          'Show breakdown by carrier',
+          'Analyze by property age',
+          'Review adjuster performance',
+          'Export full analytics report'
+        ],
+        sources: [{
+          name: 'Company Analytics Database',
+          snippet: 'Last 30 days comprehensive policy review data',
+          metadata: {
+            section: 'Revenue Impact Analysis',
+            confidence: 100
+          }
+        }],
+        provider: model === 'quick' ? 'qlik' : 'azure'
+      });
+    }
+
     // Handle Qlik separately since it doesn't use AI SDK provider interface
     if (model === 'quick') {
       return handleQlikRequest(messages, stream, generateTitle, resetThread, conversationId);

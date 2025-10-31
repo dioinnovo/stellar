@@ -29,6 +29,7 @@ import TypewriterMessage from '@/components/ui/typewriter-message'
 import { generatePolicyAnalysisPDF } from '@/lib/utils/pdf-generator'
 import { mockPolicies } from '@/lib/ai/mock-policy-data'
 import { cn } from '@/lib/utils'
+import ReactMarkdown from 'react-markdown'
 
 // Custom Microphone SVG Component
 const MicrophoneIcon = ({ className }: { className?: string }) => (
@@ -489,12 +490,14 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                   Hi! I'm Stella
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 max-w-sm">
-                  I analyze insurance policies comprehensively to uncover every coverage opportunity and maximize settlements for your clients. Upload a policy or select from recently added clients.
+                  I'm here to answer any questions about your clients, policies, or company data. Search across your entire knowledge base instantly.
                 </p>
               </div>
 
+              {/* Quick Question Buttons */}
               <div className="flex flex-wrap gap-2 justify-center max-w-sm">
                 {[
+                  "Show me revenue impact from policy reviews this month",
                   "Perform comprehensive policy review",
                   "Find hidden coverage opportunities",
                   "Review deductibles and exclusions",
@@ -535,6 +538,12 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                             isPolicy={true}
                             onComplete={createOnCompleteCallback(message.id)}
                           />
+                        ) : message.role === 'assistant' ? (
+                          <div className="prose prose-sm max-w-none text-sm leading-relaxed [&>p]:mb-3 [&>p:last-child]:mb-0 [&_h1]:text-base [&_h1]:font-semibold [&_h1]:mb-2 [&_h1]:mt-3 [&_h2]:text-sm [&_h2]:font-semibold [&_h2]:mb-2 [&_h2]:mt-3 [&_ul]:ml-4 [&_ul]:mb-3 [&_li]:mb-1 [&_strong]:font-semibold [&_strong]:text-gray-900 dark:[&_strong]:text-gray-100">
+                            <ReactMarkdown>
+                              {message.content}
+                            </ReactMarkdown>
+                          </div>
                         ) : (
                           <p className="whitespace-pre-wrap text-sm">{message.content}</p>
                         )}
