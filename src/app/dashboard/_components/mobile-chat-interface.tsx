@@ -697,10 +697,9 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
               }}
               placeholder="Message Stella"
               disabled={isTyping}
-              className="w-full px-3 py-2 bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none resize-none transition-all disabled:opacity-50 min-h-[40px] max-h-[200px]"
-              style={{
-                overflowY: inputValue.split('\n').length > 5 ? 'auto' : 'hidden'
-              } as React.CSSProperties}
+              className={`w-full px-3 py-2 bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none resize-none transition-all disabled:opacity-50 min-h-[40px] max-h-[200px] ${
+                inputValue.split('\n').length > 5 ? 'overflow-y-auto' : 'overflow-y-hidden'
+              }`}
               data-gramm="false"
               data-gramm_editor="false"
               data-enable-grammarly="false"
