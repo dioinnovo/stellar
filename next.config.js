@@ -1,44 +1,64 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   productionBrowserSourceMaps: false,
+  output: 'standalone',
+  // Configure Turbopack for Next.js 16+ (default build tool)
+  turbopack: {
+    // Resolve aliases work similarly to webpack
+    resolveAlias: {},
+  },
   images: {
-    domains: ['stellaradjusting.com', 'amazonaws.com', 'images.unsplash.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'scottradjusting.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'amazonaws.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
     formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb',
     },
+    // Skip static error pages to avoid SSG issues with error boundaries
+    staticGenerationRetryCount: 0,
   },
-  webpack: (config, { isServer, dev, webpack }) => {
-    if (isServer) {
-      // Use IgnorePlugin to completely ignore heavy packages during build
-      config.plugins = config.plugins || []
-
-      config.plugins.push(
-        new webpack.IgnorePlugin({
-          resourceRegExp: /^(onnxruntime-node|chromadb|@prisma\/client|\.prisma|@tensorflow|@huggingface|sharp|canvas|puppeteer|playwright)$/,
-        })
-      )
-
-      // Also add externals as fallback
-      config.externals = config.externals || []
-      config.externals.push(
-        'onnxruntime-node',
-        'chromadb',
-        '@prisma/client',
-        '.prisma/client',
-        '@tensorflow/tfjs-node',
-        '@huggingface/transformers',
-        'sharp',
-        'canvas',
-        'puppeteer',
-        'playwright'
-      )
-    }
-
-    return config
-  },
+  // Server external packages (not bundled)
+  // Includes heavy AI/ML packages and unused TypeORM database drivers
+  serverExternalPackages: [
+    'onnxruntime-node',
+    'chromadb',
+    '@prisma/client',
+    '@tensorflow/tfjs-node',
+    '@huggingface/transformers',
+    'sharp',
+    'canvas',
+    'puppeteer',
+    'playwright',
+    // Unused TypeORM drivers (we only use PostgreSQL via pg package)
+    'mysql',
+    'mysql2',
+    'mssql',
+    'sql.js',
+    'sqlite3',
+    'better-sqlite3',
+    'oracledb',
+    'react-native-sqlite-storage',
+    'mongodb',
+    'redis',
+    'ioredis',
+    'typeorm-aurora-data-api-driver',
+  ],
 }
 
 module.exports = nextConfig
