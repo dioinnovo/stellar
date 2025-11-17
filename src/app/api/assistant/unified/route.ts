@@ -43,6 +43,13 @@ export async function POST(request: NextRequest) {
     const validatedData = RequestSchema.parse(body);
     const { messages, model, stream, temperature, maxTokens, generateTitle, resetThread, conversationId } = validatedData;
 
+    console.log('[Unified API] Request received:', {
+      model,
+      messageCount: messages.length,
+      lastMessage: messages[messages.length - 1]?.content?.substring(0, 100),
+      stream,
+    });
+
     // Initialize LightRAG provider
     const lightragProvider = new LightRAGProvider();
 
@@ -337,8 +344,11 @@ Would you like me to drill deeper into carrier-specific patterns, analyze perfor
 
     // Handle Qlik separately since it doesn't use AI SDK provider interface
     if (model === 'quick') {
+      console.log('[Unified API] Routing to Qlik provider');
       return handleQlikRequest(messages, stream, generateTitle, resetThread, conversationId);
     }
+
+    console.log('[Unified API] Using Azure provider for model:', model);
 
     // Reset thread if requested (useful for new conversations)
     if (resetThread) {
@@ -347,6 +357,7 @@ Would you like me to drill deeper into carrier-specific patterns, analyze perfor
 
     // Get the Azure provider
     const provider = getProvider(model as ModelType);
+    console.log('[Unified API] Provider retrieved successfully');
 
     // Convert messages to CoreMessage format
     const coreMessages: CoreMessage[] = messages.map(msg => {
@@ -420,7 +431,14 @@ Would you like me to drill deeper into carrier-specific patterns, analyze perfor
     }
 
     // Handle non-streaming response
+    console.log('[Unified API] Calling Azure OpenAI with generateText...');
     const result = await generateText(commonOptions);
+    console.log('[Unified API] Azure response received:', {
+      textLength: result.text.length,
+      textPreview: result.text.substring(0, 100),
+      usage: result.usage,
+      finishReason: result.finishReason,
+    });
 
     // Generate suggestions based on the model and response
     const suggestions = generateSuggestions(model as ModelType, result.text, messages);
@@ -461,7 +479,12 @@ Would you like me to drill deeper into carrier-specific patterns, analyze perfor
     });
 
   } catch (error) {
-    console.error('Unified API error:', error);
+    console.error('[Unified API] Error occurred:', error);
+    console.error('[Unified API] Error details:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+    });
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(

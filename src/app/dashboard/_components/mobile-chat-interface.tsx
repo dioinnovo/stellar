@@ -703,6 +703,9 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                 maxHeight: '200px',
                 overflowY: inputValue.split('\n').length > 5 ? 'auto' : 'hidden'
               }}
+              data-gramm="false"
+              data-gramm_editor="false"
+              data-enable-grammarly="false"
             />
 
             {/* Bottom Controls */}
@@ -848,6 +851,9 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                       }
                       e.target.value = '' // Reset input
                     }}
+                    data-gramm="false"
+                    data-gramm_editor="false"
+                    data-enable-grammarly="false"
                   />
                   <input
                     ref={photoInputRef}
@@ -865,6 +871,9 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                       }
                       e.target.value = '' // Reset input
                     }}
+                    data-gramm="false"
+                    data-gramm_editor="false"
+                    data-enable-grammarly="false"
                   />
                   
                   {/* Mic/Send Button */}

@@ -6,10 +6,17 @@
 import { createAzure } from '@ai-sdk/azure';
 import { LanguageModel } from 'ai';
 
+// Extract resource name from endpoint URL
+function getResourceName(): string {
+  const endpoint = process.env.AZURE_OPENAI_ENDPOINT || '';
+  const match = endpoint.match(/https:\/\/([^.]+)\./);
+  return match ? match[1] : 'diod-mevihjma-eastus2';
+}
+
 // Initialize Azure provider with environment variables
 export const azureProvider = createAzure({
   apiKey: process.env.AZURE_OPENAI_KEY || '',
-  resourceName: 'diod-mevihjma-eastus2', // From your endpoint URL
+  resourceName: getResourceName(),
   // Note: apiVersion will be handled by the SDK automatically
 });
 
