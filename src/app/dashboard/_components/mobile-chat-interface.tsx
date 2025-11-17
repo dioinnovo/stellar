@@ -835,6 +835,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                     type="file"
                     accept=".pdf,.doc,.docx,.txt"
                     className="hidden"
+                    aria-label="Upload policy document"
                     onChange={(e) => {
                       const file = e.target.files?.[0]
                       if (file) {
@@ -861,6 +862,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                     accept="image/*"
                     multiple
                     className="hidden"
+                    aria-label="Upload photos"
                     onChange={(e) => {
                       const files = e.target.files
                       if (files && files.length > 0) {
