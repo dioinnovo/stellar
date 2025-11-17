@@ -936,6 +936,7 @@ export default function MobileChatInterface({ className }: MobileChatInterfacePr
                 <button
                   onClick={() => setShowHistoryModal(false)}
                   className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  aria-label="Close chat history"
                 >
                   <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                 </button>
