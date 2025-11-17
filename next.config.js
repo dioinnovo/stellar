@@ -34,7 +34,7 @@ const nextConfig = {
     staticGenerationRetryCount: 0,
   },
   // Server external packages (not bundled)
-  // Includes heavy AI/ML packages and unused TypeORM database drivers
+  // Includes heavy AI/ML packages and unused database drivers
   serverExternalPackages: [
     'onnxruntime-node',
     'chromadb',
@@ -45,7 +45,8 @@ const nextConfig = {
     'canvas',
     'puppeteer',
     'playwright',
-    // Unused TypeORM drivers (we only use PostgreSQL via pg package)
+    // Database drivers (we only use PostgreSQL via pg package)
+    'neo4j-driver',
     'mysql',
     'mysql2',
     'mssql',
